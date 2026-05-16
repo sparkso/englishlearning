@@ -176,11 +176,29 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
 
   <!-- WORDBOOK -->
   <div id="panel-wordbook" class="panel">
-    <div class="card" style="padding-bottom:20px;">
-      <span class="badge">📒 我的詞彙本</span>
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">每次詞彙題答啱，個字就會自動儲存喺呢度。</p>
+    <!-- list view -->
+    <div id="wb-listview" class="card" style="padding-bottom:20px;">
+      <span class="badge">📒 我的詞彙本 <span id="wb-count" style="color:var(--red);font-weight:700;"></span></span>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">撳每個字可以聽發音、睇詳細解釋。撳「複習模式」可以玩 flashcard 測試自己。</p>
+      <button class="btn bp" style="width:100%;margin-bottom:14px;" id="wb-review-btn" onclick="startReview()">🎴 複習模式（Flashcard）</button>
       <div id="wordbook-list"></div>
       <p id="wordbook-empty" style="text-align:center;color:var(--muted);font-size:.9rem;padding:30px 0;">未有詞彙。去「詞彙」答啱題目就會出現喺呢度！</p>
+    </div>
+
+    <!-- flashcard review view -->
+    <div id="wb-reviewview" class="card vc" style="display:none;text-align:center;">
+      <span class="badge" id="wb-review-badge">🎴 複習模式 · 第 1 / 1 張</span>
+      <div class="prog-wrap"><div class="prog-bar" id="wb-review-prog" style="width:5%"></div></div>
+      <div id="wb-card" style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:34px 20px;margin:8px 0 18px;min-height:200px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;" onclick="flipCard()">
+        <div id="wb-card-front"></div>
+        <div id="wb-card-back" style="display:none;"></div>
+        <div id="wb-card-hint" style="font-size:.7rem;color:var(--muted);font-family:'Fira Code',monospace;margin-top:8px;">👆 撳卡片揭開答案</div>
+      </div>
+      <div class="btn-row" style="margin-bottom:8px;">
+        <button class="btn bg2" onclick="reviewKnow(false)" style="color:var(--red);border-color:var(--red);">❌ 唔識</button>
+        <button class="btn bp" onclick="reviewKnow(true)" style="background:var(--green);">✅ 識</button>
+      </div>
+      <button class="btn bg2" style="width:100%;margin-top:8px;" onclick="exitReview()">← 返回詞彙本</button>
     </div>
   </div>
 
@@ -350,20 +368,114 @@ function addToWordbook(word,ph,pos,def,eg,zh,b1){
 function renderWordbook(){
   const el=document.getElementById('wordbook-list');
   const empty=document.getElementById('wordbook-empty');
-  if(!wordbook.length){el.innerHTML='';empty.style.display='block';return;}
+  const cnt=document.getElementById('wb-count');
+  const rbtn=document.getElementById('wb-review-btn');
+  if(!wordbook.length){el.innerHTML='';empty.style.display='block';cnt.textContent='';rbtn.style.display='none';return;}
   empty.style.display='none';
+  cnt.textContent='· 已學 '+wordbook.length+' 個生字';
+  rbtn.style.display='block';
   el.innerHTML=wordbook.map((w,i)=>`
-    <div style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;background:var(--surface);position:relative;">
-      <button onclick="removeWord(${i})" style="position:absolute;top:10px;right:12px;border:none;background:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>
-      <div class="wi-w">${w.word} <span style="font-size:.85rem;color:var(--green);font-family:'Fira Code',monospace;">→ ${w.b1||''}</span></div>
-      <div class="wi-ph">${w.ph}</div>
-      <div class="wi-pos">${w.pos}</div>
-      <div class="wi-def">${w.def}</div>
-      <div class="wi-eg">${w.eg}</div>
-      <div style="font-size:.68rem;color:var(--muted);margin-top:6px;font-family:'Fira Code',monospace;">💡 ${w.zh} · 儲存於 ${w.date}</div>
+    <div class="wb-item" style="border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--surface);overflow:hidden;">
+      <div style="display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:10px;" onclick="toggleWord(${i})">
+        <button onclick="event.stopPropagation();speakWord('${w.word.replace(/'/g,"\\'")}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.85rem;flex-shrink:0;">🔊</button>
+        <div style="flex:1;min-width:0;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--ink);">${w.word}</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">💡 ${w.zh}</div>
+        </div>
+        <span id="wb-arrow-${i}" style="color:var(--muted);font-size:.85rem;transition:transform .2s;">▼</span>
+      </div>
+      <div id="wb-detail-${i}" style="display:none;padding:0 14px 14px;border-top:1px dashed var(--border);position:relative;">
+        <button onclick="removeWord(${i})" style="position:absolute;top:10px;right:10px;border:none;background:none;color:var(--muted);cursor:pointer;font-size:.95rem;" title="刪除呢個字">✕</button>
+        <div class="wi-ph" style="margin-top:10px;">${w.ph}</div>
+        <div class="wi-pos">${w.pos}</div>
+        <div class="wi-def">${w.def}</div>
+        <div class="wi-eg">${w.eg}</div>
+        ${w.b1?`<div style="margin-top:8px;font-size:.78rem;color:var(--green);font-family:'Fira Code',monospace;">B1 同義詞: ${w.b1}</div>`:''}
+        <div style="font-size:.68rem;color:var(--muted);margin-top:6px;font-family:'Fira Code',monospace;">儲存於 ${w.date}</div>
+      </div>
     </div>`).join('');
 }
-function removeWord(i){wordbook.splice(i,1);save();renderWordbook();}
+function toggleWord(i){
+  const d=document.getElementById('wb-detail-'+i);
+  const a=document.getElementById('wb-arrow-'+i);
+  const open=d.style.display==='block';
+  d.style.display=open?'none':'block';
+  a.style.transform=open?'rotate(0deg)':'rotate(180deg)';
+}
+function speakWord(w){
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(w);
+    u.lang='en-GB';u.rate=0.85;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function removeWord(i){
+  event&&event.stopPropagation&&event.stopPropagation();
+  if(!confirm('確定要刪除「'+wordbook[i].word+'」？'))return;
+  wordbook.splice(i,1);save();renderWordbook();
+}
+
+// ── FLASHCARD REVIEW ──────────────────────────────
+let reviewDeck=[],reviewIdx=0,reviewFlipped=false,reviewStats={know:0,unknown:0};
+function startReview(){
+  if(!wordbook.length){alert('未有生字可以複習！');return;}
+  reviewDeck=shufl(wordbook);
+  reviewIdx=0;reviewFlipped=false;reviewStats={know:0,unknown:0};
+  document.getElementById('wb-listview').style.display='none';
+  document.getElementById('wb-reviewview').style.display='block';
+  showCard();
+}
+function exitReview(){
+  document.getElementById('wb-reviewview').style.display='none';
+  document.getElementById('wb-listview').style.display='block';
+}
+function showCard(){
+  const w=reviewDeck[reviewIdx];
+  const tot=reviewDeck.length;
+  document.getElementById('wb-review-badge').textContent=`🎴 複習模式 · 第 ${reviewIdx+1} / ${tot} 張`;
+  document.getElementById('wb-review-prog').style.width=((reviewIdx+1)/tot*100)+'%';
+  reviewFlipped=false;
+  document.getElementById('wb-card-front').innerHTML=`
+    <div style="font-size:.7rem;color:var(--muted);font-family:'Fira Code',monospace;margin-bottom:8px;">中文意思 → 估返英文</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--ink);">${w.zh}</div>
+    <div style="font-size:.85rem;color:var(--muted);margin-top:6px;">(${w.pos})</div>`;
+  document.getElementById('wb-card-back').innerHTML=`
+    <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--red);">${w.word}
+      <button onclick="event.stopPropagation();speakWord('${w.word.replace(/'/g,"\\'")}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:.8rem;margin-left:6px;vertical-align:middle;">🔊</button>
+    </div>
+    <div class="wi-ph" style="margin-top:4px;">${w.ph}</div>
+    <div class="wi-def" style="margin-top:8px;">${w.def}</div>
+    <div class="wi-eg" style="margin-top:6px;">${w.eg}</div>`;
+  document.getElementById('wb-card-front').style.display='block';
+  document.getElementById('wb-card-back').style.display='none';
+  document.getElementById('wb-card-hint').textContent='👆 撳卡片揭開答案';
+}
+function flipCard(){
+  if(reviewFlipped)return;
+  reviewFlipped=true;
+  document.getElementById('wb-card-front').style.display='none';
+  document.getElementById('wb-card-back').style.display='block';
+  document.getElementById('wb-card-hint').textContent='👇 揀「識」或者「唔識」';
+  const w=reviewDeck[reviewIdx];
+  setTimeout(()=>speakWord(w.word),300);
+}
+function reviewKnow(ok){
+  if(!reviewFlipped){
+    document.getElementById('wb-card-front').style.display='none';
+    document.getElementById('wb-card-back').style.display='block';
+    reviewFlipped=true;
+  }
+  if(ok)reviewStats.know++;else reviewStats.unknown++;
+  reviewIdx++;
+  if(reviewIdx>=reviewDeck.length){
+    const pct=Math.round(reviewStats.know/reviewDeck.length*100);
+    alert(`🎉 複習完成！\n\n✅ 識: ${reviewStats.know} 個\n❌ 唔識: ${reviewStats.unknown} 個\n📊 答啱率: ${pct}%`);
+    exitReview();
+    return;
+  }
+  showCard();
+}
 
 // ── VOCAB ──────────────────────────────
 function loadV(){
