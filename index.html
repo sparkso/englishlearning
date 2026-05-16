@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnglishMind — B1/B2 Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Fira+Code:wght@400;500&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f0e8; --surface:#faf7f2; --card:#fff;
+  --ink:#1a1508; --ink2:#3d3520; --muted:#8a7f6a; --border:#e0d8c8;
+  --red:#c84b2f; --blue:#1e4d8c; --green:#2a7a4b; --gold:#d4900a;
+  --radius:14px; --shadow:0 2px 20px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+.app{max-width:720px;margin:0 auto;padding:0 16px 80px;}
+header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--ink);margin-bottom:24px;}
+.brand{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;}
+.brand span{color:var(--red);}
+.level-tag{font-family:'Fira Code',monospace;font-size:.72rem;background:var(--ink);color:var(--bg);padding:4px 12px;border-radius:4px;}
+.scorebar{display:flex;gap:10px;margin-bottom:20px;}
+.sc{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center;box-shadow:var(--shadow);}
+.sc-num{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;display:block;}
+.sc-num.v{color:var(--red);} .sc-num.r{color:var(--blue);} .sc-num.g{color:var(--green);} .sc-num.l{color:var(--gold);}
+.sc-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+.tabs{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow);}
+.tab{flex:1;padding:11px 4px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s;}
+.tab:last-child{border-right:none;}
+.tab .ti{font-size:1.1rem;}
+.tab.active{background:var(--ink);color:var(--bg);}
+.panel{display:none;animation:fadeIn .3s ease;}
+.panel.active{display:block;}
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius) var(--radius) 0 0;}
+.vc::before{background:var(--red);} .rc::before{background:var(--blue);} .gc::before{background:var(--green);} .lc::before{background:var(--gold);}
+.badge{font-family:'Fira Code',monospace;font-size:.7rem;color:var(--muted);margin-bottom:14px;display:block;}
+.qtext{font-size:1rem;line-height:1.75;color:var(--ink2);margin-bottom:18px;}
+.passage{font-size:.88rem;line-height:1.75;background:var(--bg);padding:14px 16px;border-left:3px solid var(--blue);border-radius:6px;margin-bottom:16px;color:var(--ink2);}
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;color:var(--ink2);transition:all .15s;}
+.opt:hover:not(.disabled){border-color:var(--ink);background:var(--bg);transform:translateX(3px);}
+.opt.sel{border-color:var(--blue);background:rgba(30,77,140,.06);color:var(--blue);}
+.opt.correct{border-color:var(--green) !important;background:rgba(42,122,75,.08) !important;color:var(--green) !important;}
+.opt.wrong{border-color:var(--red) !important;background:rgba(200,75,47,.06) !important;color:var(--red) !important;}
+.opt.disabled{cursor:default;pointer-events:none;}
+.fill-row{display:flex;gap:10px;align-items:center;margin-bottom:18px;}
+.fill-in{flex:1;padding:11px 15px;border:1.5px solid var(--border);border-radius:9px;font-family:'Nunito',sans-serif;font-size:.95rem;background:var(--surface);color:var(--ink);outline:none;transition:border-color .2s;}
+.fill-in:focus{border-color:var(--ink);}
+.fill-in.correct{border-color:var(--green);background:rgba(42,122,75,.06);}
+.fill-in.wrong{border-color:var(--red);background:rgba(200,75,47,.06);}
+.play-btn{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;margin-bottom:18px;transition:all .2s;width:100%;}
+.play-btn:hover{background:var(--red);}
+.transcript{display:none;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:14px 16px;font-size:.87rem;line-height:1.7;color:var(--ink2);font-style:italic;margin-bottom:14px;}
+.transcript.show{display:block;animation:fadeIn .3s;}
+.result{display:none;border-radius:9px;padding:14px 16px;margin-bottom:14px;font-size:.88rem;line-height:1.6;}
+.result.show{display:block;animation:fadeIn .3s;}
+.result.ok{background:rgba(42,122,75,.08);border:1.5px solid rgba(42,122,75,.25);color:#1a5c35;}
+.result.bad{background:rgba(200,75,47,.07);border:1.5px solid rgba(200,75,47,.2);color:#a0290f;}
+.rt{font-weight:700;margin-bottom:3px;}
+.winfo{display:none;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:16px 18px;margin-top:12px;}
+.winfo.show{display:block;animation:fadeIn .4s;}
+.wi-w{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--ink);}
+.wi-ph{font-family:'Fira Code',monospace;font-size:.75rem;color:var(--muted);margin:2px 0 8px;}
+.wi-pos{display:inline-block;font-family:'Fira Code',monospace;font-size:.68rem;color:var(--gold);background:rgba(212,144,10,.1);border:1px solid rgba(212,144,10,.3);border-radius:4px;padding:2px 8px;margin-bottom:8px;}
+.wi-def{font-size:.88rem;color:var(--ink2);line-height:1.55;margin-bottom:7px;}
+.wi-eg{font-size:.82rem;color:var(--muted);font-style:italic;border-left:2px solid var(--border);padding-left:10px;}
+.btn-row{display:flex;gap:9px;}
+.btn{padding:12px 20px;border:none;border-radius:9px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.bp{background:var(--ink);color:var(--bg);flex:1;}
+.bp:hover{background:var(--red);transform:translateY(-1px);}
+.bg2{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+.bg2:hover{color:var(--ink);border-color:var(--ink);}
+.prog-wrap{background:var(--surface);border-radius:100px;height:4px;margin-bottom:18px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:100px;transition:width .5s ease;}
+.app-recs{display:flex;flex-direction:column;gap:12px;}
+.app-rec{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--shadow);}
+.app-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.app-info h3{font-size:.95rem;font-weight:700;margin-bottom:4px;}
+.app-info p{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.app-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.app-tag{font-size:.65rem;font-family:'Fira Code',monospace;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);color:var(--ink2);}
+.free-tag{background:rgba(42,122,75,.08);border-color:rgba(42,122,75,.3);color:#1a5c35;font-weight:700;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">English<span>Mind</span></div>
+    <div class="level-tag">B1 → B2</div>
+  </header>
+  <div class="scorebar">
+    <div class="sc"><span class="sc-num v" id="sv">0</span><span class="sc-lbl">詞彙</span></div>
+    <div class="sc"><span class="sc-num r" id="sr">0</span><span class="sc-lbl">閱讀</span></div>
+    <div class="sc"><span class="sc-num g" id="sg">0</span><span class="sc-lbl">文法</span></div>
+    <div class="sc"><span class="sc-num l" id="sl">0</span><span class="sc-lbl">聽力</span></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;">
+    <button class="btn bp" style="flex:none;padding:8px 14px;font-size:.78rem;" onclick="downloadApp()">📥 下載離線版</button>
+    <button class="btn bg2" style="flex:none;padding:8px 14px;font-size:.78rem;color:var(--red);border-color:var(--red);" onclick="if(confirm('確定重置所有進度？'))resetAll()">🗑 重置</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('vocab')"><span class="ti">📖</span>詞彙</button>
+    <button class="tab" onclick="switchTab('reading')"><span class="ti">📰</span>閱讀</button>
+    <button class="tab" onclick="switchTab('grammar')"><span class="ti">✏️</span>文法</button>
+    <button class="tab" onclick="switchTab('listening')"><span class="ti">🎧</span>聽力</button>
+    <button class="tab" onclick="switchTab('wordbook')"><span class="ti">📒</span>詞彙本</button>
+    <button class="tab" onclick="switchTab('apps')"><span class="ti">⭐</span>推介</button>
+  </div>
+
+  <!-- VOCAB -->
+  <div id="panel-vocab" class="panel active">
+    <div class="card vc">
+      <span class="badge" id="vbadge">詞彙 · 題目 1</span>
+      <div class="prog-wrap"><div class="prog-bar" id="vprog" style="width:5%"></div></div>
+      <p class="qtext" id="vq"></p>
+      <div class="opts" id="vopts"></div>
+      <div class="result" id="vres"></div>
+      <div class="btn-row">
+        <button class="btn bg2" id="vcheck" onclick="checkVocab()">確認答案</button>
+        <button class="btn bp" onclick="nextVocab()">下一題 →</button>
+      </div>
+      <div class="winfo" id="vinfo"></div>
+    </div>
+  </div>
+
+  <!-- READING -->
+  <div id="panel-reading" class="panel">
+    <div class="card rc">
+      <span class="badge" id="rbadge">閱讀 · 第 1 篇</span>
+      <div class="prog-wrap"><div class="prog-bar" id="rprog" style="width:10%"></div></div>
+      <div class="passage" id="rpassage"></div>
+      <p class="qtext" id="rq"></p>
+      <div class="opts" id="ropts"></div>
+      <div class="result" id="rres"></div>
+      <div class="btn-row">
+        <button class="btn bg2" id="rcheck" onclick="checkReading()">確認答案</button>
+        <button class="btn bp" onclick="nextReading()">下一篇 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAMMAR -->
+  <div id="panel-grammar" class="panel">
+    <div class="card gc">
+      <span class="badge" id="gbadge">文法 · 題目 1</span>
+      <div class="prog-wrap"><div class="prog-bar" id="gprog" style="width:5%"></div></div>
+      <p class="qtext" id="gq"></p>
+      <div class="fill-row">
+        <input class="fill-in" id="ginput" placeholder="填入正確答案…" onkeydown="if(event.key==='Enter')checkGrammar()">
+        <button class="btn bg2" onclick="checkGrammar()">確認</button>
+      </div>
+      <div class="result" id="gres"></div>
+      <div class="btn-row"><button class="btn bp" onclick="nextGrammar()">下一題 →</button></div>
+      <div class="winfo" id="ginfo"></div>
+    </div>
+  </div>
+
+  <!-- LISTENING -->
+  <div id="panel-listening" class="panel">
+    <div class="card lc">
+      <span class="badge" id="lbadge">聽力 · 題目 1</span>
+      <div class="prog-wrap"><div class="prog-bar" id="lprog" style="width:10%"></div></div>
+      <button class="play-btn" id="lplaybtn" onclick="playListen()">▶️ &nbsp;播放對話</button>
+      <div class="transcript" id="ltranscript"></div>
+      <p class="qtext" id="lq"></p>
+      <div class="opts" id="lopts"></div>
+      <div class="result" id="lres"></div>
+      <div class="btn-row">
+        <button class="btn bg2" id="lcheck" onclick="checkListening()">確認答案</button>
+        <button class="btn bp" onclick="nextListening()">下一題 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORDBOOK -->
+  <div id="panel-wordbook" class="panel">
+    <div class="card" style="padding-bottom:20px;">
+      <span class="badge">📒 我的詞彙本</span>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">每次詞彙題答啱，個字就會自動儲存喺呢度。</p>
+      <div id="wordbook-list"></div>
+      <p id="wordbook-empty" style="text-align:center;color:var(--muted);font-size:.9rem;padding:30px 0;">未有詞彙。去「詞彙」答啱題目就會出現喺呢度！</p>
+    </div>
+  </div>
+
+  <!-- APPS -->
+  <div id="panel-apps" class="panel">
+    <div class="app-recs">
+      <div class="app-rec"><div class="app-icon" style="background:#e8334a18">📻</div><div class="app-info"><h3>BBC Learning English</h3><p>BBC 官方出品，完全免費。「6 Minute English」每集6分鐘，有原文字幕，B1-B2 最啱。</p><div class="app-tags"><span class="app-tag free-tag">✅ 完全免費</span><span class="app-tag">聽力</span><span class="app-tag">詞彙</span><span class="app-tag">文法</span><span class="app-tag">iOS/Android/網頁</span></div></div></div>
+      <div class="app-rec"><div class="app-icon" style="background:#1e4d8c18">📖</div><div class="app-info"><h3>British Council LearnEnglish</h3><p>按 CEFR 級別分類，B1/B2 內容豐富。有文法測試、聽力練習、閱讀文章，完全免費。</p><div class="app-tags"><span class="app-tag free-tag">✅ 完全免費</span><span class="app-tag">文法</span><span class="app-tag">閱讀</span><span class="app-tag">聽力</span><span class="app-tag">App/網頁</span></div></div></div>
+      <div class="app-rec"><div class="app-icon" style="background:#00b47218">📚</div><div class="app-info"><h3>Anki（電腦版）</h3><p>電腦版永久免費，間隔重複記憶科學最強。下載現成 B2 詞彙卡包即用，長期效果最好。</p><div class="app-tags"><span class="app-tag free-tag">✅ 電腦版免費</span><span class="app-tag">詞彙</span><span class="app-tag">記憶</span><span class="app-tag">Windows/Mac</span></div></div></div>
+      <div class="app-rec"><div class="app-icon" style="background:#ff000018">▶️</div><div class="app-info"><h3>YouTube — English with Lucy</h3><p>英國人主持，專教 B1-B2 詞彙、口語、文法，口音清晰，完全免費，每片15-20分鐘。</p><div class="app-tags"><span class="app-tag free-tag">✅ 完全免費</span><span class="app-tag">口語</span><span class="app-tag">詞彙</span><span class="app-tag">聽力</span><span class="app-tag">YouTube</span></div></div></div>
+      <div class="app-rec"><div class="app-icon" style="background:#25d36618">💬</div><div class="app-info"><h3>HelloTalk（免費版）</h3><p>語言交換 App，免費版夠用。連接英語母語者做文字對話，得到真人糾正寫作錯誤。</p><div class="app-tags"><span class="app-tag free-tag">✅ 免費版夠用</span><span class="app-tag">寫作</span><span class="app-tag">會話</span><span class="app-tag">iOS/Android</span></div></div></div>
+      <div class="app-rec"><div class="app-icon" style="background:#4285f418">🔍</div><div class="app-info"><h3>Google 翻譯 — 語音模式</h3><p>完全免費，開「對話模式」練口語，即時聽到正確發音示範。隨時隨地可以用。</p><div class="app-tags"><span class="app-tag free-tag">✅ 完全免費</span><span class="app-tag">發音</span><span class="app-tag">口語</span><span class="app-tag">iOS/Android/網頁</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const VOCAB=[
+  {s:'She made a <strong>deliberate</strong> choice to leave the company.',q:'What does "deliberate" mean?',opts:['Done on purpose','Accidental','Quick','Impossible'],ans:0,word:'deliberate',ph:'/dɪˈlɪb.ər.ət/',pos:'adjective',def:'Done intentionally; fully considered.',eg:'He made a deliberate effort to improve his English.',zh:'刻意、故意',b1:'on purpose'},
+  {s:'The manager asked for a <strong>concise</strong> report.',q:'What does "concise" mean?',opts:['Short and clear','Very long','Very colourful','Very old'],ans:0,word:'concise',ph:'/kənˈsaɪs/',pos:'adjective',def:'Giving a lot of information clearly using few words.',eg:'Please give a concise summary of the meeting.',zh:'簡潔',b1:'short / brief'},
+  {s:'She was <strong>reluctant</strong> to share her personal information online.',q:'What does "reluctant" mean?',opts:['Unwilling','Excited','Happy','Confident'],ans:0,word:'reluctant',ph:'/rɪˈlʌk.tənt/',pos:'adjective',def:'Not willing to do something.',eg:'He was reluctant to admit his mistake.',zh:'不情願',b1:'unwilling'},
+  {s:'The scientist made a <strong>breakthrough</strong> discovery last year.',q:'What does "breakthrough" mean?',opts:['Important sudden progress','A small failure','A boring result','An old finding'],ans:0,word:'breakthrough',ph:'/ˈbreɪk.θruː/',pos:'noun',def:'An important discovery or development.',eg:'The new medicine was a major breakthrough.',zh:'突破',b1:'big discovery'},
+  {s:'He tried to <strong>persuade</strong> his friends to join the club.',q:'What does "persuade" mean?',opts:['Convince someone','Force someone','Prevent someone','Remind someone'],ans:0,word:'persuade',ph:'/pəˈsweɪd/',pos:'verb',def:'To cause someone to believe something through reasoning.',eg:'Can you persuade him to come to the party?',zh:'說服',b1:'convince'},
+  {s:'They reached a <strong>compromise</strong> after long negotiations.',q:'What does "compromise" mean?',opts:['Agreement where both sides give something up','Total victory','A failure','A celebration'],ans:0,word:'compromise',ph:'/ˈkɒm.prə.maɪz/',pos:'noun',def:'An agreement where each side accepts less than wanted.',eg:'Both countries made a compromise on trade.',zh:'妥協、折衷',b1:'agreement / deal'},
+  {s:'The charity relies on <strong>voluntary</strong> donations.',q:'What does "voluntary" mean?',opts:['Done by free choice','Forced','Paid','Official'],ans:0,word:'voluntary',ph:'/ˈvɒl.ən.tər.i/',pos:'adjective',def:'Done willingly without being forced or paid.',eg:'She does voluntary work at the hospital.',zh:'自願的',b1:'free / unpaid'},
+  {s:'The plan was <strong>feasible</strong> given the available resources.',q:'What does "feasible" mean?',opts:['Possible to do','Impossible','Expensive','Dangerous'],ans:0,word:'feasible',ph:'/ˈfiː.zɪ.bəl/',pos:'adjective',def:'Possible to do easily or conveniently.',eg:'Is it feasible to finish by Friday?',zh:'可行的',b1:'possible'},
+  {s:'She gave a very <strong>compelling</strong> speech at the conference.',q:'What does "compelling" mean?',opts:['Very interesting and convincing','Boring','Short','Confusing'],ans:0,word:'compelling',ph:'/kəmˈpel.ɪŋ/',pos:'adjective',def:'Evoking interest or admiration in a powerful way.',eg:'The documentary was absolutely compelling.',zh:'引人入勝',b1:'interesting / convincing'},
+  {s:'There is a clear <strong>distinction</strong> between the two products.',q:'What does "distinction" mean?',opts:['Noticeable difference','Similarity','Connection','Confusion'],ans:0,word:'distinction',ph:'/dɪˈstɪŋk.ʃən/',pos:'noun',def:'A clear difference between two things.',eg:'There is a distinction between being shy and being rude.',zh:'區別、差異',b1:'difference'},
+  {s:'The report was <strong>comprehensive</strong> and covered every aspect.',q:'What does "comprehensive" mean?',opts:['Covering everything completely','Brief','Confusing','Outdated'],ans:0,word:'comprehensive',ph:'/ˌkɒm.prɪˈhen.sɪv/',pos:'adjective',def:'Including all or nearly all elements or aspects.',eg:'They did a comprehensive review of the data.',zh:'全面的',b1:'complete / full'},
+  {s:'Her answer was <strong>ambiguous</strong> and hard to understand.',q:'What does "ambiguous" mean?',opts:['Unclear, can mean more than one thing','Very clear','Very long','Very short'],ans:0,word:'ambiguous',ph:'/æmˈbɪɡ.ju.əs/',pos:'adjective',def:'Open to more than one interpretation.',eg:'His instructions were ambiguous and confusing.',zh:'模糊',b1:'unclear'},
+  {s:'The new law will <strong>restrict</strong> the use of plastic bags.',q:'What does "restrict" mean?',opts:['Limit or control','Encourage','Increase','Remove'],ans:0,word:'restrict',ph:'/rɪˈstrɪkt/',pos:'verb',def:'To put a limit on; keep under control.',eg:'They restricted access to the building.',zh:'限制',b1:'limit'},
+  {s:'She <strong>acknowledged</strong> that there were problems with the plan.',q:'What does "acknowledged" mean?',opts:['Accepted or admitted','Denied','Forgot','Celebrated'],ans:0,word:'acknowledge',ph:'/əkˈnɒl.ɪdʒ/',pos:'verb',def:'To accept or admit the existence of something.',eg:'He acknowledged his mistake and apologised.',zh:'承認',b1:'admit / accept'},
+  {s:'The new system is more <strong>efficient</strong> than the old one.',q:'What does "efficient" mean?',opts:['Achieving results without wasting resources','Slow and wasteful','Expensive','Complicated'],ans:0,word:'efficient',ph:'/ɪˈfɪʃ.ənt/',pos:'adjective',def:'Working well and quickly without wasting resources.',eg:'An efficient worker completes tasks quickly.',zh:'有效率的',b1:'effective / fast'},
+  {s:'The government will <strong>implement</strong> the new policy next month.',q:'What does "implement" mean?',opts:['Put into action','Cancel','Discuss','Delay'],ans:0,word:'implement',ph:'/ˈɪm.plɪ.ment/',pos:'verb',def:'To put a plan or decision into effect.',eg:'The school implemented new rules this term.',zh:'實施',b1:'start / carry out'},
+  {s:'The article <strong>highlighted</strong> the importance of exercise.',q:'What does "highlighted" mean?',opts:['Drew attention to','Removed','Ignored','Changed'],ans:0,word:'highlight',ph:'/ˈhaɪ.laɪt/',pos:'verb',def:'To emphasise or make more noticeable.',eg:'The report highlighted several key issues.',zh:'強調',b1:'show / emphasise'},
+  {s:'The economy has shown signs of <strong>recovery</strong>.',q:'What does "recovery" mean?',opts:['Returning to a normal state','A serious decline','A celebration','A new plan'],ans:0,word:'recovery',ph:'/rɪˈkʌv.ər.i/',pos:'noun',def:'The process of returning to a normal state after difficulty.',eg:'The patient made a full recovery after surgery.',zh:'復甦、康復',b1:'improvement / getting better'},
+  {s:'The company decided to <strong>outsource</strong> its IT support.',q:'What does "outsource" mean?',opts:['Hire an outside company to do work','Do work internally','Cancel a project','Expand a team'],ans:0,word:'outsource',ph:'/ˈaʊt.sɔːs/',pos:'verb',def:'To obtain services from an outside supplier.',eg:'Many firms outsource their customer service.',zh:'外包',b1:'hire outside / use another company'},
+  {s:'The new policy will <strong>affect</strong> thousands of workers.',q:'What does "affect" mean?',opts:['Have an impact on','Ignore completely','Celebrate','Describe'],ans:0,word:'affect',ph:'/əˈfekt/',pos:'verb',def:'To have an influence on someone or something.',eg:'The weather can affect your mood.',zh:'影響',b1:'change / influence'}
+];
+
+const READING=[
+  {passage:'Remote working has become increasingly popular since 2020. Many employees enjoy the flexibility it offers, as they can work from home and avoid long commutes. However, some workers find it difficult to separate their work life from their personal life when working at home. Companies are now trying to find a balance that works for everyone.',q:'What is one disadvantage of remote working mentioned in the passage?',opts:['Difficult to separate work and personal life','Longer commuting time','Less flexible hours','Lower salaries'],ans:0,exp:'The passage states that some workers find it "difficult to separate their work life from their personal life".'},
+  {passage:'Social media platforms collect large amounts of data from their users. This data is used to show personalised advertisements. While this can be convenient, many people are concerned about their privacy. Several governments have introduced regulations to control how companies use personal data.',q:'Why do social media platforms collect user data?',opts:['To show personalised advertisements','To improve internet speed','To create better apps','To train employees'],ans:0,exp:'The passage clearly states the data "is used to show personalised advertisements".'},
+  {passage:'Urban farming is a growing trend in many cities around the world. Residents grow vegetables and herbs on rooftops, balconies, and in community gardens. This helps reduce food miles — the distance food travels from farm to table — and also brings communities together. Some cities actively support urban farming by providing land and resources.',q:'What does the term "food miles" refer to?',opts:['The distance food travels from farm to table','The cost of buying food','The number of farms in a city','The time taken to cook food'],ans:0,exp:'The passage defines food miles as "the distance food travels from farm to table".'},
+  {passage:'Electric vehicles (EVs) are becoming more affordable as technology improves. Governments in many countries offer financial incentives to encourage people to switch from petrol cars to EVs. Despite this, some consumers are still worried about the limited range of electric cars and the lack of charging stations in rural areas.',q:'What concern do some consumers have about electric vehicles?',opts:['Limited range and lack of charging stations','The high speed of EVs','The colour choices available','The size of the vehicles'],ans:0,exp:'The passage mentions consumers are "worried about the limited range of electric cars and the lack of charging stations".'},
+  {passage:'Meditation has been shown to have many health benefits. Research suggests that regular meditation can reduce stress, improve concentration, and even lower blood pressure. Many schools and workplaces have started offering meditation sessions to help people manage their wellbeing. The practice requires no equipment and can be done anywhere.',q:'According to the passage, what is one benefit of regular meditation?',opts:['Improved concentration','Better physical strength','Improved cooking skills','Faster reading speed'],ans:0,exp:'The passage states meditation can "improve concentration", among other benefits.'},
+  {passage:'Plastic pollution is one of the most serious environmental problems today. Millions of tonnes of plastic enter the oceans every year, harming marine life and ecosystems. Many countries have banned single-use plastics such as straws and bags. However, experts say more action is needed to tackle the root cause of the problem.',q:'What action have many countries taken to address plastic pollution?',opts:['Banned single-use plastics','Built more recycling factories','Created ocean cleaning robots','Reduced oil production'],ans:0,exp:'The passage states "Many countries have banned single-use plastics such as straws and bags".'},
+  {passage:'The concept of a four-day working week has gained attention in recent years. Trials in several countries showed that employees were more productive and reported higher job satisfaction. Companies also noticed a reduction in sick days. However, some industries, such as healthcare, may find it difficult to apply this model.',q:'What did trials of a four-day week show about productivity?',opts:['Employees were more productive','Productivity decreased significantly','Productivity stayed the same','Companies lost money'],ans:0,exp:'The passage states that "employees were more productive" during four-day week trials.'},
+  {passage:'Volunteering offers many personal benefits in addition to helping others. Volunteers often develop new skills, expand their social networks, and gain a sense of purpose. Studies suggest that volunteering can even improve mental health and increase life satisfaction. Many organisations rely heavily on volunteers to deliver their services.',q:'According to the passage, what is one personal benefit of volunteering?',opts:['Developing new skills','Receiving a high salary','Getting promoted quickly','Reducing physical illness'],ans:0,exp:'The passage lists "develop new skills" as one of the personal benefits of volunteering.'},
+  {passage:'Artificial intelligence is being used in healthcare to help doctors diagnose diseases more accurately. AI systems can analyse medical images and detect patterns that might be missed by the human eye. While this technology shows great promise, doctors emphasise that AI should assist, not replace, medical professionals.',q:'What do doctors emphasise about AI in healthcare?',opts:['AI should assist, not replace, doctors','AI is too expensive to use','AI makes more mistakes than doctors','AI should only be used in research'],ans:0,exp:'The passage states doctors "emphasise that AI should assist, not replace, medical professionals".'},
+  {passage:'Dark sky tourism is a growing niche in the travel industry. Visitors travel to remote areas with little light pollution to observe stars and other celestial objects. Popular destinations include parts of Scotland, New Zealand, and the Atacama Desert in Chile. This form of tourism also raises awareness about the impact of light pollution on wildlife.',q:'What is the main purpose of dark sky tourism?',opts:['To observe stars in areas with little light pollution','To experience extreme weather','To visit cities with colourful lights','To study ocean ecosystems'],ans:0,exp:'The passage says visitors travel "to observe stars and other celestial objects" in areas with little light pollution.'}
+];
+
+const GRAMMAR=[
+  {s:'If I ___ more time, I would travel around the world.',q:'Fill in the blank — Second Conditional (have):',ans:'had',exp:'Second conditional: If + past simple → would + infinitive.',zh:'第二條件句用過去式 had',hint:'h___'},
+  {s:'She ___ in this company since 2018.',q:'Fill in the blank — Present Perfect Continuous (work):',ans:'has been working',exp:'Present perfect continuous: has/have + been + verb-ing.',zh:'has been working',hint:'has been...'},
+  {s:'The report ___ by the manager yesterday.',q:'Fill in the blank — Past Passive (write):',ans:'was written',exp:'Past passive: was/were + past participle.',zh:'被動語態：was written',hint:'was w___'},
+  {s:'I enjoy ___ new languages in my free time.',q:'Fill in the blank — Gerund or Infinitive (learn):',ans:'learning',exp:"After 'enjoy', always use gerund (-ing form).",zh:'enjoy 後面用 -ing',hint:'learn___'},
+  {s:'By the time she arrived, the meeting ___ already.',q:'Fill in the blank — Past Perfect (start):',ans:'had already started',exp:'Past perfect: had + past participle. Used for action completed before another past event.',zh:'過去完成式：had + 過去分詞',hint:'had...'},
+  {s:'You ___ smoke in the hospital — it is strictly forbidden.',q:'Fill in the blank — Modal Verb for Prohibition:',ans:'must not',exp:"'Must not' = prohibition (not allowed). 'Don't have to' = not necessary — very different!",zh:'must not = 禁止',hint:'must...'},
+  {s:'This is the restaurant ___ we had our first dinner.',q:'Fill in the blank — Relative Pronoun (place):',ans:'where',exp:"'Where' is used for places. 'Which' for things, 'who' for people.",zh:'地方用 where',hint:'wh___'},
+  {s:'She asked me ___ I had finished my homework.',q:'Fill in the blank — Reported Speech (yes/no question):',ans:'if',exp:"In reported speech, yes/no questions use 'if' or 'whether'.",zh:'間接問句用 if / whether',hint:'i_'},
+  {s:'I would rather ___ at home than go to the party.',q:"Fill in the blank — Verb form after 'would rather':",ans:'stay',exp:"'Would rather' is followed by the base form (infinitive without 'to').",zh:'would rather + 原形動詞',hint:'st___'},
+  {s:'Despite ___ hard, she did not pass the exam.',q:"Fill in the blank — Verb form after 'despite' (study):",ans:'studying',exp:"'Despite' is a preposition, must be followed by a noun or gerund (-ing).",zh:'despite 後面用 -ing',hint:'study___'},
+  {s:'The more you practise, ___ you will become.',q:'Fill in the blank — Double Comparative structure:',ans:'the better',exp:"'The more...the + comparative' is a fixed structure.",zh:'the more...the better 固定句式',hint:'the b___'},
+  {s:"It's time we ___ a decision about the project.",q:"Fill in the blank — Verb form after 'It's time':",ans:'made',exp:"'It's time + subject + past simple' means it should happen now.",zh:"It's time + 過去式",hint:'m___'},
+  {s:'She ___ have told me earlier — I could have helped!',q:'Fill in the blank — Modal Perfect for Criticism:',ans:'should',exp:"'Should have + past participle' = criticism about something that didn't happen.",zh:'should have = 本應該但沒做',hint:'sh___'},
+  {s:'Not only ___ he late, but he also forgot his notes.',q:"Fill in the blank — Inverted structure after 'Not only':",ans:'was',exp:"'Not only + auxiliary + subject' is an inverted structure for emphasis.",zh:'Not only 開頭要倒裝',hint:'w__'},
+  {s:'Neither the students nor the teacher ___ aware of the change.',q:"Fill in the blank — Subject-Verb Agreement with 'neither...nor':",ans:'was',exp:"With 'neither...nor', verb agrees with the nearest noun. 'teacher' is singular → 'was'.",zh:'neither...nor：動詞跟最近主語一致',hint:'w__'},
+  {s:'She suggested ___ to the cinema that evening.',q:"Fill in the blank — Gerund after 'suggest' (go):",ans:'going',exp:"After 'suggest', use the gerund (-ing). 'suggested going' is correct.",zh:'suggest 後用 -ing',hint:'go___'},
+  {s:'He speaks English as ___ as a native speaker.',q:'Fill in the blank — Adverb in as...as comparison (fluent):',ans:'fluently',exp:"'As...as' comparisons use adverb form to modify verbs.",zh:'as...as 比較句用副詞',hint:'fluent___'},
+  {s:'The flight ___ delayed due to bad weather.',q:'Fill in the blank — Past Passive auxiliary:',ans:'was',exp:"Past passive: was/were + past participle. 'flight' is singular → 'was'.",zh:'被動語態：was/were + 過去分詞',hint:'w__'},
+  {s:'I wish I ___ more time to study yesterday.',q:'Fill in the blank — Wish + Past Perfect (have):',ans:'had had',exp:"'Wish + past perfect' expresses regret about a past situation.",zh:'wish + 過去完成式表遺憾',hint:'had h___'},
+  {s:'You look tired. You ___ gone to bed earlier last night.',q:'Fill in the blank — Modal Perfect for Advice about the past:',ans:'should have',exp:"'Should have + past participle' gives advice about a past action.",zh:'should have = 本應該',hint:'should...'}
+];
+
+const LISTENING=[
+  {t:"Hi Sarah, are you coming to the team meeting tomorrow at 3pm? We're going to discuss the new project deadline. Please let me know if you can make it.",q:'What is the main purpose of this message?',opts:['To invite Sarah to a meeting','To cancel a project','To give Sarah a deadline','To introduce a new team member'],ans:0,exp:'The speaker asks Sarah if she is coming to the meeting — the purpose is an invitation.'},
+  {t:"Welcome to CityLink Radio. Today's weather forecast: expect heavy rain throughout the morning with temperatures around 14 degrees. The rain will clear by afternoon, with sunny spells towards the evening.",q:'What will the weather be like in the afternoon?',opts:['The rain will clear up','Heavy rain will continue','It will snow','It will be foggy'],ans:0,exp:"The forecast says 'the rain will clear by afternoon'."},
+  {t:"Good morning passengers. This is your captain speaking. We will be landing at Heathrow Airport in approximately 25 minutes. Please fasten your seatbelts and return your seats to the upright position. Local time is 7:45am.",q:'How long until the plane lands?',opts:['25 minutes','45 minutes','1 hour','7 minutes'],ans:0,exp:"The captain says 'approximately 25 minutes' until landing."},
+  {t:"Thank you for calling GreenBank customer service. For account enquiries, press 1. To report a lost or stolen card, press 2. For loan information, press 3. To speak to an adviser, please hold the line.",q:'What should you do if your card is stolen?',opts:['Press 2','Press 1','Press 3','Hold the line'],ans:0,exp:"The message says 'to report a lost or stolen card, press 2'."},
+  {t:"Hi, I'd like to book a table for four people this Saturday evening, around 7:30. We have one vegetarian in the group, so it would be great if you could let us know the vegetarian options on your menu. Thank you.",q:'How many people is the reservation for?',opts:['Four people','Two people','Six people','Three people'],ans:0,exp:"The caller clearly states 'a table for four people'."},
+  {t:"Studies show that teenagers who sleep less than eight hours a night perform worse in school. Lack of sleep affects concentration, memory, and mood. Experts recommend that teenagers put away their phones at least one hour before bedtime to improve sleep quality.",q:'What do experts recommend teenagers do before bedtime?',opts:['Put away their phones one hour before sleep','Exercise for 30 minutes','Drink warm milk','Study for one more hour'],ans:0,exp:"Experts recommend teenagers 'put away their phones at least one hour before bedtime'."},
+  {t:"The museum will be closed for renovation from the 15th to the 30th of this month. During this period, all school visit bookings will be moved to the following month. We apologise for any inconvenience and look forward to welcoming you back with our new exhibition.",q:'Why is the museum closing?',opts:['For renovation','Due to a staff shortage','Because of a public holiday','For a private event'],ans:0,exp:"The announcement states the museum is closing 'for renovation'."},
+  {t:"Today on the podcast, we're speaking with Dr Kim Lee about the rise of online learning. Dr Lee argues that while online courses offer great flexibility, students must be self-disciplined to succeed. Without regular interaction with teachers and classmates, motivation can drop significantly.",q:'What does Dr Lee say students need to succeed in online learning?',opts:['Self-discipline','A fast internet connection','A personal tutor','More free time'],ans:0,exp:"Dr Lee says students 'must be self-disciplined to succeed'."},
+  {t:"Attention shoppers: our store will be closing in 15 minutes. Please bring your final purchases to the checkout. Our store hours are Monday to Saturday, 9am to 9pm, and Sunday 10am to 6pm. Thank you for shopping with us today.",q:'What time does the store close on Sundays?',opts:['6pm','9pm','10am','5pm'],ans:0,exp:"The announcement states Sunday hours are '10am to 6pm', so closing at 6pm."},
+  {t:"Job interviews can be stressful, but preparation makes a big difference. Research the company beforehand and prepare answers to common questions. Make sure to arrive five to ten minutes early. During the interview, listen carefully and ask thoughtful questions at the end.",q:'When should you arrive for a job interview?',opts:['5 to 10 minutes early','Exactly on time','30 minutes early','5 minutes late'],ans:0,exp:"The advice is to 'arrive five to ten minutes early'."}
+];
+
+// ── STORAGE ──────────────────────────────
+const SK={scores:'em_scores',idx:'em_idx',wordbook:'em_wordbook'};
+function save(){
+  try{
+    localStorage.setItem(SK.scores,JSON.stringify(scores));
+    localStorage.setItem(SK.idx,JSON.stringify({vi,ri,gi,li}));
+    localStorage.setItem(SK.wordbook,JSON.stringify(wordbook));
+  }catch(e){}
+}
+function load(){
+  try{
+    const s=localStorage.getItem(SK.scores);
+    if(s){const p=JSON.parse(s);Object.assign(scores,p);}
+    const ix=localStorage.getItem(SK.idx);
+    if(ix){const p=JSON.parse(ix);vi=p.vi||0;ri=p.ri||0;gi=p.gi||0;li=p.li||0;}
+    const wb=localStorage.getItem(SK.wordbook);
+    if(wb){wordbook=JSON.parse(wb);}
+  }catch(e){}
+}
+function resetAll(){
+  try{localStorage.removeItem(SK.scores);localStorage.removeItem(SK.idx);localStorage.removeItem(SK.wordbook);}catch(e){}
+  scores.v=0;scores.r=0;scores.g=0;scores.l=0;
+  vi=0;ri=0;gi=0;li=0;wordbook=[];
+  updateScoreDisplay();
+  vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
+  loadV();loadR();loadG();loadL();renderWordbook();
+  alert('✅ 進度已重置！');
+}
+function downloadApp(){
+  const html=document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='EnglishMind-B1B2.html';
+  a.click();
+}
+
+// ── STATE ──────────────────────────────
+const scores={v:0,r:0,g:0,l:0};
+let vi=0,ri=0,gi=0,li=0;
+let vS=[],rS=[],gS=[],lS=[];
+let vLocked=false,rLocked=false,lLocked=false;
+let utterance=null;
+let wordbook=[];
+
+function shufl(a){return[...a].sort(()=>Math.random()-.5);}
+function updateScoreDisplay(){
+  document.getElementById('sv').textContent=scores.v;
+  document.getElementById('sr').textContent=scores.r;
+  document.getElementById('sg').textContent=scores.g;
+  document.getElementById('sl').textContent=scores.l;
+}
+
+function init(){
+  load();
+  updateScoreDisplay();
+  vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
+  // clamp indices after shuffle
+  vi=Math.min(vi,vS.length-1);ri=Math.min(ri,rS.length-1);
+  gi=Math.min(gi,gS.length-1);li=Math.min(li,lS.length-1);
+  loadV();loadR();loadG();loadL();renderWordbook();
+}
+
+function switchTab(n){
+  const tabs=['vocab','reading','grammar','listening','wordbook','apps'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  if(n==='wordbook')renderWordbook();
+}
+
+// ── WORDBOOK ──────────────────────────────
+function addToWordbook(word,ph,pos,def,eg,zh,b1){
+  if(wordbook.find(w=>w.word===word))return;
+  wordbook.push({word,ph,pos,def,eg,zh,b1,date:new Date().toLocaleDateString('zh-HK')});
+  save();
+}
+function renderWordbook(){
+  const el=document.getElementById('wordbook-list');
+  const empty=document.getElementById('wordbook-empty');
+  if(!wordbook.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  el.innerHTML=wordbook.map((w,i)=>`
+    <div style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;background:var(--surface);position:relative;">
+      <button onclick="removeWord(${i})" style="position:absolute;top:10px;right:12px;border:none;background:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>
+      <div class="wi-w">${w.word} <span style="font-size:.85rem;color:var(--green);font-family:'Fira Code',monospace;">→ ${w.b1||''}</span></div>
+      <div class="wi-ph">${w.ph}</div>
+      <div class="wi-pos">${w.pos}</div>
+      <div class="wi-def">${w.def}</div>
+      <div class="wi-eg">${w.eg}</div>
+      <div style="font-size:.68rem;color:var(--muted);margin-top:6px;font-family:'Fira Code',monospace;">💡 ${w.zh} · 儲存於 ${w.date}</div>
+    </div>`).join('');
+}
+function removeWord(i){wordbook.splice(i,1);save();renderWordbook();}
+
+// ── VOCAB ──────────────────────────────
+function loadV(){
+  vLocked=false;
+  const d=vS[vi],tot=vS.length;
+  document.getElementById('vbadge').textContent=`詞彙 · 題目 ${vi+1} / ${tot}`;
+  document.getElementById('vprog').style.width=((vi+1)/tot*100)+'%';
+  document.getElementById('vq').innerHTML=d.s+'<br><br><span style="font-size:.85rem;color:var(--muted)">'+d.q+'</span>';
+  const sh=d.opts.map((t,i)=>({t,c:i===d.ans})).sort(()=>Math.random()-.5);
+  d._sh=sh;
+  const el=document.getElementById('vopts');el.innerHTML='';
+  sh.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.onclick=()=>selOpt(b,'vopts');el.appendChild(b);});
+  clr('vres');document.getElementById('vinfo').className='winfo';
+  document.getElementById('vcheck').disabled=false;
+}
+function checkVocab(){
+  if(vLocked)return;
+  const sel=document.querySelector('#vopts .opt.sel');if(!sel)return;
+  vLocked=true;
+  const idx=[...document.querySelectorAll('#vopts .opt')].indexOf(sel);
+  const ok=vS[vi]._sh[idx].c;
+  document.querySelectorAll('#vopts .opt').forEach((o,i)=>{o.classList.add('disabled');if(vS[vi]._sh[i].c)o.classList.add('correct');});
+  if(!ok)sel.classList.add('wrong');
+  const r=document.getElementById('vres');
+  r.className='result show '+(ok?'ok':'bad');
+  r.innerHTML=ok?`<div class="rt">✅ 答啱！已加入詞彙本 📒</div>`:`<div class="rt">❌ 答錯了</div>正確答案：<strong>${vS[vi].opts[vS[vi].ans]}</strong><br><small>💡 ${vS[vi].zh}</small>`;
+  if(ok){
+    scores.v++;
+    const d=vS[vi];
+    addToWordbook(d.word,d.ph,d.pos,d.def,d.eg,d.zh,d.b1);
+  }
+  save();
+  updateScoreDisplay();
+  const d=vS[vi];
+  document.getElementById('vinfo').className='winfo show';
+  document.getElementById('vinfo').innerHTML=`<div class="wi-w">${d.word}</div><div class="wi-ph">${d.ph}</div><div class="wi-pos">${d.pos}</div><div class="wi-def">${d.def}</div><div class="wi-eg">${d.eg}</div>`;
+  document.getElementById('vcheck').disabled=true;
+}
+function nextVocab(){vi=(vi+1)%vS.length;save();loadV();}
+
+// ── READING ──────────────────────────────
+function loadR(){
+  rLocked=false;
+  const d=rS[ri],tot=rS.length;
+  document.getElementById('rbadge').textContent=`閱讀 · 第 ${ri+1} 篇 / ${tot}`;
+  document.getElementById('rprog').style.width=((ri+1)/tot*100)+'%';
+  document.getElementById('rpassage').textContent=d.passage;
+  document.getElementById('rq').textContent=d.q;
+  const sh=d.opts.map((t,i)=>({t,c:i===d.ans})).sort(()=>Math.random()-.5);
+  d._sh=sh;
+  const el=document.getElementById('ropts');el.innerHTML='';
+  sh.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.onclick=()=>selOpt(b,'ropts');el.appendChild(b);});
+  clr('rres');document.getElementById('rcheck').disabled=false;
+}
+function checkReading(){
+  if(rLocked)return;
+  const sel=document.querySelector('#ropts .opt.sel');if(!sel)return;
+  rLocked=true;
+  const idx=[...document.querySelectorAll('#ropts .opt')].indexOf(sel);
+  const ok=rS[ri]._sh[idx].c;
+  document.querySelectorAll('#ropts .opt').forEach((o,i)=>{o.classList.add('disabled');if(rS[ri]._sh[i].c)o.classList.add('correct');});
+  if(!ok)sel.classList.add('wrong');
+  const r=document.getElementById('rres');
+  r.className='result show '+(ok?'ok':'bad');
+  r.innerHTML=ok?`<div class="rt">✅ 正確！</div>${rS[ri].exp}`:`<div class="rt">❌ 答錯了</div>${rS[ri].exp}`;
+  if(ok){scores.r++;}
+  save();updateScoreDisplay();
+  document.getElementById('rcheck').disabled=true;
+}
+function nextReading(){ri=(ri+1)%rS.length;save();loadR();}
+
+// ── GRAMMAR ──────────────────────────────
+function loadG(){
+  const d=gS[gi],tot=gS.length;
+  document.getElementById('gbadge').textContent=`文法 · 題目 ${gi+1} / ${tot}`;
+  document.getElementById('gprog').style.width=((gi+1)/tot*100)+'%';
+  document.getElementById('gq').innerHTML='<strong>'+d.q+'</strong><br><br>'+d.s.replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>');
+  const inp=document.getElementById('ginput');
+  inp.value='';inp.className='fill-in';inp.placeholder='你的答案… (提示：'+d.hint+')';
+  clr('gres');document.getElementById('ginfo').className='winfo';
+  setTimeout(()=>inp.focus(),100);
+}
+function checkGrammar(){
+  const d=gS[gi];
+  const val=document.getElementById('ginput').value.trim().toLowerCase();
+  const ok=val===d.ans.toLowerCase();
+  const inp=document.getElementById('ginput');
+  inp.className='fill-in '+(ok?'correct':'wrong');
+  const r=document.getElementById('gres');
+  r.className='result show '+(ok?'ok':'bad');
+  r.innerHTML=ok?`<div class="rt">✅ Perfect!</div>${d.exp}`:`<div class="rt">❌ 正確答案：<strong>${d.ans}</strong></div>${d.exp}<br><small>💡 ${d.zh}</small>`;
+  if(ok){scores.g++;}
+  save();updateScoreDisplay();
+  document.getElementById('ginfo').className='winfo show';
+  document.getElementById('ginfo').innerHTML=`<div class="wi-w">${d.ans}</div><div class="wi-def">${d.exp}</div><div class="wi-eg">${d.s.replace('___','<strong>'+d.ans+'</strong>')}</div>`;
+}
+function nextGrammar(){gi=(gi+1)%gS.length;save();loadG();}
+
+// ── LISTENING ──────────────────────────────
+function loadL(){
+  lLocked=false;
+  const d=lS[li],tot=lS.length;
+  document.getElementById('lbadge').textContent=`聽力 · 題目 ${li+1} / ${tot}`;
+  document.getElementById('lprog').style.width=((li+1)/tot*100)+'%';
+  document.getElementById('ltranscript').className='transcript';
+  document.getElementById('ltranscript').textContent=d.t;
+  document.getElementById('lplaybtn').innerHTML='▶️ &nbsp;播放對話';
+  document.getElementById('lq').textContent=d.q;
+  utterance=new SpeechSynthesisUtterance(d.t);
+  utterance.lang='en-GB';utterance.rate=0.88;
+  const sh=d.opts.map((t,i)=>({t,c:i===d.ans})).sort(()=>Math.random()-.5);
+  d._sh=sh;
+  const el=document.getElementById('lopts');el.innerHTML='';
+  sh.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.onclick=()=>selOpt(b,'lopts');el.appendChild(b);});
+  clr('lres');document.getElementById('lcheck').disabled=false;
+}
+function playListen(){
+  if(!utterance)return;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+  document.getElementById('lplaybtn').innerHTML='🔊 &nbsp;播放中…';
+  utterance.onend=()=>{
+    document.getElementById('lplaybtn').innerHTML='🔁 &nbsp;再聽一次';
+    setTimeout(()=>{document.getElementById('ltranscript').className='transcript show';},600);
+  };
+}
+function checkListening(){
+  if(lLocked)return;
+  const sel=document.querySelector('#lopts .opt.sel');if(!sel)return;
+  lLocked=true;
+  const idx=[...document.querySelectorAll('#lopts .opt')].indexOf(sel);
+  const ok=lS[li]._sh[idx].c;
+  document.querySelectorAll('#lopts .opt').forEach((o,i)=>{o.classList.add('disabled');if(lS[li]._sh[i].c)o.classList.add('correct');});
+  if(!ok)sel.classList.add('wrong');
+  const r=document.getElementById('lres');
+  r.className='result show '+(ok?'ok':'bad');
+  r.innerHTML=ok?`<div class="rt">✅ 聽到了！</div>${lS[li].exp}`:`<div class="rt">❌ 答錯了</div>${lS[li].exp}`;
+  if(ok){scores.l++;}
+  save();updateScoreDisplay();
+  document.getElementById('ltranscript').className='transcript show';
+  document.getElementById('lcheck').disabled=true;
+}
+function nextListening(){li=(li+1)%lS.length;save();loadL();}
+
+// ── HELPERS ──────────────────────────────
+function selOpt(el,gid){document.querySelectorAll('#'+gid+' .opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+function clr(id){const r=document.getElementById(id);r.className='result';r.innerHTML='';}
+
+init();
+</script>
+</body>
+</html>
