@@ -98,9 +98,30 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <div class="sc"><span class="sc-num g" id="sg">0</span><span class="sc-tot" id="stg">/ 0</span><span class="sc-lbl">文法</span></div>
     <div class="sc"><span class="sc-num l" id="sl">0</span><span class="sc-tot" id="stl">/ 0</span><span class="sc-lbl">聽力</span></div>
   </div>
-  <div style="display:flex;gap:8px;margin-bottom:10px;">
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+    <button class="btn bg2" style="flex:none;padding:8px 14px;font-size:.78rem;" onclick="toggleVoicePanel()">🔊 語音設定</button>
     <button class="btn bp" style="flex:none;padding:8px 14px;font-size:.78rem;" onclick="downloadApp()">📥 下載離線版</button>
     <button class="btn bg2" style="flex:none;padding:8px 14px;font-size:.78rem;color:var(--red);border-color:var(--red);" onclick="if(confirm('確定重置所有進度？'))resetAll()">🗑 重置</button>
+  </div>
+  <div id="voice-panel" style="display:none;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow);">
+    <div style="font-size:.78rem;font-weight:700;margin-bottom:8px;color:var(--ink);">🎙 揀英文發音聲音</div>
+    <select id="voice-select" onchange="onVoiceChange()" style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);font-family:'Nunito',sans-serif;font-size:.85rem;color:var(--ink);margin-bottom:9px;"></select>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input id="voice-test-text" type="text" value="Hello, this is a test of my pronunciation." style="flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.82rem;background:var(--surface);">
+      <button class="btn bp" style="padding:9px 16px;font-size:.8rem;flex:none;" onclick="testVoice()">▶️ 試聽</button>
+    </div>
+    <details style="margin-top:8px;">
+      <summary style="font-size:.72rem;color:var(--muted);cursor:pointer;">💡 想要更清晰嘅高質素聲音？（iOS 免費下載）</summary>
+      <div style="font-size:.72rem;color:var(--muted);line-height:1.6;margin-top:7px;background:var(--bg);padding:10px 12px;border-radius:6px;">
+        1️⃣ 開 iPhone「設定」<br>
+        2️⃣ 入「輔助使用 / Accessibility」<br>
+        3️⃣ 揀「朗讀內容 / Spoken Content」→「聲音 / Voices」<br>
+        4️⃣ 揀「英文 / English」<br>
+        5️⃣ 揀有「Enhanced / Premium / 增強」標籤嘅聲音（例如 <b>Ava (Enhanced)</b>、<b>Serena (Premium)</b>、<b>Kate (Enhanced)</b>）→ 撳下載 ⬇️<br>
+        6️⃣ 下載完返呢度 refresh 個 app，喺上面 dropdown 就揀到 ✨<br><br>
+        建議揀 <b>Ava</b>（美音，最自然）或 <b>Serena</b>（英音，清晰專業）
+      </div>
+    </details>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('vocab')"><span class="ti">📖</span>詞彙</button>
@@ -291,7 +312,7 @@ const LISTENING=[
 ];
 
 // ── STORAGE ──────────────────────────────
-const SK={idx:'em_idx',wordbook:'em_wordbook',learned:'em_learned'};
+const SK={idx:'em_idx',wordbook:'em_wordbook',learned:'em_learned',voice:'em_voice'};
 function save(){
   try{
     localStorage.setItem(SK.idx,JSON.stringify({vi,ri,gi,li}));
@@ -299,6 +320,7 @@ function save(){
     localStorage.setItem(SK.learned,JSON.stringify({
       r:[...learned.r],g:[...learned.g],l:[...learned.l]
     }));
+    if(selectedVoiceName)localStorage.setItem(SK.voice,selectedVoiceName);
   }catch(e){}
 }
 function load(){
@@ -313,6 +335,8 @@ function load(){
       learned.g=new Set(p.g||[]);
       learned.l=new Set(p.l||[]);
     }
+    const vn=localStorage.getItem(SK.voice);
+    if(vn)selectedVoiceName=vn;
     // legacy: drop old inflated scores
     try{localStorage.removeItem('em_scores');}catch(e){}
   }catch(e){}
@@ -343,7 +367,7 @@ let vS=[],rS=[],gS=[],lS=[];
 let vLocked=false,rLocked=false,lLocked=false;
 let utterance=null;
 let wordbook=[];
-let femaleVoice=null;
+let femaleVoice=null,selectedVoiceName=null;
 
 function shufl(a){return[...a].sort(()=>Math.random()-.5);}
 
@@ -367,10 +391,56 @@ function pickFemaleVoice(){
 }
 function initVoices(){
   femaleVoice=pickFemaleVoice();
+  populateVoiceSelect();
 }
 if('speechSynthesis' in window){
   initVoices();
   window.speechSynthesis.onvoiceschanged=initVoices;
+}
+
+function getCurrentVoice(){
+  if(selectedVoiceName){
+    const v=window.speechSynthesis.getVoices().find(x=>x.name===selectedVoiceName);
+    if(v)return v;
+  }
+  return femaleVoice||pickFemaleVoice();
+}
+
+function populateVoiceSelect(){
+  const sel=document.getElementById('voice-select');
+  if(!sel)return;
+  const voices=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith('en'));
+  if(!voices.length){sel.innerHTML='<option>讀緊聲音清單…</option>';return;}
+  // sort: enhanced/premium first, then by lang (GB → US → AU → other), then name
+  const langOrder={'en-GB':1,'en-US':2,'en-AU':3,'en-IE':4,'en-ZA':5};
+  voices.sort((a,b)=>{
+    const aEnh=/enhanced|premium|neural/i.test(a.name)?0:1;
+    const bEnh=/enhanced|premium|neural/i.test(b.name)?0:1;
+    if(aEnh!==bEnh)return aEnh-bEnh;
+    const al=langOrder[a.lang]||9,bl=langOrder[b.lang]||9;
+    if(al!==bl)return al-bl;
+    return a.name.localeCompare(b.name);
+  });
+  const cur=selectedVoiceName||(femaleVoice&&femaleVoice.name);
+  sel.innerHTML=voices.map(v=>{
+    const enh=/enhanced|premium|neural/i.test(v.name)?' ⭐':'';
+    const fem=/female|samantha|karen|moira|tessa|serena|kate|martha|stephanie|fiona|allison|ava|susan|victoria|zoe/i.test(v.name)?' ♀':'';
+    const tag=v.lang.replace('en-','');
+    return `<option value="${v.name}"${v.name===cur?' selected':''}>${v.name}${fem}${enh} · ${tag}</option>`;
+  }).join('');
+}
+function onVoiceChange(){
+  selectedVoiceName=document.getElementById('voice-select').value;
+  save();
+}
+function testVoice(){
+  const text=document.getElementById('voice-test-text').value||'Hello.';
+  speakWord(text);
+}
+function toggleVoicePanel(){
+  const p=document.getElementById('voice-panel');
+  p.style.display=p.style.display==='none'?'block':'none';
+  if(p.style.display==='block')populateVoiceSelect();
 }
 
 function updateScoreDisplay(){
@@ -450,8 +520,8 @@ function speakWord(w){
     window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(w);
     u.lang='en-GB';u.rate=0.85;u.pitch=1.1;
-    if(!femaleVoice)femaleVoice=pickFemaleVoice();
-    if(femaleVoice)u.voice=femaleVoice;
+    const v=getCurrentVoice();
+    if(v){u.voice=v;u.lang=v.lang;}
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -630,8 +700,8 @@ function loadL(){
   document.getElementById('lq').textContent=d.q;
   utterance=new SpeechSynthesisUtterance(d.t);
   utterance.lang='en-GB';utterance.rate=0.88;utterance.pitch=1.1;
-  if(!femaleVoice)femaleVoice=pickFemaleVoice();
-  if(femaleVoice)utterance.voice=femaleVoice;
+  const cv=getCurrentVoice();
+  if(cv){utterance.voice=cv;utterance.lang=cv.lang;}
   const sh=d.opts.map((t,i)=>({t,c:i===d.ans})).sort(()=>Math.random()-.5);
   d._sh=sh;
   const el=document.getElementById('lopts');el.innerHTML='';
