@@ -21,9 +21,11 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
 .level-tag{font-family:'Fira Code',monospace;font-size:.72rem;background:var(--ink);color:var(--bg);padding:4px 12px;border-radius:4px;}
 .scorebar{display:flex;gap:10px;margin-bottom:20px;}
 .sc{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center;box-shadow:var(--shadow);}
-.sc-num{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;display:block;}
+.sc-num{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;display:inline-block;}
 .sc-num.v{color:var(--red);} .sc-num.r{color:var(--blue);} .sc-num.g{color:var(--green);} .sc-num.l{color:var(--gold);}
-.sc-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+.sc-tot{font-family:'Fira Code',monospace;font-size:.7rem;color:var(--muted);margin-left:2px;}
+.sc-tot.done{color:var(--green);font-weight:700;}
+.sc-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;display:block;margin-top:2px;}
 .tabs{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow);}
 .tab{flex:1;padding:11px 4px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s;}
 .tab:last-child{border-right:none;}
@@ -91,10 +93,10 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <div class="level-tag">B1 → B2</div>
   </header>
   <div class="scorebar">
-    <div class="sc"><span class="sc-num v" id="sv">0</span><span class="sc-lbl">詞彙</span></div>
-    <div class="sc"><span class="sc-num r" id="sr">0</span><span class="sc-lbl">閱讀</span></div>
-    <div class="sc"><span class="sc-num g" id="sg">0</span><span class="sc-lbl">文法</span></div>
-    <div class="sc"><span class="sc-num l" id="sl">0</span><span class="sc-lbl">聽力</span></div>
+    <div class="sc"><span class="sc-num v" id="sv">0</span><span class="sc-tot" id="stv">/ 0</span><span class="sc-lbl">詞彙</span></div>
+    <div class="sc"><span class="sc-num r" id="sr">0</span><span class="sc-tot" id="str">/ 0</span><span class="sc-lbl">閱讀</span></div>
+    <div class="sc"><span class="sc-num g" id="sg">0</span><span class="sc-tot" id="stg">/ 0</span><span class="sc-lbl">文法</span></div>
+    <div class="sc"><span class="sc-num l" id="sl">0</span><span class="sc-tot" id="stl">/ 0</span><span class="sc-lbl">聽力</span></div>
   </div>
   <div style="display:flex;gap:8px;margin-bottom:10px;">
     <button class="btn bp" style="flex:none;padding:8px 14px;font-size:.78rem;" onclick="downloadApp()">📥 下載離線版</button>
@@ -289,28 +291,36 @@ const LISTENING=[
 ];
 
 // ── STORAGE ──────────────────────────────
-const SK={scores:'em_scores',idx:'em_idx',wordbook:'em_wordbook'};
+const SK={idx:'em_idx',wordbook:'em_wordbook',learned:'em_learned'};
 function save(){
   try{
-    localStorage.setItem(SK.scores,JSON.stringify(scores));
     localStorage.setItem(SK.idx,JSON.stringify({vi,ri,gi,li}));
     localStorage.setItem(SK.wordbook,JSON.stringify(wordbook));
+    localStorage.setItem(SK.learned,JSON.stringify({
+      r:[...learned.r],g:[...learned.g],l:[...learned.l]
+    }));
   }catch(e){}
 }
 function load(){
   try{
-    const s=localStorage.getItem(SK.scores);
-    if(s){const p=JSON.parse(s);Object.assign(scores,p);}
     const ix=localStorage.getItem(SK.idx);
     if(ix){const p=JSON.parse(ix);vi=p.vi||0;ri=p.ri||0;gi=p.gi||0;li=p.li||0;}
     const wb=localStorage.getItem(SK.wordbook);
     if(wb){wordbook=JSON.parse(wb);}
+    const ld=localStorage.getItem(SK.learned);
+    if(ld){const p=JSON.parse(ld);
+      learned.r=new Set(p.r||[]);
+      learned.g=new Set(p.g||[]);
+      learned.l=new Set(p.l||[]);
+    }
+    // legacy: drop old inflated scores
+    try{localStorage.removeItem('em_scores');}catch(e){}
   }catch(e){}
 }
 function resetAll(){
-  try{localStorage.removeItem(SK.scores);localStorage.removeItem(SK.idx);localStorage.removeItem(SK.wordbook);}catch(e){}
-  scores.v=0;scores.r=0;scores.g=0;scores.l=0;
+  try{localStorage.removeItem(SK.idx);localStorage.removeItem(SK.wordbook);localStorage.removeItem(SK.learned);}catch(e){}
   vi=0;ri=0;gi=0;li=0;wordbook=[];
+  learned.r=new Set();learned.g=new Set();learned.l=new Set();
   updateScoreDisplay();
   vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
   loadV();loadR();loadG();loadL();renderWordbook();
@@ -326,28 +336,61 @@ function downloadApp(){
 }
 
 // ── STATE ──────────────────────────────
-const scores={v:0,r:0,g:0,l:0};
+const learned={r:new Set(),g:new Set(),l:new Set()}; // vocab uses wordbook.length
+const TOTALS={v:VOCAB.length,r:READING.length,g:GRAMMAR.length,l:LISTENING.length};
 let vi=0,ri=0,gi=0,li=0;
 let vS=[],rS=[],gS=[],lS=[];
 let vLocked=false,rLocked=false,lLocked=false;
 let utterance=null;
 let wordbook=[];
+let femaleVoice=null;
 
 function shufl(a){return[...a].sort(()=>Math.random()-.5);}
+
+// pick a female English voice (en-GB preferred, fall back to any en)
+function pickFemaleVoice(){
+  const voices=window.speechSynthesis.getVoices();
+  if(!voices.length)return null;
+  const femalePatterns=/female|woman|samantha|karen|moira|tessa|serena|kate|martha|stephanie|fiona|allison|ava|susan|victoria|zoe|google.*(female|uk)/i;
+  const malePatterns=/\b(male|man|daniel|arthur|aaron|alex|fred|oliver|tom|google.*male)\b/i;
+  // 1: en-GB explicitly female-sounding name
+  let v=voices.find(v=>v.lang.startsWith('en-GB')&&femalePatterns.test(v.name));
+  if(v)return v;
+  // 2: en-GB not explicitly male
+  v=voices.find(v=>v.lang.startsWith('en-GB')&&!malePatterns.test(v.name));
+  if(v)return v;
+  // 3: any en female
+  v=voices.find(v=>v.lang.startsWith('en')&&femalePatterns.test(v.name));
+  if(v)return v;
+  // 4: any en
+  return voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}
+function initVoices(){
+  femaleVoice=pickFemaleVoice();
+}
+if('speechSynthesis' in window){
+  initVoices();
+  window.speechSynthesis.onvoiceschanged=initVoices;
+}
+
 function updateScoreDisplay(){
-  document.getElementById('sv').textContent=scores.v;
-  document.getElementById('sr').textContent=scores.r;
-  document.getElementById('sg').textContent=scores.g;
-  document.getElementById('sl').textContent=scores.l;
+  const v=wordbook.length,r=learned.r.size,g=learned.g.size,l=learned.l.size;
+  const set=(id,n,tot)=>{
+    document.getElementById('s'+id).textContent=n;
+    const t=document.getElementById('st'+id);
+    t.textContent='/ '+tot+(n>=tot&&tot>0?' ✓':'');
+    t.classList.toggle('done',n>=tot&&tot>0);
+  };
+  set('v',v,TOTALS.v);set('r',r,TOTALS.r);set('g',g,TOTALS.g);set('l',l,TOTALS.l);
 }
 
 function init(){
   load();
-  updateScoreDisplay();
   vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
   // clamp indices after shuffle
   vi=Math.min(vi,vS.length-1);ri=Math.min(ri,rS.length-1);
   gi=Math.min(gi,gS.length-1);li=Math.min(li,lS.length-1);
+  updateScoreDisplay();
   loadV();loadR();loadG();loadL();renderWordbook();
 }
 
@@ -406,7 +449,9 @@ function speakWord(w){
   try{
     window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(w);
-    u.lang='en-GB';u.rate=0.85;
+    u.lang='en-GB';u.rate=0.85;u.pitch=1.1;
+    if(!femaleVoice)femaleVoice=pickFemaleVoice();
+    if(femaleVoice)u.voice=femaleVoice;
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -503,7 +548,6 @@ function checkVocab(){
   r.className='result show '+(ok?'ok':'bad');
   r.innerHTML=ok?`<div class="rt">✅ 答啱！已加入詞彙本 📒</div>`:`<div class="rt">❌ 答錯了</div>正確答案：<strong>${vS[vi].opts[vS[vi].ans]}</strong><br><small>💡 ${vS[vi].zh}</small>`;
   if(ok){
-    scores.v++;
     const d=vS[vi];
     addToWordbook(d.word,d.ph,d.pos,d.def,d.eg,d.zh,d.b1);
   }
@@ -541,7 +585,7 @@ function checkReading(){
   const r=document.getElementById('rres');
   r.className='result show '+(ok?'ok':'bad');
   r.innerHTML=ok?`<div class="rt">✅ 正確！</div>${rS[ri].exp}`:`<div class="rt">❌ 答錯了</div>${rS[ri].exp}`;
-  if(ok){scores.r++;}
+  if(ok){learned.r.add(rS[ri].passage);}
   save();updateScoreDisplay();
   document.getElementById('rcheck').disabled=true;
 }
@@ -567,7 +611,7 @@ function checkGrammar(){
   const r=document.getElementById('gres');
   r.className='result show '+(ok?'ok':'bad');
   r.innerHTML=ok?`<div class="rt">✅ Perfect!</div>${d.exp}`:`<div class="rt">❌ 正確答案：<strong>${d.ans}</strong></div>${d.exp}<br><small>💡 ${d.zh}</small>`;
-  if(ok){scores.g++;}
+  if(ok){learned.g.add(d.s);}
   save();updateScoreDisplay();
   document.getElementById('ginfo').className='winfo show';
   document.getElementById('ginfo').innerHTML=`<div class="wi-w">${d.ans}</div><div class="wi-def">${d.exp}</div><div class="wi-eg">${d.s.replace('___','<strong>'+d.ans+'</strong>')}</div>`;
@@ -585,7 +629,9 @@ function loadL(){
   document.getElementById('lplaybtn').innerHTML='▶️ &nbsp;播放對話';
   document.getElementById('lq').textContent=d.q;
   utterance=new SpeechSynthesisUtterance(d.t);
-  utterance.lang='en-GB';utterance.rate=0.88;
+  utterance.lang='en-GB';utterance.rate=0.88;utterance.pitch=1.1;
+  if(!femaleVoice)femaleVoice=pickFemaleVoice();
+  if(femaleVoice)utterance.voice=femaleVoice;
   const sh=d.opts.map((t,i)=>({t,c:i===d.ans})).sort(()=>Math.random()-.5);
   d._sh=sh;
   const el=document.getElementById('lopts');el.innerHTML='';
@@ -613,7 +659,7 @@ function checkListening(){
   const r=document.getElementById('lres');
   r.className='result show '+(ok?'ok':'bad');
   r.innerHTML=ok?`<div class="rt">✅ 聽到了！</div>${lS[li].exp}`:`<div class="rt">❌ 答錯了</div>${lS[li].exp}`;
-  if(ok){scores.l++;}
+  if(ok){learned.l.add(lS[li].t);}
   save();updateScoreDisplay();
   document.getElementById('ltranscript').className='transcript show';
   document.getElementById('lcheck').disabled=true;
