@@ -236,6 +236,45 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
 </div>
 
 <script>
+// ─── VOICE (re-uses EnglishMind voice preference) ─────
+let femaleVoice=null,selectedVoiceName=null;
+function pickFemaleVoice(){
+  const voices=window.speechSynthesis.getVoices();
+  if(!voices.length)return null;
+  const fem=/female|samantha|karen|moira|tessa|serena|kate|fiona|allison|ava|susan|victoria|zoe|martha|stephanie/i;
+  const male=/\b(male|daniel|arthur|aaron|alex|fred|oliver|tom)\b/i;
+  let v=voices.find(v=>v.lang.startsWith('en-GB')&&fem.test(v.name));if(v)return v;
+  v=voices.find(v=>v.lang.startsWith('en-GB')&&!male.test(v.name));if(v)return v;
+  v=voices.find(v=>v.lang.startsWith('en')&&fem.test(v.name));if(v)return v;
+  return voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}
+function initVoices(){
+  femaleVoice=pickFemaleVoice();
+  try{const v=localStorage.getItem('em_voice');if(v)selectedVoiceName=v;}catch(e){}
+}
+if('speechSynthesis' in window){
+  initVoices();
+  window.speechSynthesis.onvoiceschanged=initVoices;
+}
+function getCurrentVoice(){
+  if(selectedVoiceName){
+    const v=window.speechSynthesis.getVoices().find(x=>x.name===selectedVoiceName);
+    if(v)return v;
+  }
+  return femaleVoice||pickFemaleVoice();
+}
+function speak(text){
+  try{
+    if(!text)return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-GB';u.rate=0.85;u.pitch=1.1;
+    const v=getCurrentVoice();
+    if(v){u.voice=v;u.lang=v.lang;}
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
 // ─── STORAGE ──────────────────────────────
 const SK={cards:'fc_cards',stats:'fc_stats'};
 let cards=[];
@@ -448,6 +487,7 @@ function renderCardList(){
   const sorted=[...cards].sort((a,b)=>(b.created||0)-(a.created||0));
   el.innerHTML=sorted.map(c=>`
     <div class="list-card">
+      <button onclick="speak('${escJs(c.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.82rem;flex-shrink:0;">🔊</button>
       <div class="list-card-info">
         <div class="list-card-en">${esc(c.en)}</div>
         <div class="list-card-zh">${esc(c.zh)}</div>
@@ -477,7 +517,9 @@ function renderFC(){
   document.getElementById('fc-badge').textContent='🎴 Flashcard · 今日到期 '+due+' 張';
   area.innerHTML=`
     <div class="flip-card" onclick="flipFC()" id="fc-flipcard">
-      <div class="flip-front-en">${esc(fcCurrent.en)}</div>
+      <div class="flip-front-en">${esc(fcCurrent.en)}
+        <button onclick="event.stopPropagation();speak('${escJs(fcCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:.9rem;margin-left:10px;vertical-align:middle;">🔊</button>
+      </div>
       <div class="flip-hint">👆 撳卡片揭開答案</div>
     </div>
     <div class="rate-row" id="fc-rate-row" style="display:none;">
@@ -492,11 +534,16 @@ function flipFC(){
   fcFlipped=true;
   const fc=document.getElementById('fc-flipcard');
   fc.innerHTML=`
-    <div class="flip-back-zh">${esc(fcCurrent.zh)}</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--ink);">${esc(fcCurrent.en)}
+      <button onclick="event.stopPropagation();speak('${escJs(fcCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.85rem;margin-left:8px;vertical-align:middle;">🔊</button>
+    </div>
+    <div class="flip-back-zh" style="margin-top:6px;">${esc(fcCurrent.zh)}</div>
     ${fcCurrent.example?`<div class="flip-eg">${esc(fcCurrent.example)}</div>`:''}
     <div class="flip-hint">👇 揀返你嘅熟練程度</div>`;
   document.getElementById('fc-rate-row').style.display='grid';
+  setTimeout(()=>speak(fcCurrent.en),250);
 }
+function escJs(s){return String(s||'').replace(/['\\]/g,'\\$&').replace(/\n/g,'\\n');}
 function rateFC(rating){
   if(!fcCurrent||!fcFlipped)return;
   scheduleCard(fcCurrent,rating);
@@ -554,8 +601,9 @@ function answerMC(picked,correct){
   const r=document.getElementById('test-result');
   r.className='test-result show '+(ok?'ok':'bad');
   r.innerHTML=ok
-    ?`<b>✅ 答啱！</b><br>${esc(testCurrent.en)} → ${esc(testCurrent.zh)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`
-    :`<b>❌ 答錯</b><br>${esc(testCurrent.en)} → ${esc(testCurrent.zh)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`;
+    ?`<b>✅ 答啱！</b> <button onclick="speak('${escJs(testCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button><br>${esc(testCurrent.en)} → ${esc(testCurrent.zh)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`
+    :`<b>❌ 答錯</b> <button onclick="speak('${escJs(testCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button><br>${esc(testCurrent.en)} → ${esc(testCurrent.zh)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`;
+  setTimeout(()=>speak(testCurrent.en),300);
   scheduleCard(testCurrent,ok?2:0);
 }
 function renderFill(){
@@ -580,9 +628,12 @@ function answerFill(){
   inp.disabled=true;
   const r=document.getElementById('test-result');
   r.className='test-result show '+(ok?'ok':'bad');
-  r.innerHTML=ok
-    ?`<b>✅ 完美！</b> ${esc(testCurrent.en)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`
-    :`<b>❌ 正確答案：</b> <span style="font-family:'Playfair Display',serif;font-size:1.1rem;">${esc(testCurrent.en)}</span>${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`;
+  r.innerHTML=(ok
+    ?`<b>✅ 完美！</b> ${esc(testCurrent.en)}`
+    :`<b>❌ 正確答案：</b> <span style="font-family:'Playfair Display',serif;font-size:1.1rem;">${esc(testCurrent.en)}</span>`)
+    +` <button onclick="speak('${escJs(testCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button>`
+    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'');
+  setTimeout(()=>speak(testCurrent.en),300);
   scheduleCard(testCurrent,ok?2:0);
 }
 
@@ -648,6 +699,8 @@ function tapMatch(el){
     matchSelected.classList.remove('selected');
     matchSelected.classList.add('matched');
     el.classList.add('matched');
+    const card=matchPairs.find(c=>c.id==matchSelected.dataset.id);
+    if(card)speak(card.en);
     matchSelected=null;
     const matched=document.querySelectorAll('#match-grid .matched').length/2;
     const total=matchPairs.length;
