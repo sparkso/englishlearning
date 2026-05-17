@@ -843,8 +843,45 @@ function renderStats(){
 // ─── HELPERS ────────────────────────────
 function shufl(a){return[...a].sort(()=>Math.random()-.5);}
 
+// ─── AUTO SYNC FROM EnglishMind 詞彙本 ──
+function autoImportFromEM(){
+  try{
+    const raw=localStorage.getItem('em_wordbook');
+    if(!raw)return 0;
+    const wb=JSON.parse(raw);
+    if(!Array.isArray(wb)||!wb.length)return 0;
+    let added=0;
+    wb.forEach(w=>{
+      if(!w.word)return;
+      if(cards.find(c=>(c.en||'').toLowerCase()===w.word.toLowerCase()))return;
+      cards.push({
+        id:Date.now()+Math.random(),
+        en:w.word,zh:w.zh||w.def||'',example:w.eg||'',
+        ease:2.5,interval:0,nextDue:0,reviews:0,correct:0,
+        created:Date.now()
+      });
+      added++;
+    });
+    if(added>0)save();
+    return added;
+  }catch(e){return 0;}
+}
+function showAutoSyncToast(n){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:24px;font-size:.85rem;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9999;animation:fadeIn .3s;';
+  t.innerHTML='✨ 自動匯入咗 <b style="color:var(--gold);">'+n+'</b> 個 EnglishMind 生字';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';},2800);
+  setTimeout(()=>t.remove(),3400);
+}
+
 // ─── INIT ───────────────────────────────
-load();updateStats();
+load();
+const autoAdded=autoImportFromEM();
+updateStats();
+if(autoAdded>0){
+  setTimeout(()=>showAutoSyncToast(autoAdded),400);
+}
 </script>
 </body>
 </html>

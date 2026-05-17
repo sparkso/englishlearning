@@ -478,6 +478,22 @@ function addToWordbook(word,ph,pos,def,eg,zh,b1){
   if(wordbook.find(w=>w.word===word))return;
   wordbook.push({word,ph,pos,def,eg,zh,b1,date:new Date().toLocaleDateString('zh-HK')});
   save();
+  syncToFlashCard(word,zh,eg);
+}
+function syncToFlashCard(en,zh,example){
+  try{
+    const raw=localStorage.getItem('fc_cards');
+    let fcCards=raw?JSON.parse(raw):[];
+    if(!Array.isArray(fcCards))fcCards=[];
+    if(fcCards.find(c=>(c.en||'').toLowerCase()===en.toLowerCase()))return;
+    fcCards.push({
+      id:Date.now()+Math.random(),
+      en:en,zh:zh||'',example:example||'',
+      ease:2.5,interval:0,nextDue:0,reviews:0,correct:0,
+      created:Date.now()
+    });
+    localStorage.setItem('fc_cards',JSON.stringify(fcCards));
+  }catch(e){}
 }
 function renderWordbook(){
   const el=document.getElementById('wordbook-list');
