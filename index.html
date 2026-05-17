@@ -250,7 +250,17 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <div id="wb-listview" class="card" style="padding-bottom:20px;">
       <span class="badge">📒 我的詞彙本 <span id="wb-count" style="color:var(--red);font-weight:700;"></span></span>
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">撳每個字可以聽發音、睇詳細解釋。撳「複習模式」可以玩 flashcard 測試自己。</p>
-      <button class="btn bp" style="width:100%;margin-bottom:14px;" id="wb-review-btn" onclick="startReview()">🎴 複習模式（Flashcard）</button>
+      <button class="btn bp" style="width:100%;margin-bottom:10px;" id="wb-review-btn" onclick="startReview()">🎴 複習模式（Flashcard）</button>
+      <details style="margin-bottom:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;">
+        <summary style="font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);">📋 大量匯入生字（從另一個 chat 貼落嚟）</summary>
+        <p style="font-size:.78rem;color:var(--muted);margin:10px 0;line-height:1.6;">支援兩種格式（自動 detect）：<br>
+          <b>1.</b> JSON 數組：<code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.72rem;">[{"en":"...","zh":"...","example":"..."}]</code><br>
+          <b>2.</b> 每行一個字，用 <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.72rem;">|</code> 分隔：<code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.72rem;">en | zh | example</code>
+        </p>
+        <textarea id="bulk-input" placeholder='貼落嚟，例如：&#10;[{"en":"deliberate","zh":"刻意","example":"She made a deliberate choice."}]&#10;&#10;或者：&#10;deliberate | 刻意 | She made a deliberate choice.' style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Fira Code',monospace;font-size:.78rem;background:var(--card);color:var(--ink);outline:none;min-height:120px;resize:vertical;margin-bottom:8px;"></textarea>
+        <button class="btn bp" style="width:100%;background:#6b3fa0;" onclick="bulkImport()">📥 大量匯入</button>
+        <div id="bulk-msg" style="font-size:.78rem;margin-top:8px;text-align:center;min-height:18px;"></div>
+      </details>
       <div id="wordbook-list"></div>
       <p id="wordbook-empty" style="text-align:center;color:var(--muted);font-size:.9rem;padding:30px 0;">未有詞彙。去「詞彙」答啱題目就會出現喺呢度！</p>
     </div>
@@ -951,6 +961,53 @@ function nextListening(){li=(li+1)%lS.length;save();loadL();}
 // ── HELPERS ──────────────────────────────
 function selOpt(el,gid){document.querySelectorAll('#'+gid+' .opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
 function clr(id){const r=document.getElementById(id);r.className='result';r.innerHTML='';}
+
+// ─── BULK IMPORT ──────────────────────────────────
+function bulkImport(){
+  const raw=document.getElementById('bulk-input').value.trim();
+  const msg=document.getElementById('bulk-msg');
+  if(!raw){msg.style.color='var(--red)';msg.textContent='⚠️ 請先貼啲嘢落嚟';return;}
+  let items=[];
+  const looksJson=raw.startsWith('[')||raw.startsWith('{');
+  if(looksJson){
+    try{
+      let parsed=JSON.parse(raw);
+      if(!Array.isArray(parsed))parsed=[parsed];
+      items=parsed.map(x=>({
+        en:String(x.en||x.word||x.english||'').trim(),
+        zh:String(x.zh||x.chinese||x.meaning||x.def||'').trim(),
+        example:String(x.example||x.eg||x.sentence||'').trim()
+      }));
+    }catch(e){
+      msg.style.color='var(--red)';
+      msg.textContent='❌ JSON 格式錯誤：'+e.message;
+      return;
+    }
+  }else{
+    items=raw.split(/\r?\n/).map(line=>{
+      const parts=line.split(/[|\t]/).map(s=>s.trim());
+      if(parts.length<2||!parts[0])return null;
+      return{en:parts[0],zh:parts[1]||'',example:parts[2]||''};
+    }).filter(Boolean);
+  }
+  if(!items.length){msg.style.color='var(--red)';msg.textContent='⚠️ 揾唔到任何生字';return;}
+  let added=0,skipped=0,invalid=0;
+  const today=new Date().toLocaleDateString('zh-HK');
+  items.forEach(it=>{
+    if(!it.en||!it.zh){invalid++;return;}
+    if(wordbook.find(w=>(w.word||'').toLowerCase()===it.en.toLowerCase())){skipped++;return;}
+    wordbook.push({
+      word:it.en,zh:it.zh,eg:it.example||'',
+      ph:'',pos:'',def:'',b1:'',
+      date:today
+    });
+    added++;
+  });
+  save();renderWordbook();
+  msg.style.color='var(--green)';
+  msg.innerHTML='✅ 完成：新加 <b>'+added+'</b> · 已存在跳過 <b>'+skipped+'</b>'+(invalid?' · 不完整 <b>'+invalid+'</b>':'');
+  if(added>0)document.getElementById('bulk-input').value='';
+}
 
 // ─── FlashCard / Test / Match / Gravity ───────────────
 let srs={}; // {word: {ease, interval, nextDue, reviews, correct}}
