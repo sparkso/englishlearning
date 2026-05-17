@@ -635,6 +635,7 @@ function updateScoreDisplay(){
 
 function init(){
   load();
+  applySynonymsMigration();
   vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
   vi=Math.min(vi,vS.length-1);ri=Math.min(ri,rS.length-1);
   gi=Math.min(gi,gS.length-1);li=Math.min(li,lS.length-1);
@@ -709,7 +710,8 @@ function renderWordbook(){
         <div class="wi-def">${w.def}</div>
         <div class="wi-eg">${w.eg}</div>
         ${w.b1?`<div style="margin-top:8px;font-size:.78rem;color:var(--green);font-family:'Fira Code',monospace;">B1 同義詞: ${w.b1}</div>`:''}
-        <div style="font-size:.68rem;color:var(--muted);margin-top:6px;font-family:'Fira Code',monospace;">儲存於 ${w.date}</div>
+        ${w.synonyms?`<div style="margin-top:6px;font-size:.78rem;color:var(--blue);font-family:'Fira Code',monospace;line-height:1.5;">🔄 同義詞: ${w.synonyms}</div>`:''}
+        <div style="font-size:.68rem;color:var(--muted);margin-top:6px;font-family:'Fira Code',monospace;">儲存於 ${w.date||''}</div>
       </div>
     </div>`).join('');
 }
@@ -962,6 +964,67 @@ function nextListening(){li=(li+1)%lS.length;save();loadL();}
 function selOpt(el,gid){document.querySelectorAll('#'+gid+' .opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
 function clr(id){const r=document.getElementById(id);r.className='result';r.innerHTML='';}
 
+// ─── BUILT-IN SYNONYMS (auto-applied to matching wordbook entries) ────
+const SYNONYMS={
+  'orthodontic':'dental, corrective',
+  'orthodontist':'dental specialist, dental surgeon',
+  'gingivitis':'gum disease, gum inflammation',
+  'gingival hyperplasia':'gum overgrowth, gum enlargement',
+  'swelling':'inflammation, puffiness, lump',
+  'inflammation':'swelling, irritation, infection',
+  'inflamed':'swollen, irritated, infected',
+  'interdental brush':'proxy brush, interproximal brush',
+  'periodontist':'gum specialist, dental specialist',
+  'consultation':'appointment, meeting, session',
+  'assessment':'evaluation, examination, review',
+  'subside':'decrease, reduce, fade, improve',
+  'persistent':'ongoing, constant, lasting, chronic',
+  'fluoride':'mineral, enamel protector',
+  'gingivectomy':'gum surgery, gum removal procedure',
+  'ambiguous':'unclear, vague, uncertain',
+  'chaotic':'disorganised, messy, confused',
+  'disorganised':'chaotic, messy, unclear',
+  'vague':'unclear, ambiguous, evasive',
+  'mysterious':'secretive, puzzling, unknown',
+  'evasive':'vague, secretive, elusive',
+  'tired':'exhausted, weary, drained',
+  'tiring':'exhausting, draining, demanding',
+  'bored':'uninterested, fed up, restless',
+  'boring':'dull, tedious, uninteresting',
+  'confused':'puzzled, lost, uncertain',
+  'confusing':'unclear, puzzling, misleading',
+  'scared':'afraid, frightened, terrified',
+  'scary':'frightening, terrifying, creepy',
+  'stressed':'anxious, overwhelmed, tense',
+  'stressful':'demanding, pressuring, overwhelming',
+  'surprised':'shocked, amazed, astonished',
+  'surprising':'unexpected, shocking, amazing',
+  'tiredness':'exhaustion, fatigue, weariness',
+  'happiness':'joy, pleasure, contentment',
+  'pressure':'stress, burden, tension',
+  'despite':'in spite of, regardless of, notwithstanding',
+  'undergoing':'receiving, experiencing, having',
+  'regarding':'about, concerning, relating to',
+  'persist':'continue, remain, last, endure',
+  'beforehand':'in advance, ahead of time, earlier',
+  'deliberate':'intentional, planned, calculated',
+  'concise':'brief, short, to the point',
+  'persuade':'convince, influence, encourage',
+  'ongoing':'persistent, continuous, current',
+  'constant':'persistent, continuous, ongoing',
+  'chronic':'persistent, long-term, ongoing'
+};
+function applySynonymsMigration(){
+  let changed=false;
+  wordbook.forEach(w=>{
+    if(w.synonyms)return;
+    const key=(w.word||'').toLowerCase().trim();
+    if(SYNONYMS[key]){w.synonyms=SYNONYMS[key];changed=true;}
+  });
+  if(changed)save();
+  return changed;
+}
+
 // ─── BULK IMPORT ──────────────────────────────────
 function bulkImport(){
   const raw=document.getElementById('bulk-input').value.trim();
@@ -976,7 +1039,8 @@ function bulkImport(){
       items=parsed.map(x=>({
         en:String(x.en||x.word||x.english||'').trim(),
         zh:String(x.zh||x.chinese||x.meaning||x.def||'').trim(),
-        example:String(x.example||x.eg||x.sentence||'').trim()
+        example:String(x.example||x.eg||x.sentence||'').trim(),
+        synonyms:String(x.synonyms||x.syn||'').trim()
       }));
     }catch(e){
       msg.style.color='var(--red)';
@@ -987,7 +1051,7 @@ function bulkImport(){
     items=raw.split(/\r?\n/).map(line=>{
       const parts=line.split(/[|\t]/).map(s=>s.trim());
       if(parts.length<2||!parts[0])return null;
-      return{en:parts[0],zh:parts[1]||'',example:parts[2]||''};
+      return{en:parts[0],zh:parts[1]||'',example:parts[2]||'',synonyms:parts[3]||''};
     }).filter(Boolean);
   }
   if(!items.length){msg.style.color='var(--red)';msg.textContent='⚠️ 揾唔到任何生字';return;}
@@ -998,6 +1062,7 @@ function bulkImport(){
     if(wordbook.find(w=>(w.word||'').toLowerCase()===it.en.toLowerCase())){skipped++;return;}
     wordbook.push({
       word:it.en,zh:it.zh,eg:it.example||'',
+      synonyms:it.synonyms||SYNONYMS[it.en.toLowerCase()]||'',
       ph:'',pos:'',def:'',b1:'',
       date:today
     });
@@ -1022,7 +1087,7 @@ function fcGetCards(){
   return wordbook.map(w=>{
     const m=srs[w.word]||{ease:2.5,interval:0,nextDue:0,reviews:0,correct:0};
     return{id:w.word,en:w.word,zh:w.zh||w.def||'',example:w.eg||'',
-      ph:w.ph,pos:w.pos,def:w.def,
+      ph:w.ph,pos:w.pos,def:w.def,synonyms:w.synonyms||'',
       ease:m.ease,interval:m.interval,nextDue:m.nextDue,
       reviews:m.reviews,correct:m.correct};
   });
@@ -1098,6 +1163,7 @@ function flipFC(){
     </div>
     <div class="fc-back-zh" style="margin-top:6px;">${esc(fcCurrent.zh)}</div>
     ${fcCurrent.example?`<div class="fc-eg">${esc(fcCurrent.example)}</div>`:''}
+    ${fcCurrent.synonyms?`<div style="margin-top:8px;font-size:.8rem;color:var(--blue);font-family:'Fira Code',monospace;line-height:1.5;">🔄 ${esc(fcCurrent.synonyms)}</div>`:''}
     <div class="fc-hint">👇 揀返你嘅熟練程度</div>`;
   document.getElementById('fc-rate').style.display='grid';
   setTimeout(()=>speakWord(fcCurrent.en),250);
@@ -1157,7 +1223,8 @@ function answerMC(picked,correct){
   r.innerHTML=(ok?'<b>✅ 答啱！</b>':'<b>❌ 答錯</b>')
     +' <button onclick="speakWord(\''+escJs(testCurrent.en)+'\')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button>'
     +'<br>'+esc(testCurrent.en)+' → '+esc(testCurrent.zh)
-    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'');
+    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'')
+    +(testCurrent.synonyms?'<br><span style="color:var(--blue);font-family:\'Fira Code\',monospace;font-size:.8rem;">🔄 '+esc(testCurrent.synonyms)+'</span>':'');
   setTimeout(()=>speakWord(testCurrent.en),300);
   fcSchedule(testCurrent.en,ok?2:0);
 }
@@ -1186,7 +1253,8 @@ function answerFill(){
   r.innerHTML=(ok?'<b>✅ 完美！</b> '+esc(testCurrent.en)
     :'<b>❌ 正確答案：</b> <span style="font-family:\'Playfair Display\',serif;font-size:1.1rem;">'+esc(testCurrent.en)+'</span>')
     +' <button onclick="speakWord(\''+escJs(testCurrent.en)+'\')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button>'
-    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'');
+    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'')
+    +(testCurrent.synonyms?'<br><span style="color:var(--blue);font-family:\'Fira Code\',monospace;font-size:.8rem;">🔄 '+esc(testCurrent.synonyms)+'</span>':'');
   setTimeout(()=>speakWord(testCurrent.en),300);
   fcSchedule(testCurrent.en,ok?2:0);
 }
