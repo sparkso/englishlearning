@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<title>FlashCard 智能 — 英文生字卡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Fira+Code:wght@400;500&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f0e8; --surface:#faf7f2; --card:#fff;
+  --ink:#1a1508; --ink2:#3d3520; --muted:#8a7f6a; --border:#e0d8c8;
+  --red:#c84b2f; --blue:#1e4d8c; --green:#2a7a4b; --gold:#d4900a; --purple:#6b3fa0;
+  --radius:14px; --shadow:0 2px 20px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overscroll-behavior-y:contain;}
+.app{max-width:720px;margin:0 auto;padding:0 16px 80px;}
+header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--ink);margin-bottom:20px;}
+.brand{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:900;}
+.brand span{color:var(--purple);}
+.back-link a{font-family:'Fira Code',monospace;font-size:.72rem;color:var(--muted);text-decoration:none;background:var(--surface);border:1.5px solid var(--border);padding:5px 10px;border-radius:6px;}
+.back-link a:hover{color:var(--ink);}
+.statsbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+.stat{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;box-shadow:var(--shadow);}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;display:block;color:var(--ink);}
+.stat-num.due{color:var(--red);}
+.stat-num.acc{color:var(--green);}
+.stat-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.tabs{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow-x:auto;margin-bottom:18px;box-shadow:var(--shadow);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1 0 auto;min-width:65px;padding:10px 6px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;}
+.tab:last-child{border-right:none;}
+.tab .ti{font-size:1.1rem;}
+.tab.active{background:var(--ink);color:var(--bg);}
+.panel{display:none;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+.card-box{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;}
+.card-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius) var(--radius) 0 0;background:var(--purple);}
+.card-box.flashcard::before{background:var(--red);}
+.card-box.test::before{background:var(--blue);}
+.card-box.match::before{background:var(--green);}
+.card-box.gravity::before{background:var(--gold);}
+.badge{font-family:'Fira Code',monospace;font-size:.7rem;color:var(--muted);margin-bottom:14px;display:block;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:.75rem;font-weight:700;color:var(--ink);margin-bottom:5px;}
+.field input,.field textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.9rem;background:var(--surface);color:var(--ink);outline:none;transition:border-color .15s;}
+.field input:focus,.field textarea:focus{border-color:var(--ink);}
+.field textarea{resize:vertical;min-height:60px;font-style:italic;}
+.btn{padding:11px 18px;border:none;border-radius:9px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.bp{background:var(--ink);color:var(--bg);}
+.bp:hover{background:var(--purple);}
+.bg2{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+.bg2:hover{color:var(--ink);border-color:var(--ink);}
+.br{background:var(--red);color:#fff;}
+.bg{background:var(--green);color:#fff;}
+.bo{background:var(--gold);color:#fff;}
+.btn-full{width:100%;}
+.btn-row{display:flex;gap:8px;}
+.btn-row .btn{flex:1;}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.88rem;}
+.empty-big{font-size:2.5rem;margin-bottom:10px;}
+/* card list */
+.list-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;}
+.list-card-info{flex:1;min-width:0;}
+.list-card-en{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--ink);}
+.list-card-zh{font-size:.8rem;color:var(--ink2);margin-top:2px;}
+.list-card-eg{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:4px;}
+.list-card-meta{font-size:.65rem;font-family:'Fira Code',monospace;color:var(--muted);margin-top:5px;}
+.list-card-meta .due{color:var(--red);font-weight:700;}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.95rem;padding:4px;}
+.icon-btn:hover{color:var(--ink);}
+.icon-btn.del:hover{color:var(--red);}
+/* flashcard */
+.flip-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;min-height:220px;padding:30px 22px;margin:8px 0 16px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;text-align:center;transition:transform .15s;}
+.flip-card:active{transform:scale(.98);}
+.flip-front-en{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--ink);}
+.flip-back-zh{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--red);}
+.flip-eg{font-size:.92rem;color:var(--ink2);font-style:italic;border-left:2px solid var(--border);padding-left:12px;margin-top:8px;line-height:1.6;}
+.flip-hint{font-size:.7rem;color:var(--muted);font-family:'Fira Code',monospace;margin-top:10px;}
+.rate-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+/* test */
+.test-q{font-size:1rem;line-height:1.7;margin-bottom:16px;color:var(--ink);}
+.test-q .word{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--red);display:block;margin:8px 0;text-align:center;}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.opt{padding:12px 15px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;text-align:left;color:var(--ink2);transition:all .12s;}
+.opt:hover:not(.disabled){border-color:var(--ink);background:var(--bg);}
+.opt.correct{border-color:var(--green) !important;background:rgba(42,122,75,.1) !important;color:var(--green) !important;}
+.opt.wrong{border-color:var(--red) !important;background:rgba(200,75,47,.08) !important;color:var(--red) !important;}
+.opt.disabled{cursor:default;pointer-events:none;}
+.fill-input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:1.05rem;background:var(--surface);color:var(--ink);outline:none;text-align:center;margin-bottom:14px;}
+.fill-input:focus{border-color:var(--ink);}
+.fill-input.correct{border-color:var(--green);background:rgba(42,122,75,.08);color:var(--green);}
+.fill-input.wrong{border-color:var(--red);background:rgba(200,75,47,.06);color:var(--red);}
+.test-result{display:none;border-radius:9px;padding:12px 14px;margin-bottom:14px;font-size:.88rem;line-height:1.6;}
+.test-result.show{display:block;animation:fadeIn .2s;}
+.test-result.ok{background:rgba(42,122,75,.08);border:1.5px solid rgba(42,122,75,.25);color:#1a5c35;}
+.test-result.bad{background:rgba(200,75,47,.07);border:1.5px solid rgba(200,75,47,.2);color:#a0290f;}
+/* match game */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.match-tile{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--ink);min-height:60px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.match-tile.en{font-family:'Playfair Display',serif;font-size:1.05rem;}
+.match-tile.selected{border-color:var(--blue);background:rgba(30,77,140,.08);color:var(--blue);transform:scale(.97);}
+.match-tile.matched{border-color:var(--green);background:rgba(42,122,75,.1);color:var(--green);cursor:default;pointer-events:none;opacity:.6;}
+.match-tile.wrong{border-color:var(--red);background:rgba(200,75,47,.08);color:var(--red);animation:shake .3s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.match-status{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-family:'Fira Code',monospace;font-size:.78rem;margin-bottom:12px;}
+.match-status .timer{color:var(--red);font-weight:700;}
+/* gravity */
+.gravity-area{position:relative;height:380px;background:linear-gradient(to bottom,#1a1508,#2d2415);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.falling{position:absolute;background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:8px 12px;color:var(--ink);font-size:.95rem;font-weight:700;box-shadow:0 4px 16px rgba(212,144,10,.4);white-space:nowrap;left:50%;transform:translateX(-50%);}
+.gravity-hud{position:absolute;top:8px;left:0;right:0;padding:0 12px;display:flex;justify-content:space-between;color:#fff;font-family:'Fira Code',monospace;font-size:.78rem;z-index:5;text-shadow:0 1px 2px rgba(0,0,0,.6);}
+.gravity-input{width:100%;padding:14px 16px;border:2px solid var(--gold);border-radius:10px;font-family:'Nunito',sans-serif;font-size:1rem;background:var(--surface);color:var(--ink);outline:none;text-align:center;}
+.gravity-input:focus{background:var(--card);}
+.gravity-over{text-align:center;color:#fff;padding:60px 20px;}
+.gravity-over h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:10px;color:var(--gold);}
+/* stats */
+.stat-row{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;}
+.stat-row-lbl{font-size:.85rem;color:var(--ink2);}
+.stat-row-val{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--ink);}
+.note{font-size:.75rem;color:var(--muted);line-height:1.6;background:var(--surface);border-left:3px solid var(--purple);padding:10px 14px;border-radius:6px;margin-bottom:12px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(0);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .3s;}
+.score-popup{position:absolute;color:var(--green);font-weight:900;font-size:1.4rem;pointer-events:none;animation:scoreUp .8s forwards;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+@keyframes scoreUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">Flash<span>Card</span></div>
+    <div class="back-link"><a href="index.html">← EnglishMind</a></div>
+  </header>
+
+  <div class="statsbar">
+    <div class="stat"><span class="stat-num" id="stat-total">0</span><span class="stat-lbl">總卡數</span></div>
+    <div class="stat"><span class="stat-num due" id="stat-due">0</span><span class="stat-lbl">今日到期</span></div>
+    <div class="stat"><span class="stat-num" id="stat-reviews">0</span><span class="stat-lbl">已複習</span></div>
+    <div class="stat"><span class="stat-num acc" id="stat-acc">—</span><span class="stat-lbl">準確率</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('add')"><span class="ti">➕</span>加入</button>
+    <button class="tab" onclick="switchTab('cards')"><span class="ti">📇</span>卡片</button>
+    <button class="tab" onclick="switchTab('flashcard')"><span class="ti">🎴</span>FlashCard</button>
+    <button class="tab" onclick="switchTab('test')"><span class="ti">✏️</span>Test</button>
+    <button class="tab" onclick="switchTab('match')"><span class="ti">🎯</span>Match</button>
+    <button class="tab" onclick="switchTab('gravity')"><span class="ti">💧</span>Gravity</button>
+    <button class="tab" onclick="switchTab('stats')"><span class="ti">📊</span>統計</button>
+  </div>
+
+  <!-- ADD -->
+  <div id="panel-add" class="panel active">
+    <div class="card-box">
+      <span class="badge">➕ 加入新生字</span>
+      <div class="field"><label>英文字 <span style="color:var(--red)">*</span></label><input id="add-en" placeholder="例：deliberate" autocomplete="off"></div>
+      <div class="field"><label>中文意思 <span style="color:var(--red)">*</span></label><input id="add-zh" placeholder="例：刻意、故意"></div>
+      <div class="field"><label>例句（選填）</label><textarea id="add-eg" placeholder="例：She made a deliberate choice."></textarea></div>
+      <button class="btn bp btn-full" onclick="addCard()">✅ 加入卡片</button>
+      <div id="add-msg" style="font-size:.8rem;margin-top:10px;text-align:center;color:var(--green);min-height:20px;"></div>
+    </div>
+    <div class="card-box">
+      <span class="badge">🔗 從 EnglishMind 詞彙本匯入</span>
+      <p style="font-size:.82rem;color:var(--ink2);margin-bottom:12px;line-height:1.6;">如果你喺 EnglishMind 答對過詞彙題，啲生字會喺呢度匯入做 flashcard。已匯入過嘅唔會重複加。</p>
+      <button class="btn bg btn-full" onclick="importFromEM()">📥 一鍵匯入詞彙本生字</button>
+      <div id="import-msg" style="font-size:.8rem;margin-top:10px;text-align:center;min-height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- CARDS list -->
+  <div id="panel-cards" class="panel">
+    <div class="card-box">
+      <span class="badge">📇 全部卡片 <span id="cards-count" style="color:var(--purple);font-weight:700;"></span></span>
+      <div id="cards-list"></div>
+      <div class="empty" id="cards-empty">
+        <div class="empty-big">📭</div>未有卡片<br><small>去「加入」tab 加入第一張卡</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLASHCARD -->
+  <div id="panel-flashcard" class="panel">
+    <div class="card-box flashcard" id="fc-main">
+      <span class="badge" id="fc-badge">🎴 Flashcard 模式</span>
+      <div class="note">睇正面 → 諗一諗 → 撳卡片揭開答案 → 評分（唔識／一般／識）。識嘅字會減少出現，唔識嘅會早啲再見到（間隔重複）。</div>
+      <div id="fc-card-area"></div>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div id="panel-test" class="panel">
+    <div class="card-box test" id="test-main">
+      <span class="badge" id="test-badge">✏️ 測試模式</span>
+      <div class="note">隨機抽卡：可能係選擇題（揀正確中文／英文意思）或者填充題（打英文字）。</div>
+      <div id="test-area"></div>
+    </div>
+  </div>
+
+  <!-- MATCH -->
+  <div id="panel-match" class="panel">
+    <div class="card-box match" id="match-main">
+      <span class="badge">🎯 配對遊戲</span>
+      <div class="note">撳英文字，再撳對應嘅中文意思。配對啱會變綠色，全部配對完啱即計時間。</div>
+      <div id="match-area"></div>
+    </div>
+  </div>
+
+  <!-- GRAVITY -->
+  <div id="panel-gravity" class="panel">
+    <div class="card-box gravity" id="gravity-main">
+      <span class="badge">💧 打字遊戲（Gravity）</span>
+      <div class="note">中文意思從上面跌落嚟，打返個英文字救佢！跌到底就會失血。3條命用晒就 Game Over。</div>
+      <div id="gravity-area"></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div id="panel-stats" class="panel">
+    <div class="card-box">
+      <span class="badge">📊 學習統計</span>
+      <div id="stats-area"></div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+      <button class="btn bg2 btn-full" style="color:var(--red);border-color:var(--red);" onclick="if(confirm('確定刪除全部卡片？不能還原！'))resetAll()">🗑 重置所有卡片</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STORAGE ──────────────────────────────
+const SK={cards:'fc_cards',stats:'fc_stats'};
+let cards=[];
+let stats={totalReviews:0,correctReviews:0};
+
+function save(){
+  try{
+    localStorage.setItem(SK.cards,JSON.stringify(cards));
+    localStorage.setItem(SK.stats,JSON.stringify(stats));
+  }catch(e){console.error(e);}
+}
+function load(){
+  try{
+    const c=localStorage.getItem(SK.cards);if(c)cards=JSON.parse(c)||[];
+    const s=localStorage.getItem(SK.stats);if(s)stats=Object.assign(stats,JSON.parse(s));
+  }catch(e){cards=[];}
+}
+function resetAll(){
+  try{localStorage.removeItem(SK.cards);localStorage.removeItem(SK.stats);}catch(e){}
+  cards=[];stats={totalReviews:0,correctReviews:0};
+  updateStats();renderCardList();renderFC();renderTest();renderMatch();
+  alert('✅ 已重置！');
+}
+
+// ─── CARD OPS ─────────────────────────────
+function addCard(){
+  const en=document.getElementById('add-en').value.trim();
+  const zh=document.getElementById('add-zh').value.trim();
+  const eg=document.getElementById('add-eg').value.trim();
+  const msg=document.getElementById('add-msg');
+  if(!en||!zh){msg.style.color='var(--red)';msg.textContent='⚠️ 英文字同中文意思都要填';return;}
+  if(cards.find(c=>c.en.toLowerCase()===en.toLowerCase())){
+    msg.style.color='var(--red)';msg.textContent='⚠️「'+en+'」已經喺卡片入面';return;
+  }
+  cards.push({
+    id:Date.now()+Math.random(),en,zh,example:eg,
+    ease:2.5,interval:0,nextDue:0,reviews:0,correct:0,
+    created:Date.now()
+  });
+  save();updateStats();
+  document.getElementById('add-en').value='';
+  document.getElementById('add-zh').value='';
+  document.getElementById('add-eg').value='';
+  msg.style.color='var(--green)';msg.textContent='✅ 已加入：'+en;
+  setTimeout(()=>msg.textContent='',2500);
+  document.getElementById('add-en').focus();
+}
+
+function importFromEM(){
+  const msg=document.getElementById('import-msg');
+  let raw;
+  try{raw=localStorage.getItem('em_wordbook');}catch(e){}
+  if(!raw){msg.style.color='var(--red)';msg.textContent='⚠️ 未喺 EnglishMind 答啱過詞彙題';return;}
+  let wb;try{wb=JSON.parse(raw);}catch(e){msg.style.color='var(--red)';msg.textContent='⚠️ 詞彙本格式錯誤';return;}
+  if(!Array.isArray(wb)||!wb.length){msg.style.color='var(--red)';msg.textContent='⚠️ EnglishMind 詞彙本係空嘅';return;}
+  let added=0,skipped=0;
+  wb.forEach(w=>{
+    if(cards.find(c=>c.en.toLowerCase()===w.word.toLowerCase())){skipped++;return;}
+    cards.push({
+      id:Date.now()+Math.random(),
+      en:w.word,zh:w.zh||w.def||'',example:w.eg||'',
+      ease:2.5,interval:0,nextDue:0,reviews:0,correct:0,
+      created:Date.now()
+    });
+    added++;
+  });
+  save();updateStats();renderCardList();
+  msg.style.color='var(--green)';
+  msg.innerHTML='✅ 匯入完成：新加 <b>'+added+'</b> 個，已存在跳過 <b>'+skipped+'</b> 個';
+}
+
+function deleteCard(id){
+  const c=cards.find(x=>x.id===id);if(!c)return;
+  if(!confirm('刪除「'+c.en+'」？'))return;
+  cards=cards.filter(x=>x.id!==id);
+  save();updateStats();renderCardList();
+}
+
+// ─── SPACED REPETITION (簡化版 SM-2) ──────────────────
+const DAY=86400000;
+function scheduleCard(card,rating){
+  // rating: 0=唔識, 1=一般, 2=識
+  const now=Date.now();
+  card.reviews=(card.reviews||0)+1;
+  card.lastReviewed=now;
+  if(rating===0){
+    card.ease=Math.max(1.3,(card.ease||2.5)-0.2);
+    card.interval=0;
+    card.nextDue=now+5*60*1000; // 5 分鐘後再嚟
+  }else if(rating===1){
+    card.ease=card.ease||2.5;
+    card.interval=Math.max(1,(card.interval||0)*1.2);
+    if(card.interval<1)card.interval=1;
+    card.nextDue=now+card.interval*DAY;
+    card.correct=(card.correct||0)+1;
+  }else{
+    card.ease=(card.ease||2.5)+0.15;
+    if(!card.interval||card.interval<1)card.interval=1;
+    else card.interval=card.interval*card.ease;
+    card.nextDue=now+card.interval*DAY;
+    card.correct=(card.correct||0)+1;
+  }
+  stats.totalReviews++;
+  if(rating>0)stats.correctReviews++;
+  save();updateStats();
+}
+function isDue(card){return!card.nextDue||card.nextDue<=Date.now();}
+function dueCards(){return cards.filter(isDue);}
+function pickNextCard(){
+  const due=dueCards();
+  if(due.length){
+    // 優先選間隔最短嘅（最緊急）
+    return due.sort((a,b)=>(a.nextDue||0)-(b.nextDue||0))[0];
+  }
+  // 全部都未到期 → 隨機抽一張
+  if(!cards.length)return null;
+  return cards[Math.floor(Math.random()*cards.length)];
+}
+
+// ─── UI ──────────────────────────────────
+function switchTab(n){
+  const tabs=['add','cards','flashcard','test','match','gravity','stats'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  // stop running games when switching away
+  stopGravity();
+  if(n==='cards')renderCardList();
+  if(n==='flashcard')renderFC();
+  if(n==='test')renderTest();
+  if(n==='match')renderMatch();
+  if(n==='gravity')renderGravityIdle();
+  if(n==='stats')renderStats();
+}
+
+function updateStats(){
+  document.getElementById('stat-total').textContent=cards.length;
+  document.getElementById('stat-due').textContent=dueCards().length;
+  document.getElementById('stat-reviews').textContent=stats.totalReviews;
+  const acc=stats.totalReviews?Math.round(stats.correctReviews/stats.totalReviews*100):null;
+  document.getElementById('stat-acc').textContent=acc===null?'—':acc+'%';
+}
+
+function fmtDue(t){
+  if(!t||t<=Date.now())return'到期';
+  const diff=t-Date.now();
+  const d=Math.round(diff/DAY);
+  const h=Math.round(diff/3600000);
+  if(d>=1)return d+' 日後';
+  if(h>=1)return h+' 小時後';
+  return Math.round(diff/60000)+' 分鐘後';
+}
+
+// ─── CARD LIST ───────────────────────────
+function renderCardList(){
+  const el=document.getElementById('cards-list');
+  const empty=document.getElementById('cards-empty');
+  const cnt=document.getElementById('cards-count');
+  if(!cards.length){el.innerHTML='';empty.style.display='block';cnt.textContent='';return;}
+  empty.style.display='none';
+  cnt.textContent='· '+cards.length+' 張';
+  const sorted=[...cards].sort((a,b)=>(b.created||0)-(a.created||0));
+  el.innerHTML=sorted.map(c=>`
+    <div class="list-card">
+      <div class="list-card-info">
+        <div class="list-card-en">${esc(c.en)}</div>
+        <div class="list-card-zh">${esc(c.zh)}</div>
+        ${c.example?`<div class="list-card-eg">"${esc(c.example)}"</div>`:''}
+        <div class="list-card-meta">
+          已複習 ${c.reviews||0} 次 · 下次: <span class="${isDue(c)?'due':''}">${fmtDue(c.nextDue)}</span>
+        </div>
+      </div>
+      <button class="icon-btn del" onclick="deleteCard(${c.id})">✕</button>
+    </div>`).join('');
+}
+function esc(s){return String(s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
+
+// ─── FLASHCARD MODE ──────────────────────
+let fcCurrent=null,fcFlipped=false;
+function renderFC(){
+  const area=document.getElementById('fc-card-area');
+  if(!cards.length){
+    area.innerHTML='<div class="empty"><div class="empty-big">🎴</div>仲未有卡片<br><small>先去「加入」tab 加幾張卡</small></div>';
+    document.getElementById('fc-badge').textContent='🎴 Flashcard 模式';
+    return;
+  }
+  fcCurrent=pickNextCard();
+  if(!fcCurrent){area.innerHTML='<div class="empty">冇卡片可以複習</div>';return;}
+  fcFlipped=false;
+  const due=dueCards().length;
+  document.getElementById('fc-badge').textContent='🎴 Flashcard · 今日到期 '+due+' 張';
+  area.innerHTML=`
+    <div class="flip-card" onclick="flipFC()" id="fc-flipcard">
+      <div class="flip-front-en">${esc(fcCurrent.en)}</div>
+      <div class="flip-hint">👆 撳卡片揭開答案</div>
+    </div>
+    <div class="rate-row" id="fc-rate-row" style="display:none;">
+      <button class="btn br" onclick="rateFC(0)">😵 唔識</button>
+      <button class="btn bo" onclick="rateFC(1)">🤔 一般</button>
+      <button class="btn bg" onclick="rateFC(2)">😎 識</button>
+    </div>
+    <button class="btn bg2 btn-full" style="margin-top:8px;" onclick="renderFC()">⏭ 跳過呢張</button>`;
+}
+function flipFC(){
+  if(fcFlipped||!fcCurrent)return;
+  fcFlipped=true;
+  const fc=document.getElementById('fc-flipcard');
+  fc.innerHTML=`
+    <div class="flip-back-zh">${esc(fcCurrent.zh)}</div>
+    ${fcCurrent.example?`<div class="flip-eg">${esc(fcCurrent.example)}</div>`:''}
+    <div class="flip-hint">👇 揀返你嘅熟練程度</div>`;
+  document.getElementById('fc-rate-row').style.display='grid';
+}
+function rateFC(rating){
+  if(!fcCurrent||!fcFlipped)return;
+  scheduleCard(fcCurrent,rating);
+  renderFC();
+}
+
+// ─── TEST MODE ───────────────────────────
+let testCurrent=null,testType=null,testAnswered=false;
+function renderTest(){
+  const area=document.getElementById('test-area');
+  if(cards.length<4){
+    area.innerHTML='<div class="empty"><div class="empty-big">✏️</div>需要至少 4 張卡片先可以做測試<br><small>而家有 '+cards.length+' 張</small></div>';
+    document.getElementById('test-badge').textContent='✏️ 測試模式';
+    return;
+  }
+  testCurrent=pickNextCard();
+  testAnswered=false;
+  testType=Math.random()<0.55?'mc':'fill';
+  const due=dueCards().length;
+  document.getElementById('test-badge').textContent='✏️ 測試模式 · 待複習 '+due;
+  if(testType==='mc'){renderMC();}else{renderFill();}
+}
+function renderMC(){
+  // 隨機決定 EN→ZH 或者 ZH→EN
+  const dir=Math.random()<0.5?'en2zh':'zh2en';
+  const card=testCurrent;
+  const others=cards.filter(c=>c.id!==card.id);
+  const wrong=shufl(others).slice(0,3);
+  const all=shufl([card,...wrong]);
+  const correctIdx=all.findIndex(c=>c.id===card.id);
+  let q,opts;
+  if(dir==='en2zh'){
+    q='下面英文字嘅中文意思係？';
+    opts=all.map(c=>c.zh);
+  }else{
+    q='下面中文意思嘅英文字係？';
+    opts=all.map(c=>c.en);
+  }
+  document.getElementById('test-area').innerHTML=`
+    <div class="test-q">${q}<span class="word">${esc(dir==='en2zh'?card.en:card.zh)}</span></div>
+    <div class="opts" id="test-opts">
+      ${opts.map((o,i)=>`<button class="opt" onclick="answerMC(${i},${correctIdx})">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="test-result" id="test-result"></div>
+    <button class="btn bp btn-full" onclick="renderTest()">下一題 →</button>`;
+}
+function answerMC(picked,correct){
+  if(testAnswered)return;testAnswered=true;
+  const ok=picked===correct;
+  document.querySelectorAll('#test-opts .opt').forEach((b,i)=>{
+    b.classList.add('disabled');
+    if(i===correct)b.classList.add('correct');
+    else if(i===picked)b.classList.add('wrong');
+  });
+  const r=document.getElementById('test-result');
+  r.className='test-result show '+(ok?'ok':'bad');
+  r.innerHTML=ok
+    ?`<b>✅ 答啱！</b><br>${esc(testCurrent.en)} → ${esc(testCurrent.zh)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`
+    :`<b>❌ 答錯</b><br>${esc(testCurrent.en)} → ${esc(testCurrent.zh)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`;
+  scheduleCard(testCurrent,ok?2:0);
+}
+function renderFill(){
+  document.getElementById('test-area').innerHTML=`
+    <div class="test-q">下面中文意思嘅英文字係咩？（填充）<span class="word" style="color:var(--blue);">${esc(testCurrent.zh)}</span></div>
+    <input class="fill-input" id="fill-input" placeholder="打英文字…" autocomplete="off" autocapitalize="off" autocorrect="off" onkeydown="if(event.key==='Enter')answerFill()">
+    <div class="test-result" id="test-result"></div>
+    <div class="btn-row" style="margin-bottom:8px;">
+      <button class="btn bg2" onclick="answerFill()">確認</button>
+      <button class="btn bp" onclick="renderTest()">下一題 →</button>
+    </div>`;
+  setTimeout(()=>document.getElementById('fill-input').focus(),80);
+}
+function answerFill(){
+  if(testAnswered)return;
+  const inp=document.getElementById('fill-input');
+  const v=inp.value.trim().toLowerCase();
+  if(!v)return;
+  testAnswered=true;
+  const ok=v===testCurrent.en.toLowerCase();
+  inp.className='fill-input '+(ok?'correct':'wrong');
+  inp.disabled=true;
+  const r=document.getElementById('test-result');
+  r.className='test-result show '+(ok?'ok':'bad');
+  r.innerHTML=ok
+    ?`<b>✅ 完美！</b> ${esc(testCurrent.en)}${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`
+    :`<b>❌ 正確答案：</b> <span style="font-family:'Playfair Display',serif;font-size:1.1rem;">${esc(testCurrent.en)}</span>${testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':''}`;
+  scheduleCard(testCurrent,ok?2:0);
+}
+
+// ─── MATCH GAME ──────────────────────────
+let matchPairs=[],matchSelected=null,matchTimer=null,matchSeconds=0,matchBestKey='fc_match_best';
+function renderMatch(){
+  const area=document.getElementById('match-area');
+  if(cards.length<4){
+    area.innerHTML='<div class="empty"><div class="empty-big">🎯</div>需要至少 4 張卡片先可以玩配對遊戲<br><small>而家有 '+cards.length+' 張</small></div>';
+    return;
+  }
+  startMatch();
+}
+function startMatch(){
+  const n=Math.min(5,cards.length);
+  matchPairs=shufl(cards).slice(0,n);
+  matchSelected=null;
+  matchSeconds=0;
+  clearInterval(matchTimer);
+  matchTimer=setInterval(()=>{matchSeconds++;const t=document.getElementById('match-timer');if(t)t.textContent=fmtTime(matchSeconds);},1000);
+  const enList=matchPairs.map((c,i)=>({id:c.id,text:c.en,type:'en',i}));
+  const zhList=shufl(matchPairs.map((c,i)=>({id:c.id,text:c.zh,type:'zh',i})));
+  const best=localStorage.getItem(matchBestKey);
+  const area=document.getElementById('match-area');
+  area.innerHTML=`
+    <div class="match-status">
+      <span>⏱ <span class="timer" id="match-timer">00:00</span></span>
+      <span id="match-progress">0 / ${n}</span>
+      <span>🏆 ${best?fmtTime(parseInt(best)):'—'}</span>
+    </div>
+    <div class="match-grid" id="match-grid">
+      <div id="match-en-col"></div>
+      <div id="match-zh-col"></div>
+    </div>
+    <button class="btn bg2 btn-full" onclick="startMatch()">🔄 重新開始</button>`;
+  const enCol=document.getElementById('match-en-col');
+  const zhCol=document.getElementById('match-zh-col');
+  enCol.innerHTML='';zhCol.innerHTML='';
+  enList.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='match-tile en';d.textContent=t.text;d.dataset.id=t.id;d.dataset.type='en';
+    d.onclick=()=>tapMatch(d);enCol.appendChild(d);
+  });
+  zhList.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='match-tile zh';d.textContent=t.text;d.dataset.id=t.id;d.dataset.type='zh';
+    d.onclick=()=>tapMatch(d);zhCol.appendChild(d);
+  });
+}
+function tapMatch(el){
+  if(el.classList.contains('matched'))return;
+  if(!matchSelected){
+    matchSelected=el;el.classList.add('selected');return;
+  }
+  if(matchSelected===el){el.classList.remove('selected');matchSelected=null;return;}
+  // 必須係唔同 type
+  if(matchSelected.dataset.type===el.dataset.type){
+    matchSelected.classList.remove('selected');
+    matchSelected=el;el.classList.add('selected');return;
+  }
+  // 配對檢查
+  if(matchSelected.dataset.id===el.dataset.id){
+    matchSelected.classList.remove('selected');
+    matchSelected.classList.add('matched');
+    el.classList.add('matched');
+    matchSelected=null;
+    const matched=document.querySelectorAll('#match-grid .matched').length/2;
+    const total=matchPairs.length;
+    document.getElementById('match-progress').textContent=matched+' / '+total;
+    if(matched>=total)endMatch();
+  }else{
+    const wrongA=matchSelected,wrongB=el;
+    wrongA.classList.add('wrong');wrongB.classList.add('wrong');
+    wrongA.classList.remove('selected');
+    matchSelected=null;
+    setTimeout(()=>{wrongA.classList.remove('wrong');wrongB.classList.remove('wrong');},400);
+  }
+}
+function endMatch(){
+  clearInterval(matchTimer);
+  const best=localStorage.getItem(matchBestKey);
+  let newBest=false;
+  if(!best||matchSeconds<parseInt(best)){
+    try{localStorage.setItem(matchBestKey,String(matchSeconds));}catch(e){}
+    newBest=true;
+  }
+  setTimeout(()=>{
+    alert('🎉 配對完成！\n\n⏱ 用時: '+fmtTime(matchSeconds)+(newBest?'\n🏆 新紀錄！':''));
+    startMatch();
+  },300);
+}
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+
+// ─── GRAVITY GAME ─────────────────────────
+let gState=null;
+function renderGravityIdle(){
+  const area=document.getElementById('gravity-area');
+  if(cards.length<3){
+    area.innerHTML='<div class="empty"><div class="empty-big">💧</div>需要至少 3 張卡片先可以玩<br><small>而家有 '+cards.length+' 張</small></div>';
+    return;
+  }
+  const best=localStorage.getItem('fc_gravity_best')||0;
+  area.innerHTML=`
+    <div style="text-align:center;padding:30px 12px;">
+      <div style="font-size:3rem;margin-bottom:6px;">💧</div>
+      <h2 style="font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:8px;">Gravity 打字遊戲</h2>
+      <p style="font-size:.88rem;color:var(--ink2);margin-bottom:6px;">中文意思會跌落嚟，打返個英文字救佢！</p>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:18px;">🏆 最高分：<b>${best}</b></p>
+      <button class="btn bo btn-full" style="font-size:1rem;padding:14px;" onclick="startGravity()">▶️ 開始遊戲</button>
+    </div>`;
+}
+function startGravity(){
+  if(cards.length<3)return;
+  const area=document.getElementById('gravity-area');
+  area.innerHTML=`
+    <div class="gravity-area" id="g-area">
+      <div class="gravity-hud">
+        <span>⭐ <span id="g-score">0</span></span>
+        <span>❤️ <span id="g-lives">3</span></span>
+        <span>⚡ Lv<span id="g-level">1</span></span>
+      </div>
+    </div>
+    <input class="gravity-input" id="g-input" placeholder="打英文字…" autocomplete="off" autocapitalize="off" autocorrect="off">
+    <button class="btn bg2 btn-full" style="margin-top:8px;" onclick="stopGravity();renderGravityIdle();">⏹ 停止</button>`;
+  const inp=document.getElementById('g-input');
+  inp.addEventListener('input',gOnInput);
+  inp.focus();
+  gState={
+    score:0,lives:3,level:1,
+    falling:[],spawnTimer:null,frameTimer:null,
+    baseSpeed:0.4, // px per frame (~60fps so 24px/sec)
+    spawnInterval:3500
+  };
+  scheduleSpawn();
+  gState.frameTimer=requestAnimationFrame(gTick);
+}
+function scheduleSpawn(){
+  if(!gState)return;
+  gSpawn();
+  gState.spawnTimer=setTimeout(scheduleSpawn,gState.spawnInterval);
+}
+function gSpawn(){
+  if(!gState)return;
+  const area=document.getElementById('g-area');
+  if(!area)return;
+  const c=cards[Math.floor(Math.random()*cards.length)];
+  const el=document.createElement('div');
+  el.className='falling';
+  el.textContent=c.zh;
+  // 隨機 horizontal 位置
+  const xPercent=15+Math.random()*70;
+  el.style.left=xPercent+'%';
+  el.style.top='30px';
+  area.appendChild(el);
+  gState.falling.push({el,answer:c.en.toLowerCase(),y:30,speed:gState.baseSpeed*(1+gState.level*0.15),cardId:c.id});
+}
+function gTick(){
+  if(!gState)return;
+  const area=document.getElementById('g-area');
+  if(!area){gState=null;return;}
+  const h=area.clientHeight;
+  for(let i=gState.falling.length-1;i>=0;i--){
+    const f=gState.falling[i];
+    f.y+=f.speed*1.5; // 加 multiplier 等手機速度合適
+    f.el.style.top=f.y+'px';
+    if(f.y>h-30){
+      // 跌到底 → 失血
+      f.el.remove();
+      gState.falling.splice(i,1);
+      gState.lives--;
+      document.getElementById('g-lives').textContent=gState.lives;
+      flashArea(area,'rgba(200,75,47,.3)');
+      if(gState.lives<=0){gameOverGravity();return;}
+    }
+  }
+  gState.frameTimer=requestAnimationFrame(gTick);
+}
+function gOnInput(){
+  if(!gState)return;
+  const inp=document.getElementById('g-input');
+  const v=inp.value.trim().toLowerCase();
+  if(!v)return;
+  const hit=gState.falling.find(f=>f.answer===v);
+  if(hit){
+    showScorePopup(hit.el);
+    hit.el.remove();
+    gState.falling=gState.falling.filter(f=>f!==hit);
+    gState.score+=10*gState.level;
+    document.getElementById('g-score').textContent=gState.score;
+    inp.value='';
+    // 每 5 個對應升 level
+    const newLv=Math.floor(gState.score/100)+1;
+    if(newLv!==gState.level){
+      gState.level=newLv;
+      gState.spawnInterval=Math.max(1200,3500-newLv*250);
+      document.getElementById('g-level').textContent=newLv;
+    }
+  }
+}
+function showScorePopup(el){
+  const area=document.getElementById('g-area');if(!area)return;
+  const p=document.createElement('div');
+  p.className='score-popup';
+  p.textContent='+'+(10*gState.level);
+  p.style.left=el.style.left;
+  p.style.top=el.style.top;
+  area.appendChild(p);
+  setTimeout(()=>p.remove(),800);
+}
+function flashArea(area,color){
+  const old=area.style.background;
+  area.style.background=color;
+  setTimeout(()=>area.style.background=old||'',150);
+}
+function gameOverGravity(){
+  const score=gState.score;
+  stopGravity();
+  const area=document.getElementById('gravity-area');
+  const best=parseInt(localStorage.getItem('fc_gravity_best')||0);
+  let newBest=false;
+  if(score>best){try{localStorage.setItem('fc_gravity_best',String(score));}catch(e){}newBest=true;}
+  area.innerHTML=`
+    <div class="gravity-area" style="display:flex;align-items:center;justify-content:center;">
+      <div class="gravity-over">
+        <h2>💥 Game Over</h2>
+        <p style="font-size:1.1rem;margin-bottom:6px;">得分: <b style="color:#fff;">${score}</b></p>
+        ${newBest?'<p style="color:var(--gold);font-weight:700;margin-bottom:6px;">🏆 新紀錄！</p>':'<p style="color:#aaa;margin-bottom:6px;">最高: '+Math.max(score,best)+'</p>'}
+      </div>
+    </div>
+    <button class="btn bo btn-full" style="margin-top:8px;" onclick="startGravity()">🔄 再玩</button>
+    <button class="btn bg2 btn-full" style="margin-top:6px;" onclick="renderGravityIdle()">⏹ 返回</button>`;
+}
+function stopGravity(){
+  if(!gState)return;
+  clearTimeout(gState.spawnTimer);
+  if(gState.frameTimer)cancelAnimationFrame(gState.frameTimer);
+  gState.falling.forEach(f=>f.el.remove());
+  gState=null;
+}
+
+// ─── STATS ───────────────────────────────
+function renderStats(){
+  const due=dueCards().length;
+  const learned=cards.filter(c=>(c.reviews||0)>=2).length;
+  const acc=stats.totalReviews?Math.round(stats.correctReviews/stats.totalReviews*100):0;
+  const matchBest=localStorage.getItem('fc_match_best');
+  const gravityBest=localStorage.getItem('fc_gravity_best')||0;
+  document.getElementById('stats-area').innerHTML=`
+    <div class="stat-row"><span class="stat-row-lbl">📚 總卡片數</span><span class="stat-row-val">${cards.length}</span></div>
+    <div class="stat-row"><span class="stat-row-lbl">⏰ 今日待複習</span><span class="stat-row-val" style="color:var(--red);">${due}</span></div>
+    <div class="stat-row"><span class="stat-row-lbl">🎓 已掌握（複習過 2+ 次）</span><span class="stat-row-val" style="color:var(--green);">${learned}</span></div>
+    <div class="stat-row"><span class="stat-row-lbl">🔁 總複習次數</span><span class="stat-row-val">${stats.totalReviews}</span></div>
+    <div class="stat-row"><span class="stat-row-lbl">🎯 答題準確率</span><span class="stat-row-val" style="color:var(--green);">${acc}%</span></div>
+    <div class="stat-row"><span class="stat-row-lbl">🏆 配對遊戲最佳</span><span class="stat-row-val">${matchBest?fmtTime(parseInt(matchBest)):'—'}</span></div>
+    <div class="stat-row"><span class="stat-row-lbl">💧 Gravity 最高分</span><span class="stat-row-val">${gravityBest}</span></div>`;
+}
+
+// ─── HELPERS ────────────────────────────
+function shufl(a){return[...a].sort(()=>Math.random()-.5);}
+
+// ─── INIT ───────────────────────────────
+load();updateStats();
+</script>
+</body>
+</html>
