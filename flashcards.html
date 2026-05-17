@@ -165,6 +165,16 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
       <button class="btn bg btn-full" onclick="importFromEM()">📥 一鍵匯入詞彙本生字</button>
       <div id="import-msg" style="font-size:.8rem;margin-top:10px;text-align:center;min-height:20px;"></div>
     </div>
+    <div class="card-box">
+      <span class="badge">📋 大量匯入（從另一個 chat 貼落嚟）</span>
+      <p style="font-size:.82rem;color:var(--ink2);margin-bottom:10px;line-height:1.6;">支援兩種格式（自動 detect）：<br>
+        <b>1.</b> JSON 數組：<code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.78rem;">[{"en":"...","zh":"...","example":"..."}]</code><br>
+        <b>2.</b> 每行一個字，用 <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.78rem;">|</code> 分隔：<code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.78rem;">en | zh | example</code>
+      </p>
+      <textarea id="bulk-input" placeholder='貼落嚟，例如：&#10;&#10;[{"en":"deliberate","zh":"刻意","example":"She made a deliberate choice."}]&#10;&#10;或者：&#10;deliberate | 刻意 | She made a deliberate choice.' style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Fira Code',monospace;font-size:.8rem;background:var(--surface);color:var(--ink);outline:none;min-height:140px;resize:vertical;margin-bottom:10px;"></textarea>
+      <button class="btn bp btn-full" style="background:#6b3fa0;" onclick="bulkImport()">📥 大量匯入</button>
+      <div id="bulk-msg" style="font-size:.8rem;margin-top:10px;text-align:center;min-height:20px;"></div>
+    </div>
   </div>
 
   <!-- CARDS list -->
@@ -295,6 +305,54 @@ function importFromEM(){
   save();updateStats();renderCardList();
   msg.style.color='var(--green)';
   msg.innerHTML='✅ 匯入完成：新加 <b>'+added+'</b> 個，已存在跳過 <b>'+skipped+'</b> 個';
+}
+
+function bulkImport(){
+  const raw=document.getElementById('bulk-input').value.trim();
+  const msg=document.getElementById('bulk-msg');
+  if(!raw){msg.style.color='var(--red)';msg.textContent='⚠️ 請先貼啲嘢落嚟';return;}
+  let items=[];
+  // 嘗試 JSON
+  const looksJson=raw.startsWith('[')||raw.startsWith('{');
+  if(looksJson){
+    try{
+      let parsed=JSON.parse(raw);
+      if(!Array.isArray(parsed))parsed=[parsed];
+      items=parsed.map(x=>({
+        en:String(x.en||x.word||x.english||'').trim(),
+        zh:String(x.zh||x.chinese||x.meaning||x.def||'').trim(),
+        example:String(x.example||x.eg||x.sentence||'').trim()
+      }));
+    }catch(e){
+      msg.style.color='var(--red)';
+      msg.textContent='❌ JSON 格式錯誤：'+e.message;
+      return;
+    }
+  }else{
+    // 行 | 分隔
+    items=raw.split(/\r?\n/).map(line=>{
+      const parts=line.split(/[|\t]/).map(s=>s.trim());
+      if(parts.length<2||!parts[0])return null;
+      return{en:parts[0],zh:parts[1]||'',example:parts[2]||''};
+    }).filter(Boolean);
+  }
+  if(!items.length){msg.style.color='var(--red)';msg.textContent='⚠️ 揾唔到任何生字';return;}
+  let added=0,skipped=0,invalid=0;
+  items.forEach(it=>{
+    if(!it.en||!it.zh){invalid++;return;}
+    if(cards.find(c=>c.en.toLowerCase()===it.en.toLowerCase())){skipped++;return;}
+    cards.push({
+      id:Date.now()+Math.random(),
+      en:it.en,zh:it.zh,example:it.example||'',
+      ease:2.5,interval:0,nextDue:0,reviews:0,correct:0,
+      created:Date.now()
+    });
+    added++;
+  });
+  save();updateStats();renderCardList();
+  msg.style.color='var(--green)';
+  msg.innerHTML='✅ 完成：新加 <b>'+added+'</b> · 已存在跳過 <b>'+skipped+'</b>'+(invalid?' · 不完整 <b>'+invalid+'</b>':'');
+  if(added>0)document.getElementById('bulk-input').value='';
 }
 
 function deleteCard(id){
