@@ -26,11 +26,54 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
 .sc-tot{font-family:'Fira Code',monospace;font-size:.7rem;color:var(--muted);margin-left:2px;}
 .sc-tot.done{color:var(--green);font-weight:700;}
 .sc-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;display:block;margin-top:2px;}
-.tabs{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow);}
-.tab{flex:1;padding:11px 4px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s;}
+.tabs{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow-x:auto;margin-bottom:22px;box-shadow:var(--shadow);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1 0 auto;min-width:64px;padding:11px 4px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s;}
 .tab:last-child{border-right:none;}
 .tab .ti{font-size:1.1rem;}
 .tab.active{background:var(--ink);color:var(--bg);}
+/* FlashCard / Test / Match / Gravity styles */
+.fc-fr::before{background:#6b3fa0!important;}
+.fc-flip{background:var(--surface);border:2px solid var(--border);border-radius:14px;min-height:200px;padding:28px 20px;margin:8px 0 16px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;text-align:center;}
+.fc-front-en{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--ink);}
+.fc-back-zh{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--red);}
+.fc-eg{font-size:.88rem;color:var(--ink2);font-style:italic;border-left:2px solid var(--border);padding-left:12px;margin-top:6px;line-height:1.6;}
+.fc-hint{font-size:.7rem;color:var(--muted);font-family:'Fira Code',monospace;margin-top:8px;}
+.fc-rate{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
+.br{background:var(--red);color:#fff;flex:1;}
+.bg{background:var(--green);color:#fff;flex:1;}
+.bo{background:var(--gold);color:#fff;flex:1;}
+.bpurple{background:#6b3fa0;color:#fff;flex:1;}
+.test-word{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--red);display:block;margin:8px 0;text-align:center;}
+.test-word.zh{color:var(--blue);}
+.fill-input2{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:1.05rem;background:var(--surface);color:var(--ink);outline:none;text-align:center;margin-bottom:14px;}
+.fill-input2:focus{border-color:var(--ink);}
+.fill-input2.correct{border-color:var(--green);background:rgba(42,122,75,.08);color:var(--green);}
+.fill-input2.wrong{border-color:var(--red);background:rgba(200,75,47,.06);color:var(--red);}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.match-tile{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--ink);min-height:60px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.match-tile.en{font-family:'Playfair Display',serif;font-size:1.05rem;}
+.match-tile.selected{border-color:var(--blue);background:rgba(30,77,140,.08);color:var(--blue);transform:scale(.97);}
+.match-tile.matched{border-color:var(--green);background:rgba(42,122,75,.1);color:var(--green);cursor:default;pointer-events:none;opacity:.6;}
+.match-tile.wrong{border-color:var(--red);background:rgba(200,75,47,.08);color:var(--red);animation:shake .3s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.match-status{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-family:'Fira Code',monospace;font-size:.78rem;margin-bottom:12px;}
+.match-status .timer{color:var(--red);font-weight:700;}
+.gravity-area{position:relative;height:380px;background:linear-gradient(to bottom,#1a1508,#2d2415);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.falling{position:absolute;background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:8px 12px;color:var(--ink);font-size:.95rem;font-weight:700;box-shadow:0 4px 16px rgba(212,144,10,.4);white-space:nowrap;left:50%;transform:translateX(-50%);}
+.gravity-hud{position:absolute;top:8px;left:0;right:0;padding:0 12px;display:flex;justify-content:space-between;color:#fff;font-family:'Fira Code',monospace;font-size:.78rem;z-index:5;text-shadow:0 1px 2px rgba(0,0,0,.6);}
+.gravity-input{width:100%;padding:14px 16px;border:2px solid var(--gold);border-radius:10px;font-family:'Nunito',sans-serif;font-size:1rem;background:var(--surface);color:var(--ink);outline:none;text-align:center;}
+.gravity-over{text-align:center;color:#fff;padding:60px 20px;}
+.gravity-over h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:10px;color:var(--gold);}
+.score-popup{position:absolute;color:#4ade80;font-weight:900;font-size:1.4rem;pointer-events:none;animation:scoreUp .8s forwards;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+@keyframes scoreUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
+.empty-fc{text-align:center;padding:40px 20px;color:var(--muted);font-size:.88rem;}
+.empty-fc .big{font-size:2.5rem;margin-bottom:10px;}
+.note-box{font-size:.78rem;color:var(--muted);line-height:1.6;background:var(--surface);border-left:3px solid #6b3fa0;padding:10px 14px;border-radius:6px;margin-bottom:12px;}
+.test-result{display:none;border-radius:9px;padding:12px 14px;margin-bottom:14px;font-size:.88rem;line-height:1.6;}
+.test-result.show{display:block;animation:fadeIn .2s;}
+.test-result.ok{background:rgba(42,122,75,.08);border:1.5px solid rgba(42,122,75,.25);color:#1a5c35;}
+.test-result.bad{background:rgba(200,75,47,.07);border:1.5px solid rgba(200,75,47,.2);color:#a0290f;}
 .panel{display:none;animation:fadeIn .3s ease;}
 .panel.active{display:block;}
 .card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;}
@@ -99,7 +142,6 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <div class="sc"><span class="sc-num l" id="sl">0</span><span class="sc-tot" id="stl">/ 0</span><span class="sc-lbl">聽力</span></div>
   </div>
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-    <a href="flashcards.html" class="btn bp" style="flex:none;padding:8px 14px;font-size:.78rem;background:#6b3fa0;text-decoration:none;display:inline-block;">🎴 FlashCard App →</a>
     <button class="btn bg2" style="flex:none;padding:8px 14px;font-size:.78rem;" onclick="toggleVoicePanel()">🔊 語音設定</button>
     <button class="btn bp" style="flex:none;padding:8px 14px;font-size:.78rem;" onclick="downloadApp()">📥 下載離線版</button>
     <button class="btn bg2" style="flex:none;padding:8px 14px;font-size:.78rem;color:var(--red);border-color:var(--red);" onclick="if(confirm('確定重置所有進度？'))resetAll()">🗑 重置</button>
@@ -130,6 +172,10 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <button class="tab" onclick="switchTab('grammar')"><span class="ti">✏️</span>文法</button>
     <button class="tab" onclick="switchTab('listening')"><span class="ti">🎧</span>聽力</button>
     <button class="tab" onclick="switchTab('wordbook')"><span class="ti">📒</span>詞彙本</button>
+    <button class="tab" onclick="switchTab('flashcard')"><span class="ti">🎴</span>FlashCard</button>
+    <button class="tab" onclick="switchTab('test')"><span class="ti">📝</span>Test</button>
+    <button class="tab" onclick="switchTab('match')"><span class="ti">🎯</span>Match</button>
+    <button class="tab" onclick="switchTab('gravity')"><span class="ti">💧</span>Gravity</button>
     <button class="tab" onclick="switchTab('apps')"><span class="ti">⭐</span>推介</button>
   </div>
 
@@ -223,6 +269,42 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
         <button class="btn bp" onclick="reviewKnow(true)" style="background:var(--green);">✅ 識</button>
       </div>
       <button class="btn bg2" style="width:100%;margin-top:8px;" onclick="exitReview()">← 返回詞彙本</button>
+    </div>
+  </div>
+
+  <!-- FLASHCARD -->
+  <div id="panel-flashcard" class="panel">
+    <div class="card fc-fr">
+      <span class="badge" id="fc-badge">🎴 FlashCard 複習模式</span>
+      <div class="note-box">睇正面 → 諗一諗 → 撳卡片揭開答案 → 評分（唔識／一般／識）。識嘅字會減少出現，唔識嘅會早啲再見到（間隔重複）。</div>
+      <div id="fc-area"></div>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div id="panel-test" class="panel">
+    <div class="card fc-fr">
+      <span class="badge" id="test-badge">📝 測試模式</span>
+      <div class="note-box">隨機抽你詞彙本嘅生字：可能係選擇題（揀正確中文／英文意思）或者填充題（打英文字）。需要至少 4 個生字先可以玩。</div>
+      <div id="test-area"></div>
+    </div>
+  </div>
+
+  <!-- MATCH -->
+  <div id="panel-match" class="panel">
+    <div class="card fc-fr">
+      <span class="badge">🎯 配對遊戲</span>
+      <div class="note-box">撳英文字，再撳對應嘅中文意思。配對啱會變綠色，全部配對完啱即計時間。需要至少 4 個生字先可以玩。</div>
+      <div id="match-area"></div>
+    </div>
+  </div>
+
+  <!-- GRAVITY -->
+  <div id="panel-gravity" class="panel">
+    <div class="card fc-fr">
+      <span class="badge">💧 打字遊戲（Gravity）</span>
+      <div class="note-box">中文意思從上面跌落嚟，打返個英文字救佢！跌到底就會失血。3 條命用晒就 Game Over。需要至少 3 個生字。</div>
+      <div id="gravity-wrap"></div>
     </div>
   </div>
 
@@ -401,6 +483,8 @@ function save(){
       r:[...learned.r],g:[...learned.g],l:[...learned.l]
     }));
     if(selectedVoiceName)localStorage.setItem(SK.voice,selectedVoiceName);
+    localStorage.setItem('em_srs',JSON.stringify(srs));
+    localStorage.setItem('em_srs_stats',JSON.stringify({t:srsStats.t,c:srsStats.c}));
   }catch(e){}
 }
 function load(){
@@ -417,14 +501,19 @@ function load(){
     }
     const vn=localStorage.getItem(SK.voice);
     if(vn)selectedVoiceName=vn;
+    const sr=localStorage.getItem('em_srs');
+    if(sr)srs=JSON.parse(sr)||{};
+    const ss=localStorage.getItem('em_srs_stats');
+    if(ss){const p=JSON.parse(ss);srsStats.t=p.t||0;srsStats.c=p.c||0;}
     // legacy: drop old inflated scores
     try{localStorage.removeItem('em_scores');}catch(e){}
   }catch(e){}
 }
 function resetAll(){
-  try{localStorage.removeItem(SK.idx);localStorage.removeItem(SK.wordbook);localStorage.removeItem(SK.learned);}catch(e){}
+  try{localStorage.removeItem(SK.idx);localStorage.removeItem(SK.wordbook);localStorage.removeItem(SK.learned);localStorage.removeItem('em_srs');localStorage.removeItem('em_srs_stats');}catch(e){}
   vi=0;ri=0;gi=0;li=0;wordbook=[];
   learned.r=new Set();learned.g=new Set();learned.l=new Set();
+  srs={};srsStats={t:0,c:0};
   updateScoreDisplay();
   vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
   loadV();loadR();loadG();loadL();renderWordbook();
@@ -537,19 +626,29 @@ function updateScoreDisplay(){
 function init(){
   load();
   vS=shufl(VOCAB);rS=shufl(READING);gS=shufl(GRAMMAR);lS=shufl(LISTENING);
-  // clamp indices after shuffle
   vi=Math.min(vi,vS.length-1);ri=Math.min(ri,rS.length-1);
   gi=Math.min(gi,gS.length-1);li=Math.min(li,lS.length-1);
   updateScoreDisplay();
   loadV();loadR();loadG();loadL();renderWordbook();
+  // handle redirect from flashcards.html
+  try{
+    const t=sessionStorage.getItem('em_open_tab');
+    if(t){sessionStorage.removeItem('em_open_tab');switchTab(t);}
+    else if(location.hash==='#flashcard')switchTab('flashcard');
+  }catch(e){}
 }
 
 function switchTab(n){
-  const tabs=['vocab','reading','grammar','listening','wordbook','apps'];
+  const tabs=['vocab','reading','grammar','listening','wordbook','flashcard','test','match','gravity','apps'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+n).classList.add('active');
+  if(n!=='gravity')stopGravity();
   if(n==='wordbook')renderWordbook();
+  if(n==='flashcard')renderFC();
+  if(n==='test')renderTest();
+  if(n==='match')renderMatch();
+  if(n==='gravity')renderGravityIdle();
 }
 
 // ── WORDBOOK ──────────────────────────────
@@ -852,6 +951,413 @@ function nextListening(){li=(li+1)%lS.length;save();loadL();}
 // ── HELPERS ──────────────────────────────
 function selOpt(el,gid){document.querySelectorAll('#'+gid+' .opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
 function clr(id){const r=document.getElementById(id);r.className='result';r.innerHTML='';}
+
+// ─── FlashCard / Test / Match / Gravity ───────────────
+let srs={}; // {word: {ease, interval, nextDue, reviews, correct}}
+let srsStats={t:0,c:0};
+
+function esc(s){return String(s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
+function escJs(s){return String(s||'').replace(/['\\]/g,'\\$&').replace(/\n/g,'\\n');}
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+
+const DAY=86400000;
+function fcGetCards(){
+  return wordbook.map(w=>{
+    const m=srs[w.word]||{ease:2.5,interval:0,nextDue:0,reviews:0,correct:0};
+    return{id:w.word,en:w.word,zh:w.zh||w.def||'',example:w.eg||'',
+      ph:w.ph,pos:w.pos,def:w.def,
+      ease:m.ease,interval:m.interval,nextDue:m.nextDue,
+      reviews:m.reviews,correct:m.correct};
+  });
+}
+function fcIsDue(c){return!c.nextDue||c.nextDue<=Date.now();}
+function fcDueCards(){return fcGetCards().filter(fcIsDue);}
+function fcPickNext(){
+  const cards=fcGetCards();
+  if(!cards.length)return null;
+  const due=cards.filter(fcIsDue);
+  if(due.length)return due.sort((a,b)=>(a.nextDue||0)-(b.nextDue||0))[0];
+  return cards[Math.floor(Math.random()*cards.length)];
+}
+function fcSchedule(word,rating){
+  if(!srs[word])srs[word]={ease:2.5,interval:0,nextDue:0,reviews:0,correct:0};
+  const m=srs[word];
+  m.reviews=(m.reviews||0)+1;
+  m.lastReviewed=Date.now();
+  if(rating===0){
+    m.ease=Math.max(1.3,(m.ease||2.5)-0.2);
+    m.interval=0;
+    m.nextDue=Date.now()+5*60*1000;
+  }else if(rating===1){
+    m.interval=Math.max(1,(m.interval||0)*1.2);
+    m.nextDue=Date.now()+m.interval*DAY;
+    m.correct=(m.correct||0)+1;
+  }else{
+    m.ease=(m.ease||2.5)+0.15;
+    if(!m.interval||m.interval<1)m.interval=1;
+    else m.interval=m.interval*m.ease;
+    m.nextDue=Date.now()+m.interval*DAY;
+    m.correct=(m.correct||0)+1;
+  }
+  srsStats.t++;if(rating>0)srsStats.c++;
+  save();
+}
+
+// ── FLASHCARD ──
+let fcCurrent=null,fcFlipped=false;
+function renderFC(){
+  const area=document.getElementById('fc-area');
+  const cards=fcGetCards();
+  if(!cards.length){
+    area.innerHTML='<div class="empty-fc"><div class="big">🎴</div>仲未有生字<br><small>去「📖 詞彙」答對啲題目，啲字會自動入嚟</small></div>';
+    document.getElementById('fc-badge').textContent='🎴 FlashCard 複習模式';
+    return;
+  }
+  fcCurrent=fcPickNext();
+  fcFlipped=false;
+  const due=fcDueCards().length;
+  document.getElementById('fc-badge').textContent='🎴 FlashCard · 今日到期 '+due+' 張 / 共 '+cards.length+' 個生字';
+  area.innerHTML=`
+    <div class="fc-flip" id="fc-flip" onclick="flipFC()">
+      <div class="fc-front-en">${esc(fcCurrent.en)}
+        <button onclick="event.stopPropagation();speakWord('${escJs(fcCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:.9rem;margin-left:10px;vertical-align:middle;">🔊</button>
+      </div>
+      <div class="fc-hint">👆 撳卡片揭開答案</div>
+    </div>
+    <div class="fc-rate" id="fc-rate" style="display:none;">
+      <button class="btn br" onclick="rateFC(0)">😵 唔識</button>
+      <button class="btn bo" onclick="rateFC(1)">🤔 一般</button>
+      <button class="btn bg" onclick="rateFC(2)">😎 識</button>
+    </div>
+    <button class="btn bg2" style="width:100%;margin-top:8px;" onclick="renderFC()">⏭ 跳過呢張</button>`;
+}
+function flipFC(){
+  if(fcFlipped||!fcCurrent)return;
+  fcFlipped=true;
+  const fc=document.getElementById('fc-flip');
+  fc.innerHTML=`
+    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--ink);">${esc(fcCurrent.en)}
+      <button onclick="event.stopPropagation();speakWord('${escJs(fcCurrent.en)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.85rem;margin-left:8px;vertical-align:middle;">🔊</button>
+    </div>
+    <div class="fc-back-zh" style="margin-top:6px;">${esc(fcCurrent.zh)}</div>
+    ${fcCurrent.example?`<div class="fc-eg">${esc(fcCurrent.example)}</div>`:''}
+    <div class="fc-hint">👇 揀返你嘅熟練程度</div>`;
+  document.getElementById('fc-rate').style.display='grid';
+  setTimeout(()=>speakWord(fcCurrent.en),250);
+}
+function rateFC(rating){
+  if(!fcCurrent||!fcFlipped)return;
+  fcSchedule(fcCurrent.en,rating);
+  renderFC();
+}
+
+// ── TEST ──
+let testCurrent=null,testAnswered=false;
+function renderTest(){
+  const area=document.getElementById('test-area');
+  const cards=fcGetCards();
+  if(cards.length<4){
+    area.innerHTML='<div class="empty-fc"><div class="big">📝</div>需要至少 4 個生字先可以做測試<br><small>而家有 '+cards.length+' 個</small></div>';
+    document.getElementById('test-badge').textContent='📝 測試模式';
+    return;
+  }
+  testCurrent=fcPickNext();
+  testAnswered=false;
+  const type=Math.random()<0.55?'mc':'fill';
+  document.getElementById('test-badge').textContent='📝 測試模式 · 共 '+cards.length+' 個生字';
+  if(type==='mc')renderMC(cards);else renderFill();
+}
+function renderMC(cards){
+  const dir=Math.random()<0.5?'en2zh':'zh2en';
+  const c=testCurrent;
+  const others=cards.filter(x=>x.id!==c.id);
+  const wrong=shufl(others).slice(0,3);
+  const all=shufl([c,...wrong]);
+  const correctIdx=all.findIndex(x=>x.id===c.id);
+  let q,opts;
+  if(dir==='en2zh'){q='下面英文字嘅中文意思係？';opts=all.map(x=>x.zh);}
+  else{q='下面中文意思嘅英文字係？';opts=all.map(x=>x.en);}
+  const word=dir==='en2zh'?c.en:c.zh;
+  const wcls=dir==='en2zh'?'':'zh';
+  document.getElementById('test-area').innerHTML=`
+    <div class="qtext">${q}<span class="test-word ${wcls}">${esc(word)}</span></div>
+    <div class="opts" id="test-opts">
+      ${opts.map((o,i)=>`<button class="opt" onclick="answerMC(${i},${correctIdx})">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="test-result" id="test-result"></div>
+    <button class="btn bp" style="width:100%;" onclick="renderTest()">下一題 →</button>`;
+}
+function answerMC(picked,correct){
+  if(testAnswered)return;testAnswered=true;
+  const ok=picked===correct;
+  document.querySelectorAll('#test-opts .opt').forEach((b,i)=>{
+    b.classList.add('disabled');
+    if(i===correct)b.classList.add('correct');
+    else if(i===picked)b.classList.add('wrong');
+  });
+  const r=document.getElementById('test-result');
+  r.className='test-result show '+(ok?'ok':'bad');
+  r.innerHTML=(ok?'<b>✅ 答啱！</b>':'<b>❌ 答錯</b>')
+    +' <button onclick="speakWord(\''+escJs(testCurrent.en)+'\')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button>'
+    +'<br>'+esc(testCurrent.en)+' → '+esc(testCurrent.zh)
+    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'');
+  setTimeout(()=>speakWord(testCurrent.en),300);
+  fcSchedule(testCurrent.en,ok?2:0);
+}
+function renderFill(){
+  document.getElementById('test-area').innerHTML=`
+    <div class="qtext">下面中文意思嘅英文字係咩？（填充）<span class="test-word zh">${esc(testCurrent.zh)}</span></div>
+    <input class="fill-input2" id="fill-input2" placeholder="打英文字…" autocomplete="off" autocapitalize="off" autocorrect="off" onkeydown="if(event.key==='Enter')answerFill()">
+    <div class="test-result" id="test-result"></div>
+    <div class="btn-row" style="margin-bottom:8px;">
+      <button class="btn bg2" onclick="answerFill()">確認</button>
+      <button class="btn bp" onclick="renderTest()">下一題 →</button>
+    </div>`;
+  setTimeout(()=>document.getElementById('fill-input2').focus(),80);
+}
+function answerFill(){
+  if(testAnswered)return;
+  const inp=document.getElementById('fill-input2');
+  const v=inp.value.trim().toLowerCase();
+  if(!v)return;
+  testAnswered=true;
+  const ok=v===testCurrent.en.toLowerCase();
+  inp.className='fill-input2 '+(ok?'correct':'wrong');
+  inp.disabled=true;
+  const r=document.getElementById('test-result');
+  r.className='test-result show '+(ok?'ok':'bad');
+  r.innerHTML=(ok?'<b>✅ 完美！</b> '+esc(testCurrent.en)
+    :'<b>❌ 正確答案：</b> <span style="font-family:\'Playfair Display\',serif;font-size:1.1rem;">'+esc(testCurrent.en)+'</span>')
+    +' <button onclick="speakWord(\''+escJs(testCurrent.en)+'\')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;vertical-align:middle;">🔊</button>'
+    +(testCurrent.example?'<br><i>"'+esc(testCurrent.example)+'"</i>':'');
+  setTimeout(()=>speakWord(testCurrent.en),300);
+  fcSchedule(testCurrent.en,ok?2:0);
+}
+
+// ── MATCH ──
+let matchPairs=[],matchSelected=null,matchTimer=null,matchSeconds=0;
+function renderMatch(){
+  const area=document.getElementById('match-area');
+  const cards=fcGetCards();
+  if(cards.length<4){
+    area.innerHTML='<div class="empty-fc"><div class="big">🎯</div>需要至少 4 個生字先可以玩配對遊戲<br><small>而家有 '+cards.length+' 個</small></div>';
+    return;
+  }
+  startMatch();
+}
+function startMatch(){
+  const cards=fcGetCards();
+  const n=Math.min(5,cards.length);
+  matchPairs=shufl(cards).slice(0,n);
+  matchSelected=null;matchSeconds=0;
+  clearInterval(matchTimer);
+  matchTimer=setInterval(()=>{matchSeconds++;const t=document.getElementById('match-timer');if(t)t.textContent=fmtTime(matchSeconds);},1000);
+  const enList=matchPairs.map(c=>({id:c.id,text:c.en,type:'en'}));
+  const zhList=shufl(matchPairs.map(c=>({id:c.id,text:c.zh,type:'zh'})));
+  const best=localStorage.getItem('em_match_best');
+  const area=document.getElementById('match-area');
+  area.innerHTML=`
+    <div class="match-status">
+      <span>⏱ <span class="timer" id="match-timer">00:00</span></span>
+      <span id="match-progress">0 / ${n}</span>
+      <span>🏆 ${best?fmtTime(parseInt(best)):'—'}</span>
+    </div>
+    <div class="match-grid" id="match-grid">
+      <div id="match-en-col"></div>
+      <div id="match-zh-col"></div>
+    </div>
+    <button class="btn bg2" style="width:100%;" onclick="startMatch()">🔄 重新開始</button>`;
+  const enCol=document.getElementById('match-en-col');
+  const zhCol=document.getElementById('match-zh-col');
+  enCol.innerHTML='';zhCol.innerHTML='';
+  enList.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='match-tile en';d.textContent=t.text;d.dataset.id=t.id;d.dataset.type='en';
+    d.onclick=()=>tapMatch(d);enCol.appendChild(d);
+  });
+  zhList.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='match-tile zh';d.textContent=t.text;d.dataset.id=t.id;d.dataset.type='zh';
+    d.onclick=()=>tapMatch(d);zhCol.appendChild(d);
+  });
+}
+function tapMatch(el){
+  if(el.classList.contains('matched'))return;
+  if(!matchSelected){matchSelected=el;el.classList.add('selected');return;}
+  if(matchSelected===el){el.classList.remove('selected');matchSelected=null;return;}
+  if(matchSelected.dataset.type===el.dataset.type){
+    matchSelected.classList.remove('selected');
+    matchSelected=el;el.classList.add('selected');return;
+  }
+  if(matchSelected.dataset.id===el.dataset.id){
+    matchSelected.classList.remove('selected');
+    matchSelected.classList.add('matched');el.classList.add('matched');
+    const card=matchPairs.find(c=>c.id==matchSelected.dataset.id);
+    if(card)speakWord(card.en);
+    matchSelected=null;
+    const matched=document.querySelectorAll('#match-grid .matched').length/2;
+    const total=matchPairs.length;
+    document.getElementById('match-progress').textContent=matched+' / '+total;
+    if(matched>=total)endMatch();
+  }else{
+    const A=matchSelected,B=el;
+    A.classList.add('wrong');B.classList.add('wrong');
+    A.classList.remove('selected');matchSelected=null;
+    setTimeout(()=>{A.classList.remove('wrong');B.classList.remove('wrong');},400);
+  }
+}
+function endMatch(){
+  clearInterval(matchTimer);
+  const best=localStorage.getItem('em_match_best');
+  let newBest=false;
+  if(!best||matchSeconds<parseInt(best)){
+    try{localStorage.setItem('em_match_best',String(matchSeconds));}catch(e){}
+    newBest=true;
+  }
+  setTimeout(()=>{
+    alert('🎉 配對完成！\n\n⏱ 用時: '+fmtTime(matchSeconds)+(newBest?'\n🏆 新紀錄！':''));
+    startMatch();
+  },300);
+}
+
+// ── GRAVITY ──
+let gState=null;
+function renderGravityIdle(){
+  const wrap=document.getElementById('gravity-wrap');
+  const cards=fcGetCards();
+  if(cards.length<3){
+    wrap.innerHTML='<div class="empty-fc"><div class="big">💧</div>需要至少 3 個生字先可以玩<br><small>而家有 '+cards.length+' 個</small></div>';
+    return;
+  }
+  const best=localStorage.getItem('em_gravity_best')||0;
+  wrap.innerHTML=`
+    <div style="text-align:center;padding:30px 12px;">
+      <div style="font-size:3rem;margin-bottom:6px;">💧</div>
+      <h2 style="font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:8px;">Gravity 打字遊戲</h2>
+      <p style="font-size:.85rem;color:var(--ink2);margin-bottom:6px;">中文意思會跌落嚟，打返個英文字救佢！</p>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:18px;">🏆 最高分：<b>${best}</b></p>
+      <button class="btn bo" style="width:100%;font-size:1rem;padding:14px;" onclick="startGravity()">▶️ 開始遊戲</button>
+    </div>`;
+}
+function startGravity(){
+  const cards=fcGetCards();
+  if(cards.length<3)return;
+  const wrap=document.getElementById('gravity-wrap');
+  wrap.innerHTML=`
+    <div class="gravity-area" id="g-area">
+      <div class="gravity-hud">
+        <span>⭐ <span id="g-score">0</span></span>
+        <span>❤️ <span id="g-lives">3</span></span>
+        <span>⚡ Lv<span id="g-level">1</span></span>
+      </div>
+    </div>
+    <input class="gravity-input" id="g-input" placeholder="打英文字…" autocomplete="off" autocapitalize="off" autocorrect="off">
+    <button class="btn bg2" style="width:100%;margin-top:8px;" onclick="stopGravity();renderGravityIdle();">⏹ 停止</button>`;
+  const inp=document.getElementById('g-input');
+  inp.addEventListener('input',gOnInput);
+  inp.focus();
+  gState={score:0,lives:3,level:1,falling:[],spawnTimer:null,frameTimer:null,
+    baseSpeed:0.4,spawnInterval:3500,cards:cards};
+  scheduleSpawn();
+  gState.frameTimer=requestAnimationFrame(gTick);
+}
+function scheduleSpawn(){
+  if(!gState)return;
+  gSpawn();
+  gState.spawnTimer=setTimeout(scheduleSpawn,gState.spawnInterval);
+}
+function gSpawn(){
+  if(!gState)return;
+  const area=document.getElementById('g-area');
+  if(!area)return;
+  const c=gState.cards[Math.floor(Math.random()*gState.cards.length)];
+  const el=document.createElement('div');
+  el.className='falling';el.textContent=c.zh;
+  el.style.left=(15+Math.random()*70)+'%';
+  el.style.top='30px';
+  area.appendChild(el);
+  gState.falling.push({el,answer:c.en.toLowerCase(),y:30,speed:gState.baseSpeed*(1+gState.level*0.15),cardId:c.id});
+}
+function gTick(){
+  if(!gState)return;
+  const area=document.getElementById('g-area');
+  if(!area){gState=null;return;}
+  const h=area.clientHeight;
+  for(let i=gState.falling.length-1;i>=0;i--){
+    const f=gState.falling[i];
+    f.y+=f.speed*1.5;
+    f.el.style.top=f.y+'px';
+    if(f.y>h-30){
+      f.el.remove();
+      gState.falling.splice(i,1);
+      gState.lives--;
+      document.getElementById('g-lives').textContent=gState.lives;
+      flashArea(area,'rgba(200,75,47,.3)');
+      if(gState.lives<=0){gameOverGravity();return;}
+    }
+  }
+  gState.frameTimer=requestAnimationFrame(gTick);
+}
+function gOnInput(){
+  if(!gState)return;
+  const inp=document.getElementById('g-input');
+  const v=inp.value.trim().toLowerCase();
+  if(!v)return;
+  const hit=gState.falling.find(f=>f.answer===v);
+  if(hit){
+    showScorePopup(hit.el);
+    hit.el.remove();
+    gState.falling=gState.falling.filter(f=>f!==hit);
+    gState.score+=10*gState.level;
+    document.getElementById('g-score').textContent=gState.score;
+    inp.value='';
+    const newLv=Math.floor(gState.score/100)+1;
+    if(newLv!==gState.level){
+      gState.level=newLv;
+      gState.spawnInterval=Math.max(1200,3500-newLv*250);
+      document.getElementById('g-level').textContent=newLv;
+    }
+  }
+}
+function showScorePopup(el){
+  const area=document.getElementById('g-area');if(!area)return;
+  const p=document.createElement('div');
+  p.className='score-popup';
+  p.textContent='+'+(10*gState.level);
+  p.style.left=el.style.left;p.style.top=el.style.top;
+  area.appendChild(p);
+  setTimeout(()=>p.remove(),800);
+}
+function flashArea(area,color){
+  const old=area.style.background;
+  area.style.background=color;
+  setTimeout(()=>area.style.background=old||'',150);
+}
+function gameOverGravity(){
+  const score=gState.score;
+  stopGravity();
+  const wrap=document.getElementById('gravity-wrap');
+  const best=parseInt(localStorage.getItem('em_gravity_best')||0);
+  let newBest=false;
+  if(score>best){try{localStorage.setItem('em_gravity_best',String(score));}catch(e){}newBest=true;}
+  wrap.innerHTML=`
+    <div class="gravity-area" style="display:flex;align-items:center;justify-content:center;">
+      <div class="gravity-over">
+        <h2>💥 Game Over</h2>
+        <p style="font-size:1.1rem;margin-bottom:6px;">得分: <b style="color:#fff;">${score}</b></p>
+        ${newBest?'<p style="color:var(--gold);font-weight:700;">🏆 新紀錄！</p>':'<p style="color:#aaa;">最高: '+Math.max(score,best)+'</p>'}
+      </div>
+    </div>
+    <button class="btn bo" style="width:100%;margin-top:8px;" onclick="startGravity()">🔄 再玩</button>
+    <button class="btn bg2" style="width:100%;margin-top:6px;" onclick="renderGravityIdle()">⏹ 返回</button>`;
+}
+function stopGravity(){
+  if(!gState)return;
+  clearTimeout(gState.spawnTimer);
+  if(gState.frameTimer)cancelAnimationFrame(gState.frameTimer);
+  gState.falling.forEach(f=>f.el.remove());
+  gState=null;
+}
 
 init();
 </script>
