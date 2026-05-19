@@ -410,15 +410,23 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     </div>
     <div class="b2-subtabs">
       <button class="b2-subtab active" onclick="b2Switch('plan')">📅 計劃</button>
-      <button class="b2-subtab" onclick="b2Switch('speaking')">🗣️ 口說</button>
-      <button class="b2-subtab" onclick="b2Switch('listening')">🎧 聆聽</button>
-      <button class="b2-subtab" onclick="b2Switch('vocab')">📚 B2 詞彙</button>
+      <button class="b2-subtab" onclick="b2Switch('topic')">🎤 Phase 1 Topic</button>
+      <button class="b2-subtab" onclick="b2Switch('interactive')">💬 Phase 2 互動</button>
+      <button class="b2-subtab" onclick="b2Switch('conversation')">🗣️ Phase 3 對話</button>
+      <button class="b2-subtab" onclick="b2Switch('listening')">🎧 Phase 4 聆聽</button>
+      <button class="b2-subtab" onclick="b2Switch('grammar')">📝 文法</button>
+      <button class="b2-subtab" onclick="b2Switch('vocab')">📚 詞彙</button>
+      <button class="b2-subtab" onclick="b2Switch('mock')">🎯 Mock</button>
       <button class="b2-subtab" onclick="b2Switch('tips')">💡 貼士</button>
     </div>
     <div id="b2sub-plan" class="b2-subpanel active"></div>
-    <div id="b2sub-speaking" class="b2-subpanel"></div>
+    <div id="b2sub-topic" class="b2-subpanel"></div>
+    <div id="b2sub-interactive" class="b2-subpanel"></div>
+    <div id="b2sub-conversation" class="b2-subpanel"></div>
     <div id="b2sub-listening" class="b2-subpanel"></div>
+    <div id="b2sub-grammar" class="b2-subpanel"></div>
     <div id="b2sub-vocab" class="b2-subpanel"></div>
+    <div id="b2sub-mock" class="b2-subpanel"></div>
     <div id="b2sub-tips" class="b2-subpanel"></div>
   </div>
 
@@ -1589,7 +1597,233 @@ function stopGravity(){
   gState=null;
 }
 
-// ─── B2 UK CITIZENSHIP MODULE ─────────────────────
+// ─── B2 UK CITIZENSHIP MODULE (Trinity GESE Grade 7) ─────────────────────
+// Phase 1 (Topic) — 10 portfolio topics each with structure + key vocab + follow-up Qs
+const B2_PORTFOLIO=[
+  {name:"My career journey to the UK",name_zh:"我來英國嘅職涯故事",structure:["Background: where you worked before","Why you decided to move to the UK","Challenges adjusting to working here","Where you are now and future hopes"],vocab:["relocate","opportunity","adapt","colleague","qualification","challenging","fulfilling","prospects"],qs:["When did you first come to the UK?","Why did you choose to work in the UK?","What was your first job here?","How did you find work?","What surprised you most about working in the UK?","What was the hardest part of adapting?","Have you changed careers since arriving?","What skills have you gained?","Do you prefer working here or back home?","What are your career goals for the next few years?"]},
+  {name:"A meaningful tradition from my home country",name_zh:"我家鄉嘅一個重要傳統",structure:["Name and brief description of the tradition","When and how it is celebrated","Why it is meaningful to your family","How you keep it alive in the UK"],vocab:["custom","celebrate","heritage","generations","gathering","symbolic","preserve","unique"],qs:["Can you describe this tradition in detail?","How long has it existed?","Who participates in it?","What food or activities are involved?","Why is it important to you personally?","Do British people have anything similar?","Have you taught it to anyone here?","Has the tradition changed over time?","Is it still practised by young people?","Do you think it will continue in the future?"]},
+  {name:"Why I want British citizenship",name_zh:"我為何想成為英國公民",structure:["How long you've lived in the UK","Personal reasons for applying","Values you share with British society","How citizenship will affect your life"],vocab:["belong","stability","commitment","values","democracy","tolerance","contribute","rights"],qs:["When did you decide to apply for citizenship?","What does being British mean to you?","Which British values do you value most?","How do you contribute to UK society?","Do you feel British already?","Will you give up your other nationality?","How does your family feel about it?","What will change after you get it?","What are you most excited about?","Do you have any worries about the process?"]},
+  {name:"A skill I learned recently",name_zh:"我最近學識嘅一個技能",structure:["What the skill is","Why you chose to learn it","How you went about learning","How it has changed your life"],vocab:["acquire","master","challenging","rewarding","practice","determination","improve","useful"],qs:["What made you want to learn this?","How long did it take?","Did you take a course or self-teach?","What was the hardest part?","Did you ever want to give up?","Who supported you?","How do you use it now?","Has it changed how you see yourself?","Would you teach others?","What skill would you like to learn next?"]},
+  {name:"A book or film that influenced me",name_zh:"一部影響我嘅書或電影",structure:["Title, author/director and genre","Brief plot or main theme","Why it had such an impact on you","How your thinking changed afterwards"],vocab:["compelling","thought-provoking","relate","perspective","inspire","memorable","resonate","unforgettable"],qs:["When did you first encounter it?","Why did you choose it?","What is the main message?","Which character or moment stood out?","How did it make you feel?","Has it changed your behaviour in any way?","Would you recommend it?","Have you read/watched it more than once?","Is it well known in your country?","What other books/films do you love?"]},
+  {name:"Technology in my daily life",name_zh:"科技喺我日常生活嘅角色",structure:["Devices and apps you use most","One way technology has improved your life","One concern you have about technology","How you balance screen time"],vocab:["device","app","convenient","dependent","distracting","essential","privacy","balance"],qs:["What technology do you use every day?","Could you live without your smartphone?","How has technology changed your work?","Are you worried about online privacy?","Do you think kids spend too much time online?","How do you balance screen time?","Has AI affected your life?","What's the best app you've discovered?","Are older people excluded by technology?","Where do you see technology going in 10 years?"]},
+  {name:"A challenge I overcame",name_zh:"我克服嘅一個挑戰",structure:["What the challenge was","Why it was difficult","What you did to overcome it","What you learned"],vocab:["overcome","struggle","determined","persistent","support","resilience","grateful","stronger"],qs:["When did this happen?","Why was it so hard?","Did you consider giving up?","Who helped you through it?","What strategies did you use?","How long did it take?","How did you feel afterwards?","What did you learn about yourself?","Would you handle it differently now?","How has it shaped who you are today?"]},
+  {name:"Volunteering or helping my community",name_zh:"喺社區做義工或幫忙",structure:["What you do and where","Why you chose this cause","Who you work with","What you've gained"],vocab:["volunteer","contribute","community","cause","rewarding","fulfilling","commitment","support"],qs:["How did you get involved?","How often do you volunteer?","What does a typical day look like?","Why did you pick this particular cause?","What's the most rewarding part?","Have you faced any difficulties?","Has it changed how you see the community?","Would you recommend volunteering to others?","Could you volunteer more if you had time?","Is volunteering common in your home country?"]},
+  {name:"My approach to healthy living",name_zh:"我嘅健康生活方式",structure:["Diet and eating habits","Physical activity routine","Mental wellbeing practices","Sleep and rest"],vocab:["nutritious","exercise","wellbeing","balance","routine","mindful","prevention","lifestyle"],qs:["What does a healthy day look like for you?","What's your favourite way to exercise?","Do you cook from scratch?","Are you a vegetarian or do you eat meat?","How do you manage stress?","Do you use the NHS for prevention?","Have your habits changed since coming to the UK?","Do you find British food healthy?","Do you sleep well?","What advice would you give to someone wanting to be healthier?"]},
+  {name:"A memorable place I've visited",name_zh:"一個令我難忘嘅地方",structure:["Where and when you went","Who you went with","What made it special","Would you go back"],vocab:["breathtaking","unforgettable","scenic","atmosphere","explore","welcoming","picturesque","tranquil"],qs:["Why did you choose to go there?","How did you get there?","What's the place most famous for?","What did you see and do?","Did anything unexpected happen?","Was the food memorable?","How were the local people?","What surprised you the most?","Would you recommend it to friends?","Where would you like to visit next?"]}
+];
+
+// Phase 2 (Interactive) — 15 prompts: examiner gives scenario, you must ASK questions and offer opinions
+const B2_INTERACTIVE=[
+  {prompt:"I'm planning a holiday abroad but I can't decide where to go. Can you help me think about it?",zh:"計劃海外旅行揀地方",starters:["Where have you been thinking of?","How long do you have?","What kind of holiday do you prefer — relaxing or active?","Are you travelling alone or with family?","What's your budget like?","Have you considered the time of year?"],comments:["I'd recommend somewhere warm if you need a real break.","If it's your first trip, maybe pick a country with English speakers.","I'd avoid the school holidays — much cheaper."]},
+  {prompt:"I'm thinking of starting an exercise routine but I don't know where to begin.",zh:"開始做運動",starters:["What kind of exercise interests you?","Do you prefer indoors or outdoors?","How much time can you commit each week?","Do you have any health concerns?","Have you tried gyms or classes before?","Would you exercise alone or with friends?"],comments:["Starting small is the key — even 15 minutes a day works.","Walking is the most underrated exercise in my opinion.","I'd suggest a free YouTube routine before paying for anything."]},
+  {prompt:"My child is struggling at school and I'm worried about her progress.",zh:"擔心子女學業",starters:["How old is she?","Which subjects is she finding difficult?","Have you spoken to her teacher?","Does she enjoy school overall?","Are there friends or social issues too?","Could she benefit from extra tutoring?"],comments:["I'd start with a teacher meeting before anything else.","Sometimes confidence is the real issue, not the subject.","Online tutoring can be quite affordable these days."]},
+  {prompt:"I want to buy a new phone but the choice is overwhelming.",zh:"買新手機",starters:["What's your budget?","What features matter most — camera, battery, screen?","Are you happy with your current brand?","Do you take a lot of photos?","How long do you usually keep a phone?","Are you tied to a particular network?"],comments:["I'd compare last year's flagship — much better value.","Battery life matters more than people think.","Don't get sucked into shiny adverts; stick to your needs."]},
+  {prompt:"I'm considering changing jobs but I'm not sure if it's the right time.",zh:"考慮轉工",starters:["What's pushing you to consider this?","Is the new offer concrete or still exploring?","How is your current company?","Would the new role pay better?","Does the new role match your skills?","What does your family think?"],comments:["I'd never leave a stable job without something firm.","Sometimes a fresh start is exactly what you need.","Think about long-term growth, not just salary."]},
+  {prompt:"I need to plan my parents' wedding anniversary dinner.",zh:"幫父母計劃結婚紀念晚餐",starters:["How many people will be there?","What kind of food do your parents enjoy?","Are you cooking or going out?","Is there a budget you want to stay within?","Any dietary restrictions to consider?","Do you want it to be a surprise?"],comments:["A small intimate dinner often beats a big party.","Consider a place with private dining if budget allows.","Personal touches like photos and speeches make the night."]},
+  {prompt:"I'm thinking about getting a pet but my partner isn't sure.",zh:"想養寵物但伴侶有保留",starters:["What kind of pet are you considering?","Have you had pets before?","What are your partner's concerns?","How much time would the pet need daily?","Do you both work long hours?","Would you adopt or buy?"],comments:["Cats are far easier than dogs if you both work.","Maybe foster first to see if it suits your lifestyle.","Adopt — there are so many lovely rescue animals."]},
+  {prompt:"I want to learn a new language but I'm not sure which one.",zh:"學新語言",starters:["What languages interest you?","Why do you want to learn one?","How much time can you dedicate weekly?","Do you have travel plans related to it?","Prefer learning apps or classes?","Are you good with grammar or speaking?"],comments:["Spanish opens doors to many countries.","Mandarin is useful but takes serious commitment.","Duolingo is great for 10 minutes a day."]},
+  {prompt:"I'm considering moving to a different city for work.",zh:"為工作搬去另一個城市",starters:["Where are you thinking of moving to?","How does the salary compare?","What about housing costs?","Is your family on board?","How would you keep in touch with friends?","Have you visited the city before?"],comments:["I'd visit a few times before committing.","The cost of living can wipe out a salary increase.","Try a 6-month let before buying."]},
+  {prompt:"I want to be more involved in my local community but I'm not sure how to start.",zh:"想參與社區但唔知點開始",starters:["What's your local area like?","Are there any community groups already?","What interests you — gardening, helping elderly, kids?","How much time can you spare each week?","Have you visited the community centre?","Do you know any neighbours yet?"],comments:["Start with one event — see if you enjoy it.","Local Facebook groups are surprisingly active.","Volunteering at a food bank is always needed."]},
+  {prompt:"I'm planning a weekend trip but on a tight budget.",zh:"低預算週末旅行",starters:["Where would you like to go?","How long is the weekend?","Are you driving or taking public transport?","Do you mind hostels or self-catering?","Will food be a big expense?","Any free activities you'd enjoy?"],comments:["Look for free walking tours in any city.","Off-season is half the price and twice as quiet.","Self-catering accommodation saves a fortune."]},
+  {prompt:"I'm thinking about taking up a new hobby.",zh:"開始新嗜好",starters:["What kind of activities interest you?","Indoor or outdoor?","Do you prefer creative or active hobbies?","How much time per week could you give?","Are you on a budget?","Solo or social hobby?"],comments:["Photography is endlessly rewarding and you already own a phone.","Joining a club is great for meeting people.","Try a few short courses before investing money."]},
+  {prompt:"I need advice on improving my work-life balance.",zh:"改善工作生活平衡",starters:["What does a typical week look like?","Are you working long hours?","Can you set boundaries with your boss?","Do you take your lunch breaks?","What do you do to unwind?","Have you considered flexible hours?"],comments:["Setting a hard stop time at the end of the day really helps.","One full screen-free evening a week works wonders.","Talk to your manager about flexible working."]},
+  {prompt:"I want to host a dinner party but I'm nervous about it.",zh:"主辦晚餐但緊張",starters:["How many guests are you thinking of?","Do you know the guests well?","What can you cook confidently?","Will you ask anyone to bring something?","Is there a budget?","Any allergies or dietary requirements?"],comments:["Stick to dishes you've cooked before.","A simple starter and dessert make people feel special.","Prep as much as possible the day before."]},
+  {prompt:"I'm worried about my health and want to make some changes.",zh:"擔心健康想改變",starters:["What worries you most?","Have you seen a doctor recently?","What does your typical day look like?","How is your sleep?","Are you eating well?","What kind of exercise do you currently do?"],comments:["A GP check-up is a great starting point.","Small daily habits beat dramatic changes.","Cutting back on processed food is the easiest win."]}
+];
+
+// Phase 3 (Conversation) — Trinity's 6 official subject areas for Grade 7
+const B2_GRADE7=[
+  {name:"Education",name_zh:"教育",intro:"Schools, university, lifelong learning, teaching methods",vocab:["curriculum","compulsory","tuition","apprenticeship","scholarship","subject","mature student","syllabus","assessment","further education"],qs:[
+    {q:"At what age did you start school?",sample:"I started primary school when I was about five years old, which is similar to the UK system."},
+    {q:"What was your favourite subject and why?",sample:"My favourite subject was geography because I loved learning about different countries and cultures."},
+    {q:"Is education in your country very different from the UK?",sample:"Yes, in my country we have longer school days and more homework, but less focus on creativity than here."},
+    {q:"Do you think university is necessary for a good career?",sample:"Not always. Apprenticeships and vocational training can lead to excellent careers without the cost of university."},
+    {q:"Should education be free for everyone?",sample:"In an ideal world, yes. Education is a basic right, but realistically governments have to balance funding."},
+    {q:"What do you think about lifelong learning?",sample:"It's essential nowadays. Skills change so quickly that we all need to keep learning throughout our careers."},
+    {q:"How important are exams in measuring ability?",sample:"They have their place but I don't think they show the full picture. Practical assessment is just as important."},
+    {q:"Would you go back to study if you could?",sample:"Absolutely. I'd love to study psychology — it interests me both personally and professionally."},
+    {q:"Are teachers respected enough in your country?",sample:"Yes, teaching is considered a very respectable profession back home, perhaps even more so than here."},
+    {q:"How has technology changed education?",sample:"Massively. Online courses and apps mean anyone with internet can learn almost anything for free."}
+  ]},
+  {name:"National customs",name_zh:"國家傳統習俗",intro:"Festivals, holidays, food, family traditions",vocab:["custom","tradition","celebrate","heritage","ritual","ancestor","gathering","ceremony","symbolic","generations"],qs:[
+    {q:"What is the most important festival in your culture?",sample:"Lunar New Year is the biggest. Families gather, we have huge meals together, and elders give red envelopes to children."},
+    {q:"How do you celebrate it in the UK?",sample:"We still do the traditional meal and decorations at home, although it's much smaller without extended family around."},
+    {q:"Are British and your home country's customs very different?",sample:"Some are very different — like Christmas being more important here. But the family-focused element is similar."},
+    {q:"Do you think traditions are still important today?",sample:"Yes, they connect us to our identity and to past generations. Without them, we lose part of who we are."},
+    {q:"Have any British customs surprised you?",sample:"The British love of queuing surprised me at first — and how seriously people take their afternoon cup of tea."},
+    {q:"What customs from home do you still keep?",sample:"We still take off our shoes at the door and celebrate ancestors during important festivals."},
+    {q:"Do young people still follow traditional customs?",sample:"Less than before. Many traditions are fading as younger generations focus more on modern life."},
+    {q:"Is there a custom you'd love to share with British friends?",sample:"Yes, the mooncake festival. The cakes are beautiful and the story behind them is fascinating."},
+    {q:"Have you adopted any British traditions?",sample:"My family now celebrates Sunday roast lunches together — it's become one of our favourite weekly traditions."},
+    {q:"Are weddings in your country similar to British weddings?",sample:"Very different — ours are much larger, often hundreds of guests, and last two or three days."}
+  ]},
+  {name:"Village and city life",name_zh:"鄉村 vs 城市生活",intro:"Lifestyle differences, advantages and drawbacks of each",vocab:["rural","urban","commute","facilities","outskirts","tranquil","bustling","amenities","high street","green space"],qs:[
+    {q:"Do you prefer city life or village life?",sample:"I prefer city life. I love the convenience — shops, transport and entertainment all within walking distance."},
+    {q:"What are the advantages of living in a village?",sample:"Peace and quiet, fresh air, a stronger sense of community, and usually lower living costs."},
+    {q:"What are the disadvantages of city life?",sample:"Crowds, noise, pollution and high rents. It can feel impersonal compared to a small village."},
+    {q:"Have you lived in both?",sample:"Yes, I grew up in a small town and moved to a city for work. Both have their charm."},
+    {q:"Why do people move from villages to cities?",sample:"Mainly for jobs and education. Cities offer far more opportunities, especially for young people."},
+    {q:"Is the countryside in your country similar to the UK?",sample:"Similar — both are green and quiet, although our villages tend to have more farming activity."},
+    {q:"Do you think young people will return to villages?",sample:"Possibly, especially with remote working becoming more common. Villages could see a revival."},
+    {q:"How does village life affect families?",sample:"Children often have more freedom and outdoor time, but fewer extracurricular activities than in cities."},
+    {q:"Is city life less healthy than village life?",sample:"Often yes — more pollution, less green space, and a more stressful pace overall."},
+    {q:"What would your ideal place to live look like?",sample:"A small town near a city — the calm of countryside but good transport links and amenities."}
+  ]},
+  {name:"National and local produce/products",name_zh:"本地/國家產品",intro:"Food, goods, made in your country vs imported",vocab:["produce","locally sourced","imported","artisan","organic","seasonal","specialty","farmer's market","supply chain","handcrafted"],qs:[
+    {q:"What food is your country famous for?",sample:"Hong Kong is famous for dim sum and milk tea — both are iconic, especially the silky milk tea found in cha chaan tengs."},
+    {q:"Do you cook traditional dishes at home?",sample:"Yes, I cook them every week — partly for taste and partly to keep the culture alive for my children."},
+    {q:"Do you buy local produce in the UK?",sample:"Whenever I can. I shop at the local farmers' market on Saturday — the vegetables taste much fresher."},
+    {q:"Is local produce more expensive?",sample:"Often a bit more, but you're paying for quality and you're supporting smaller producers."},
+    {q:"Should governments protect local producers?",sample:"Yes, especially small farmers. Without support, mass-produced imports will drive them out of business."},
+    {q:"Do you read product labels?",sample:"I do — I check origin and ingredients. It influences my buying choices, especially for food."},
+    {q:"What British products do you enjoy?",sample:"I love British cheese — there's such variety. And good quality tea is something I never imagined I'd enjoy this much."},
+    {q:"Has shopping local become more popular?",sample:"Yes, partly because of environmental awareness and partly because people want to know where their food comes from."},
+    {q:"Do you prefer artisan or mass-produced?",sample:"For everyday items, mass-produced is fine. For gifts or special occasions, artisan is much more meaningful."},
+    {q:"What product from your country would you recommend to a British friend?",sample:"Definitely Hong Kong egg waffles — they're crispy outside, fluffy inside and a wonderful street snack."}
+  ]},
+  {name:"Early memories",name_zh:"童年回憶",intro:"Childhood, growing up, family, school days",zh_note:"用 simple past + 'used to' 嘅好機會",vocab:["recall","fond","cherish","nostalgia","upbringing","carefree","sibling","mischievous","tradition","precious"],qs:[
+    {q:"What's your earliest childhood memory?",sample:"I remember playing in my grandmother's garden when I was about four — picking flowers and chasing butterflies."},
+    {q:"What did you used to do for fun as a child?",sample:"We used to play hide and seek with neighbours, ride our bikes around the estate, and read comics in the afternoons."},
+    {q:"Were you close to your siblings?",sample:"Very close. My brother is two years older — we shared a room and were almost always together."},
+    {q:"What was your favourite toy?",sample:"I had a small stuffed rabbit that I took everywhere. I think it lasted me all the way to secondary school."},
+    {q:"What did you want to be when you grew up?",sample:"I wanted to be a teacher because I loved my Year Three teacher so much. She made everything feel exciting."},
+    {q:"What's a happy memory you treasure?",sample:"Summer holidays at my grandparents' village — endless meals, slow afternoons, and feeling completely free."},
+    {q:"Have things changed for children today?",sample:"Yes, children today spend much more time on screens and much less outdoors than we did."},
+    {q:"Did you have any childhood pets?",sample:"We had a small dog called Lucky. He was full of energy and slept at the foot of my bed every night."},
+    {q:"What was school like back then?",sample:"Stricter than today. Teachers were more formal, but I had wonderful friends and I look back fondly."},
+    {q:"How has your hometown changed since you were a child?",sample:"Hugely. The little park I played in is now a shopping centre. It's exciting but I miss the old quietness."}
+  ]},
+  {name:"Pollution and recycling",name_zh:"污染同回收",intro:"Environment, waste, sustainability, climate",vocab:["pollution","emissions","recycling","sustainable","carbon footprint","biodegradable","landfill","contamination","renewable","conserve"],qs:[
+    {q:"How serious is pollution in your country?",sample:"Air pollution is a real problem in big cities back home, particularly during winter when smog often lingers."},
+    {q:"Do you recycle at home?",sample:"Yes, we separate paper, plastic, glass and food waste. The council provides clear bins for each."},
+    {q:"What more could governments do?",sample:"They could invest more in renewable energy and impose stricter rules on industrial waste and emissions."},
+    {q:"Should there be a tax on plastic bags?",sample:"Absolutely. The small charge in the UK has made a huge difference — most people now carry reusable bags."},
+    {q:"Is electric transport the answer?",sample:"It helps reduce emissions, but the electricity itself needs to come from clean sources to be truly green."},
+    {q:"What can individuals do to help?",sample:"Walk or cycle when possible, eat less meat, reduce single-use plastics, and recycle properly."},
+    {q:"Is climate change real?",sample:"Yes — scientists are overwhelmingly agreed. We can see the effects already in extreme weather and rising temperatures."},
+    {q:"Are young people more aware of the environment?",sample:"Definitely. They're growing up surrounded by climate news, and many are very vocal about change."},
+    {q:"Is recycling enough?",sample:"It's important but it's only one part. Reducing what we use in the first place is even more important."},
+    {q:"What do you do to reduce your carbon footprint?",sample:"I take public transport, eat seasonal vegetables, and try to buy local produce whenever possible."}
+  ]}
+];
+
+// Phase 4 (Listening) — Trinity format: examiner reads short discourse, you suggest a logical ending
+const B2_ENDINGS=[
+  {discourse:"I went to the shops yesterday hoping to buy a coat, but when I got there...",opts:["...they were closed for refurbishment.","...I won the lottery.","...the sun was bright."],best:0,zh:"shops closed = 合理結尾"},
+  {discourse:"Despite the heavy rain, the football match...",opts:["...was sunny.","...continued as planned.","...was forgotten."],best:1,zh:"Despite the rain → match continued"},
+  {discourse:"She told me she'd be at the meeting by nine, but when ten o'clock came around...",opts:["...we agreed it was fine.","...she still hadn't arrived.","...the room was warm."],best:1,zh:"by 9 but 10 came → still not arrived"},
+  {discourse:"I had been studying English for two years before I finally...",opts:["...felt confident enough to have a conversation.","...started learning the alphabet.","...took a holiday last week."],best:0,zh:"2 years → finally felt confident"},
+  {discourse:"Although the weather forecast was terrible, we...",opts:["...stayed indoors all day.","...decided to go for our walk anyway.","...bought a new umbrella the day before."],best:1,zh:"Although bad → still went"},
+  {discourse:"I thought I had lost my keys until...",opts:["...I checked my coat pocket.","...the door wouldn't open.","...the morning was cold."],best:0,zh:"thought lost → until found in pocket"},
+  {discourse:"We were going to have a picnic in the park, but when we arrived...",opts:["...we played football.","...the grass had just been freshly mowed and was wet.","...the sun came out brightly."],best:1,zh:"going to picnic, but → grass wet"},
+  {discourse:"My friend said the film was boring, however when I watched it...",opts:["...I fell asleep too.","...I really enjoyed it.","...the cinema was full."],best:1,zh:"friend said boring, however → enjoyed"},
+  {discourse:"I'd never tried sushi before, so when my colleague offered me some at lunch...",opts:["...I refused immediately.","...I was a bit nervous to try it.","...I went home for the day."],best:1,zh:"never tried → nervous to try"},
+  {discourse:"The train was supposed to leave at seven sharp, but...",opts:["...the doors closed early.","...it didn't pull away until quarter past.","...the conductor was friendly."],best:1,zh:"supposed to 7, but → late"},
+  {discourse:"I'd been saving up for months to buy a new laptop, and finally last weekend...",opts:["...I bought a coffee.","...I went to the store and picked one out.","...I forgot about it."],best:1,zh:"saving → finally bought"},
+  {discourse:"My grandmother used to bake bread every Sunday morning, and the smell would...",opts:["...wake the whole family up.","...stay outside the house.","...mean she was angry."],best:0,zh:"baking smell → woke family"},
+  {discourse:"If I'd known the restaurant was so expensive, I...",opts:["...would have ordered more.","...wouldn't have chosen it for the family dinner.","...will visit again."],best:1,zh:"third conditional → wouldn't have chosen"},
+  {discourse:"After working long hours all week, the only thing I wanted to do on Saturday was...",opts:["...go to work.","...stay home and rest.","...attend a busy meeting."],best:1,zh:"long hours → wanted to rest"},
+  {discourse:"The traffic was so bad on the M25 that we...",opts:["...arrived two hours late to the wedding.","...were the first to arrive.","...drove straight home."],best:0,zh:"bad traffic → late"},
+  {discourse:"I'd booked a table for two at the new Italian place, but when we arrived...",opts:["...the menu was huge.","...they had no record of our booking.","...the staff smiled warmly."],best:1,zh:"booked but → no record"},
+  {discourse:"My son's been asking for a puppy for months now, but my wife...",opts:["...is still worried about the responsibility.","...bought one yesterday.","...prefers cats anyway."],best:0,zh:"asking, but wife → worried"},
+  {discourse:"The presentation went really well, so my manager decided to...",opts:["...let me lead the next big project.","...fire me on the spot.","...take a holiday."],best:0,zh:"went well → got bigger project"},
+  {discourse:"I love walking in the park, especially in autumn when...",opts:["...everything is covered in snow.","...the leaves turn gold and red.","...all the flowers are blooming."],best:1,zh:"autumn → leaves gold/red"},
+  {discourse:"I'd never been to a wedding in the UK before, so when my colleague invited me...",opts:["...I refused without thinking.","...I was curious to see how different it would be.","...I knew exactly what to expect."],best:1,zh:"never → curious"},
+  {discourse:"The shop assistant was so helpful that I decided to...",opts:["...buy nothing in the end.","...write a positive review online.","...complain about the service."],best:1,zh:"helpful → positive review"},
+  {discourse:"Although we've been neighbours for five years, we...",opts:["...have only spoken a handful of times.","...spend every weekend together.","...lived in different cities."],best:0,zh:"neighbours 5 years, although → barely spoken"},
+  {discourse:"I'd rather take the train than fly because...",opts:["...flights are always on time.","...trains are far more relaxing and you see the countryside.","...trains are always cancelled."],best:1,zh:"prefer train because → relaxing"},
+  {discourse:"My doctor said if I want to feel healthier, I should...",opts:["...sleep less and eat more sugar.","...exercise regularly and cut down on processed food.","...stop drinking water."],best:1,zh:"feel healthier → exercise + good food"},
+  {discourse:"When I told my parents I was moving to the UK, they were...",opts:["...delighted and not surprised at all.","...initially worried but proud of my decision.","...angry and refused to speak to me."],best:1,zh:"moving abroad → parents worried but proud"}
+];
+
+// Grammar Drill — 7 areas Trinity GESE Grade 7 specifically tests
+const B2_GRAMMAR=[
+  {area:"Simple Past",zh:"簡單過去式",rule:"動作完成於過去，加 -ed（regular）或不規則動詞",drills:[
+    {s:"Yesterday I ___ (visit) my grandmother in the countryside.",ans:"visited"},
+    {s:"She ___ (go) to Paris last summer.",ans:"went"},
+    {s:"They ___ (eat) all the cakes before we arrived.",ans:"ate"},
+    {s:"He ___ (buy) a new laptop two weeks ago.",ans:"bought"},
+    {s:"We ___ (see) a fantastic film at the cinema.",ans:"saw"},
+    {s:"The teacher ___ (give) us a lot of homework yesterday.",ans:"gave"},
+    {s:"I ___ (not enjoy) the party last night.",ans:"did not enjoy"},
+    {s:"___ you (finish) your essay on time?",ans:"Did, finish"},
+    {s:"She ___ (take) the train to Manchester last week.",ans:"took"},
+    {s:"My brother ___ (break) his arm playing football.",ans:"broke"}
+  ]},
+  {area:"Second Conditional",zh:"第二條件句（與現在或將來事實相反）",rule:"If + past simple, would + base verb（不真實 / 假設情況）",drills:[
+    {s:"If I ___ (have) more time, I would learn Spanish.",ans:"had"},
+    {s:"If she ___ (be) here, she would help us.",ans:"were"},
+    {s:"I would buy a new car if I ___ (win) the lottery.",ans:"won"},
+    {s:"If I ___ (know) the answer, I would tell you.",ans:"knew"},
+    {s:"He would travel more if he ___ (have) the money.",ans:"had"},
+    {s:"What ___ you (do) if you lost your job tomorrow?",ans:"would, do"},
+    {s:"If we ___ (live) closer, we would visit more often.",ans:"lived"},
+    {s:"I would feel better if I ___ (sleep) more.",ans:"slept"},
+    {s:"If they ___ (offer) me the job, I would accept it.",ans:"offered"},
+    {s:"She ___ (move) to London if she got a better salary.",ans:"would move"}
+  ]},
+  {area:"Passive Voice",zh:"被動語態",rule:"be + 過去分詞（強調動作受體，唔係做嘅人）",drills:[
+    {s:"English ___ (speak) in many countries around the world.",ans:"is spoken"},
+    {s:"The new hospital ___ (build) in 2024.",ans:"was built"},
+    {s:"Recycling ___ (teach) in primary schools nowadays.",ans:"is taught"},
+    {s:"The letter ___ (deliver) yesterday morning.",ans:"was delivered"},
+    {s:"This bridge ___ (design) by a famous architect.",ans:"was designed"},
+    {s:"My phone ___ (steal) on the bus last week.",ans:"was stolen"},
+    {s:"The Olympics ___ (hold) every four years.",ans:"are held"},
+    {s:"That book ___ (write) by a Nobel Prize winner.",ans:"was written"},
+    {s:"The cake ___ (eat) before I got home.",ans:"had been eaten"},
+    {s:"The road ___ (close) for repairs at the moment.",ans:"is being closed"}
+  ]},
+  {area:"Used to",zh:"'Used to'（過去習慣或狀態，而家已經唔係）",rule:"used to + base verb（肯定）／didn't use to / never used to（否定）",drills:[
+    {s:"I ___ live in a small village when I was a child.",ans:"used to"},
+    {s:"She didn't ___ like coffee, but now she drinks it every morning.",ans:"use to"},
+    {s:"We ___ go camping every summer with our family.",ans:"used to"},
+    {s:"He ___ have long hair, but he cut it last year.",ans:"used to"},
+    {s:"Did you ___ play any musical instruments at school?",ans:"use to"},
+    {s:"There ___ be a cinema on this street, but it closed down.",ans:"used to"},
+    {s:"My grandparents ___ tell us stories every evening.",ans:"used to"},
+    {s:"I never ___ enjoy reading, but now I love it.",ans:"used to"},
+    {s:"Children ___ play outside much more in those days.",ans:"used to"},
+    {s:"This building ___ be a hospital before it became a school.",ans:"used to"}
+  ]},
+  {area:"Relative Clauses (questions)",zh:"含關係子句嘅問句",rule:"用 who / which / that / where 接補充資訊",drills:[
+    {s:"Do you know anyone ___ speaks French fluently?",ans:"who"},
+    {s:"Is this the restaurant ___ we went to last year?",ans:"where"},
+    {s:"What's the name of the film ___ won the Oscar?",ans:"that"},
+    {s:"Have you met the woman ___ lives next door?",ans:"who"},
+    {s:"Where's the book ___ I lent you last month?",ans:"that"},
+    {s:"Do you remember the day ___ we first met?",ans:"when"},
+    {s:"That's the man ___ son plays in the band.",ans:"whose"},
+    {s:"What's the website ___ has good language courses?",ans:"that"},
+    {s:"Is this the town ___ your parents grew up?",ans:"where"},
+    {s:"Have you tried the new café ___ opened last week?",ans:"that"}
+  ]},
+  {area:"Advice & Suggestions",zh:"畀建議",rule:"You should / Why don't you / I'd recommend / If I were you...",drills:[
+    {s:"Complete: If I were ___, I would book early.",ans:"you"},
+    {s:"Complete: You ___ try the new Italian restaurant.",ans:"should"},
+    {s:"Complete: Why ___ you take a holiday?",ans:"don't"},
+    {s:"Complete: I ___ recommend visiting in spring.",ans:"would"},
+    {s:"Complete: ___ I suggest a different approach?",ans:"May"},
+    {s:"Complete: It ___ be a good idea to call first.",ans:"might"},
+    {s:"Complete: You ___ better leave early to avoid traffic.",ans:"had"},
+    {s:"Complete: How ___ trying yoga to relax?",ans:"about"},
+    {s:"Complete: Have you ___ considered seeing a doctor?",ans:"ever"},
+    {s:"Complete: Perhaps you ___ ask your manager directly.",ans:"could"}
+  ]},
+  {area:"Agreeing & Disagreeing",zh:"同意 / 反對 用語",rule:"自然表達 agreement 或 disagreement 同 reason",drills:[
+    {s:"Complete: I see ___ you mean, but I don't quite agree.",ans:"what"},
+    {s:"Complete: That's ___ fair point, but consider this...",ans:"a"},
+    {s:"Complete: I couldn't ___ more — exactly my view!",ans:"agree"},
+    {s:"Complete: I'm afraid I ___ to disagree with you.",ans:"have"},
+    {s:"Complete: Absolutely, especially ___ it affects families.",ans:"when"},
+    {s:"Complete: I tend to ___ with your second point.",ans:"agree"},
+    {s:"Complete: On the ___ hand, there are real benefits.",ans:"other"},
+    {s:"Complete: I'm ___ sure I share your concern.",ans:"not"},
+    {s:"Complete: You ___ a very good point about cost.",ans:"make"},
+    {s:"Complete: I take your point, ___ I'd add one more thing.",ans:"although"}
+  ]}
+];
+
 const B2_PLAN=[
   {phase:1,name:"5月 · 評估 + 建立習慣",goal:"了解自己程度，建立每日學習習慣",items:["做 B1/B2 程度測試，找出弱點（British Council 網站有免費測試）","練習話題 1：自我介紹——住邊、家庭、喺英國幾耐","每日聽 BBC Learning English「6 Minute English」","學 App 詞彙庫「生活」分類，第 1-10 個生字"],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘"},
   {phase:1,name:"6月 · 日常生活話題",goal:"可以流暢講 2 個話題，每個超過 1 分鐘",items:["練習話題 2：日常生活——典型一日、興趣、習慣","學習 B2 連接詞：however / furthermore / as a result / for instance","學 App 詞彙庫「工作」分類，第 11-20 個生字","練習「買時間」短語：That's a good question... / Let me think..."],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘"},
@@ -1601,58 +1835,6 @@ const B2_PLAN=[
   {phase:3,name:"12月 · 報名 + 全速衝刺",goal:"正式報名考試，針對弱點加強",items:["報名 IELTS Life Skills B2（約 £185）或 Trinity B2（約 £135）","每週模擬考試 2 次，每次 30 分鐘計時","練習考試禮貌語：Could you repeat that? / I'm not sure I follow...","複習最重要 50 個詞彙，確保可以自然使用"],daily:"模擬練習 35 分鐘 · 聽力 15 分鐘 · 詞彙 10 分鐘"},
   {phase:3,name:"1月 · 最後衝刺",goal:"信心十足，準備好考試",items:["每日練習一個話題，計時 1.5 分鐘，唔可以停頓太耐","練習對話互動：回應對方意見、問對方問題","每日聽英式英語最少 20 分鐘（BBC Radio 4 / 英劇）","放鬆心情，唔好死背，練習自然對話"],daily:"模擬對話 40 分鐘 · 聽力 20 分鐘"},
   {phase:3,name:"2月 · 考試前準備",goal:"保持狀態，考試合格！",items:["每日輕鬆練習 30-45 分鐘，唔好過度緊張","考試前一晚：早睡，唔好死背","考試當日：早點到，深呼吸，自然對話","記住：Pass/Fail 制，流暢清晰就夠，唔係要求完美！"],daily:"考試貼士：講錯唔緊要，自然糾正返就得。考官評估溝通能力，唔係完美文法！",milestone:"🏆 目標：B2 合格，申請 ILR 永居！"}
-];
-
-const B2_TOPICS=[
-  {num:1,topic:"自我介紹",phase:"第1月",q:"Can you tell me about yourself and your life in the UK?",ctx:"Talk about where you live, how long you've been here, your family situation, and what you do day to day.",tags:["自我介紹","家庭"],
-   tips:["Start with your name, where you're originally from, and how long you've been in the UK.","Use the ARE method: Answer the question, give a Reason, add an Example.","Mention 2–3 specific details (job, family, daily life) to add depth.","If unsure, say 'That's a good question, let me think for a moment...'"],
-   sample:`My name is [your name] and I'm originally from Hong Kong. I've been living in the UK for around five years now, and I've <span class="hw">settled</span> in Manchester with my family. I work as a healthcare assistant, which I find very rewarding. <span class="hw">Adjusting</span> to British life was challenging at first — the weather, the food, the customs — but I've grown to genuinely <span class="hw">appreciate</span> it. My typical day involves an early morning <span class="hw">commute</span> to the hospital, and in the evenings I enjoy cooking with my children. We've fitted into our <span class="hw">neighbourhood</span> very well — our neighbours are friendly and welcoming. Overall, I feel grateful for the opportunities the UK has given my family.`},
-  {num:2,topic:"日常生活",phase:"第2月",q:"Can you describe a typical day in your life here in the UK?",ctx:"Talk about your morning routine, how you spend your day, what you do in the evenings, and what you enjoy about daily life.",tags:["日常","生活習慣"],
-   tips:["Describe morning, work, and evening separately for structure.","Use sequencers: first / then / after that / finally.","Mention one or two specific examples to make it personal.","Include something you genuinely enjoy — it lets your personality come through."],
-   sample:`A <span class="hw">typical</span> day for me starts around six in the morning. I make a coffee, check the news on my phone, then get the children ready for school. After dropping them off, I <span class="hw">commute</span> to work by bus, which is <span class="hw">convenient</span> and <span class="hw">reliable</span>. My job runs from nine to five, and I usually have lunch at a small café nearby. In the evening, I cook dinner with the family — we try to eat together when possible. Afterwards, I might go for a short walk or read a book to unwind. On weekends, we visit the park or do the food shop together. I find a regular <span class="hw">routine</span> really helps me stay <span class="hw">balanced</span> and feel settled.`},
-  {num:3,topic:"工作學習",phase:"第3月",q:"Can you tell me about your work or studies? What keeps you busy on a typical weekday?",ctx:"Talk about your job, working hours, or daily activities. If not working, describe what you do to keep yourself occupied.",tags:["工作","職業"],
-   tips:["Name your role clearly with one sentence describing what it involves.","Mention 2–3 typical tasks or responsibilities.","Add what you enjoy or find challenging — shows reflection.","If not working, talk about volunteering, family, or learning new skills."],
-   sample:`I currently work as a teaching assistant at a local primary school. My main <span class="hw">responsibility</span> is supporting children with extra learning needs, particularly in reading and writing. A typical day involves preparing materials, working one-to-one with pupils, and helping the class teacher during lessons. What I enjoy most is seeing students gain confidence — when a child finally understands something, it's incredibly rewarding. The hours suit me well, so I can pick up my own children afterwards. My <span class="hw">colleagues</span> are very supportive, and we have regular training <span class="hw">opportunities</span>. I'm hoping to do a teaching <span class="hw">qualification</span> next year, which would open up more <span class="hw">career</span> options for me. Overall, the work fits my life well.`},
-  {num:4,topic:"英國生活",phase:"第3月",q:"How have you found life in the UK? What have you had to get used to since arriving here?",ctx:"Talk about adjusting to British life — things you like, things that surprised you, the weather, culture, food, or people.",tags:["英國","適應"],
-   tips:["Pick 2–3 specific things (weather, food, customs, language).","Show both pleasant surprises and challenges.","Use 'I had to get used to...' for adapting experiences.","Avoid clichés — share a personal experience instead."],
-   sample:`Life in the UK has been an interesting journey. The first thing I had to <span class="hw">adjust</span> to was the weather — the constant grey skies and unexpected rain. I now always carry an umbrella, which I never did back home. The British way of queuing surprised me at first; people are so patient and orderly. I've genuinely come to <span class="hw">appreciate</span> the politeness — phrases like 'thank you', 'please' and 'sorry' are used constantly. The food was a bigger adjustment, but I now love a proper Sunday roast. What I value most, however, is the <span class="hw">diversity</span>. Walking through any town, you hear so many languages and see so many cultures coexisting. British society makes a real effort to be <span class="hw">welcoming</span> to newcomers, and that has helped me settle.`},
-  {num:5,topic:"社區融入",phase:"第4月",q:"How do you get involved in your local community? Do you have a good relationship with your neighbours?",ctx:"Talk about community events, local shops, talking to neighbours, volunteering, or how you feel about your local area.",tags:["社區","鄰居"],
-   tips:["Describe your relationship with neighbours specifically.","Mention 1 community event you've attended.","Share volunteering or local involvement if any.","Use phrases: 'get to know', 'feel part of', 'look out for each other'."],
-   sample:`I'd say I have a really good <span class="hw">relationship</span> with my neighbours. When we first moved in, our next-door neighbour brought over a cake to welcome us, which was such a lovely gesture. We now look out for each other — collecting parcels when one of us is away, that sort of thing. There's a small <span class="hw">community</span> centre nearby that runs events like coffee mornings and a Christmas fair. I went to one last December and met several local families. I also <span class="hw">volunteer</span> once a month at the local food bank, which has been a wonderful way to <span class="hw">contribute</span> and meet people from different backgrounds. I genuinely feel part of the neighbourhood now — small interactions really do add up.`},
-  {num:6,topic:"健康生活",phase:"第4月",q:"How do you try to stay healthy in your everyday life? Have you had experience using the NHS?",ctx:"Talk about exercise, diet, going to the GP, mental wellbeing, or any NHS services you've found useful.",tags:["健康","NHS"],
-   tips:["Mention diet, exercise, and mental wellbeing together for balance.","Share a positive (or balanced) NHS experience briefly.","Be specific: walking, swimming, cooking from scratch.","Use words: prevention, lifestyle, balance, wellbeing."],
-   sample:`I try to look after my health in a few simple ways. I aim to walk at least thirty minutes every day, usually during my lunch break. I also cook most meals from scratch using fresh ingredients — it's healthier and more economical. Mental <span class="hw">wellbeing</span> is just as important, so I try to switch off from work in the evenings and spend quality time with my family. As for the NHS, my experience has been mostly positive. I had to see my GP last year for some back pain, and the <span class="hw">appointment</span> system was straightforward. The doctor referred me to a physiotherapist within a few weeks, and the <span class="hw">treatment</span> really helped. I think prevention is key — eating well, staying active, and getting enough sleep makes a real difference.`},
-  {num:7,topic:"交通環境",phase:"第5月",q:"How do you usually travel around in the UK? Do you think about the environment in your daily choices?",ctx:"Talk about public transport, driving, cycling, or walking. Share your thoughts on environmental issues and sustainability.",tags:["交通","環境"],
-   tips:["Compare modes: bus, train, walking, cycling, car.","Mention reliability, cost, and environmental impact.","Share one sustainable choice you make personally.","Use B2 vocab: sustainable, carbon footprint, public transport."],
-   sample:`I mostly rely on <span class="hw">public transport</span> to get around. Where I live, the bus service is fairly <span class="hw">reliable</span>, and there's a train station within walking distance, which makes commuting straightforward. I do own a car, but I use it less these days — partly because of fuel costs and partly because I'm more aware of my <span class="hw">carbon footprint</span>. For short journeys, I try to walk or cycle whenever possible. I'm genuinely concerned about climate change, so making <span class="hw">sustainable</span> choices feels important. Our family also recycles carefully and tries to <span class="hw">reduce</span> single-use plastic. It's not about being perfect, but every small change helps. I'd love to see more investment in cycling infrastructure here.`},
-  {num:8,topic:"教育家庭",phase:"第6月",q:"Have you or any family members used education services in the UK? What has your experience been like?",ctx:"Talk about schools, colleges, adult learning courses, or training. Share thoughts on education in the UK.",tags:["教育","家庭"],
-   tips:["Name school type (primary / secondary / college / adult learning).","Mention specific positive experiences.","Touch on adult learning if relevant.","Balance any criticism with positives."],
-   sample:`Both of my children attend the local primary school, and our experience has been very positive. The teachers are dedicated, and the school <span class="hw">encourages</span> a real love of learning. They focus not only on academic subjects but also on creativity, sport, and social skills. The class sizes are reasonable, which means each child gets attention. I particularly appreciate the parent-teacher meetings where we discuss <span class="hw">progress</span> regularly. I've also benefited from <span class="hw">education</span> myself — I attended an evening English course at the local community college last year, which improved my confidence considerably. Education here gives you so many <span class="hw">opportunities</span>, regardless of your age. My eldest is now considering different career paths, and the school provides excellent guidance.`},
-  {num:9,topic:"未來計劃",phase:"第6月",q:"What are your plans or hopes for the future now that you are building a life in the UK?",ctx:"Talk about career goals, family plans, where you'd like to live, or how you hope to contribute to British society.",tags:["未來","計劃"],
-   tips:["Talk about career, family, citizenship, and study together.","Use 'I'm hoping to...' / 'My ambition is...' / 'I plan to...'","Be realistic but show motivation.","Mention how you want to contribute back."],
-   sample:`My plans for the future are centred on settling <span class="hw">permanently</span> here in the UK. My most immediate goal is to obtain my Indefinite Leave to Remain, which would give my family the stability we've been working towards. Career-wise, I'm hoping to qualify as a registered nurse — I've already started a part-time course at the local college, and I aim to complete it within two years. My <span class="hw">ambition</span> is to work in the NHS and give back to the community. For my children, I want them to thrive in school and feel proud of both their heritage and their British identity. I also hope to <span class="hw">contribute</span> back to British society — perhaps through volunteering. I feel genuinely grateful for the life we're building.`},
-  {num:10,topic:"英國文化",phase:"第7月",q:"What aspects of British culture have you come to appreciate or find interesting since living here?",ctx:"Talk about British customs, traditions, humour, food, national holidays, values, or things that feel distinctly British.",tags:["文化","英國"],
-   tips:["Pick 2–3 specific cultural aspects you genuinely value.","Examples: democracy, NHS, freedom of speech, queuing, tea culture.","Mention how you've adopted some habits.","Show respect without sounding rehearsed."],
-   sample:`There are several aspects of British culture I've come to genuinely <span class="hw">appreciate</span>. First, the strong sense of fair play and <span class="hw">respect</span> for the rule of law — whether it's queuing at the bus stop or following neighbourly customs, there's an unspoken commitment to fairness. I also admire the dry sense of humour, although it took me a while to understand it. Another thing I love is the strong sense of community — village fêtes, charity shops, and street parties for the King's birthday all bring people together. The NHS is something I deeply respect — the idea that everyone can access healthcare regardless of background is genuinely remarkable. I've even started enjoying a proper cup of tea in the afternoon. These small things add up to a culture I'm proud to be part of.`}
-];
-
-const B2_LISTEN=[
-  {title:"GP 手術預約",tag:"健康",script:"Receptionist: Good morning, Riverside Medical Centre, how can I help you?\nPatient: Hello, I'd like to make an appointment to see a doctor, please.\nReceptionist: Of course. Is this urgent or a routine matter?\nPatient: It's routine. I've been getting headaches for about two weeks and thought I should get it checked.\nReceptionist: Right. Our next available routine appointment is Thursday the fourteenth at half past ten in the morning. Would that suit you?\nPatient: Thursday the fourteenth at ten thirty — yes, that's perfect, thank you.\nReceptionist: Lovely. Could I take your name and date of birth?\nPatient: Sarah Chen, third of March nineteen eighty-five.\nReceptionist: Thank you Sarah. We'll send you a reminder text the day before. Please give us at least twenty-four hours' notice if you need to cancel.",
-   qs:[{q:"Why is the patient calling?",opts:["To cancel an appointment","To make a new appointment","To ask about test results","To speak to a doctor directly"],ans:1},{q:"When is the appointment?",opts:["Tuesday 14th at 10am","Thursday 14th at 10:30am","Friday 14th at 10:30am","Thursday 4th at 11am"],ans:1},{q:"What must the patient do if cancelling?",opts:["Call on the same day","Give 24 hours' notice","Send an email","Visit in person"],ans:1}]},
-  {title:"社區活動討論",tag:"社區",script:"Mark: Have you heard about the community fair they're organising in the park next month?\nLisa: Yes, I saw the flyers posted around. It's on the twentieth, isn't it?\nMark: That's right, the twentieth of June. There'll be stalls, live music, food from different cultures, and activities for children.\nLisa: That sounds wonderful. I was thinking of setting up a small stall to sell homemade food. Is there still space available?\nMark: I believe so. You need to register online by the first of June. The fee is fifteen pounds for a standard table.\nLisa: Fifteen pounds — quite reasonable. I'll do that tonight. Will you be going along?\nMark: Definitely. I'm also going to volunteer to help with setting up from eight o'clock in the morning.\nLisa: Maybe I'll volunteer too. It'd be a great way to meet more people in the neighbourhood.",
-   qs:[{q:"When is the community fair?",opts:["June 1st","June 15th","June 20th","June 30th"],ans:2},{q:"How much does a stall cost?",opts:["£10","£12","£15","£20"],ans:2},{q:"What time do volunteers start?",opts:["7am","8am","9am","10am"],ans:1}]},
-  {title:"英國天氣對話",tag:"日常生活",script:"Interviewer: You've been living in the UK for about three years now. How have you found the weather?\nResident: Well, it was quite a shock at first, to be honest. Where I'm from we have very distinct seasons. Here it feels like it can rain at any time of year.\nInterviewer: That's very true. Have you got used to it?\nResident: More or less. I always carry an umbrella now, which I never did before. The grey skies can feel a bit gloomy in winter, but I genuinely appreciate the mild summers. It doesn't get unbearably hot, which I actually prefer now.\nInterviewer: Does the weather affect your daily life much?\nResident: It influences what I wear and what activities I plan. But I think the British attitude towards weather is quite admirable — people just get on with things regardless.",
-   qs:[{q:"How long has the resident lived in the UK?",opts:["One year","Two years","Three years","Five years"],ans:2},{q:"What does the resident always carry now?",opts:["A coat","An umbrella","Sunglasses","A hat"],ans:1},{q:"What does the resident appreciate about UK summers?",opts:["They are long","They are sunny","They are not too hot","They are very warm"],ans:2}]},
-  {title:"公共交通對話",tag:"交通",script:"Tom: How do you usually get to work? Do you drive?\nAisha: No, I don't drive. I take the bus and sometimes the train. It works out quite well — I don't have to worry about parking or traffic jams.\nTom: That makes sense. Do you find public transport reliable here?\nAisha: Most of the time, yes. The buses run fairly regularly. Occasionally there are delays, but there's usually a notice on the app or at the stop.\nTom: I've been thinking of leaving my car at home more often. It's better for the environment as well.\nAisha: Absolutely. Walking or cycling for short distances makes a real difference too. And it keeps you fit at the same time!\nTom: True. Maybe I'll try the cycle-to-work scheme. My company actually offers it.",
-   qs:[{q:"How does Aisha get to work?",opts:["She drives","She cycles","She takes the bus and train","She walks"],ans:2},{q:"What does Aisha say about bus delays?",opts:["They are very frequent","There is usually a notice","The buses are always on time","She often misses the bus"],ans:1},{q:"What does Tom's company offer?",opts:["Free parking","A bus pass","A cycle-to-work scheme","A taxi service"],ans:2}]},
-  {title:"鄰居對話",tag:"社區",script:"Neighbour 1: Morning! I haven't seen you around for a while. Have you been away?\nNeighbour 2: Yes, we went back to visit family overseas for a few weeks. It was lovely but it's good to be home.\nNeighbour 1: How nice! Did you have good weather over there?\nNeighbour 2: Much hotter than here, actually. We're not used to the heat anymore, which is funny.\nNeighbour 1: Hey, did you get the note about the street clean-up this Saturday?\nNeighbour 2: I did. Ten o'clock at the park entrance, isn't it? We're planning to come along.\nNeighbour 1: Wonderful. The more the merrier. They're providing gloves and bags — just bring yourself.\nNeighbour 2: Perfect. We'll see you there then!",
-   qs:[{q:"Where had Neighbour 2 been?",opts:["On holiday","Visiting family overseas","In hospital","Working abroad"],ans:1},{q:"What is happening on Saturday?",opts:["A street party","A community fair","A street clean-up","A neighbourhood meeting"],ans:2},{q:"What time does the Saturday event start?",opts:["9am","10am","11am","12pm"],ans:1}]},
-  {title:"學校電話",tag:"教育",script:"Secretary: Good afternoon, Oakfield Primary School, how may I help?\nParent: Hello, this is Mrs Wong. My son Daniel is in Year Four. I'm calling because he has a dentist appointment tomorrow morning and won't be in until half past eleven.\nSecretary: Of course, Mrs Wong. So Daniel will be absent for morning registration and arrive at approximately eleven thirty?\nParent: That's right. His teacher is Miss Clarke. I just wanted to make sure she knows.\nSecretary: Absolutely. I'll pass the message to Miss Clarke and mark Daniel as a late arrival for tomorrow.",
-   qs:[{q:"Why is Daniel missing the morning?",opts:["He is unwell","He has a dentist appointment","He has a hospital check-up","He has a sports event"],ans:1},{q:"What time will Daniel arrive at school?",opts:["10:30am","11:00am","11:30am","12:00pm"],ans:2},{q:"Who is Daniel's teacher?",opts:["Mrs Wong","Miss Clarke","Miss Chen","Mrs Park"],ans:1}]},
-  {title:"工作面試準備",tag:"工作",script:"Friend 1: So your job interview is tomorrow — are you feeling ready?\nFriend 2: Mostly yes. I've done a lot of research about the company. I just get nervous in interviews.\nFriend 1: That's completely normal. Just remember to breathe and take your time before answering.\nFriend 2: They mentioned it'll be a panel interview with three people. That's what worries me most.\nFriend 1: Don't focus on the number of people. Just talk to whoever asked the question. And use examples from your experience — that always helps.\nFriend 2: Good tip. I've prepared a few examples of problems I've solved at work.\nFriend 1: Perfect. And make sure you ask them a question at the end — it shows you're genuinely interested.",
-   qs:[{q:"When is the interview?",opts:["Today","Tomorrow","Next week","This afternoon"],ans:1},{q:"What kind of interview is it?",opts:["A phone interview","A one-to-one","A panel interview with 3 people","An online interview"],ans:2},{q:"What does Friend 1 advise doing at the end?",opts:["Leave quickly","Ask the interviewer a question","Bring extra copies of your CV","Speak as much as possible"],ans:1}]},
-  {title:"環保討論",tag:"環境",script:"Anna: I've been trying to reduce my plastic waste recently. It's harder than I thought.\nBen: I know what you mean. I started taking reusable bags everywhere, but I still end up with plastic sometimes.\nAnna: Me too. I've switched to a reusable water bottle and coffee cup though — that's helped a lot.\nBen: Good idea. I've also started buying loose vegetables instead of the pre-packaged ones at the supermarket.\nAnna: Brilliant. I heard our council is improving the recycling facilities soon — more bins for different materials.\nBen: About time! I always get confused about what can and can't go in the recycling. Hopefully it'll be clearer.",
-   qs:[{q:"What has Anna switched to using?",opts:["Paper bags","A reusable bottle and coffee cup","A bicycle","Organic food"],ans:1},{q:"What does Ben buy instead of pre-packaged vegetables?",opts:["Frozen vegetables","Loose vegetables","Tinned vegetables","Organic vegetables"],ans:1},{q:"What is the council improving?",opts:["Public transport","Parks and gardens","Recycling facilities","Street lighting"],ans:2}]}
 ];
 
 const B2_VOCAB=[
@@ -1739,15 +1921,15 @@ const B2_VOCAB=[
 ];
 
 const B2_CATS=["全部","生活","工作","社區","健康","交通","教育","文化","通用"];
-let b2SpkIdx=0,b2LisIdx=0,b2VcIdx=0,b2LisScore=0,b2LisAns={},b2VcCat="全部",b2Initialized=false,b2Playing=false;
+let b2TopIdx=0,b2IntIdx=0,b2GtIdx=0,b2GtQIdx=0,b2LeIdx=0,b2GrAreaIdx=0,b2GrQIdx=0,b2GrAns={},b2VcIdx=0,b2VcCat="全部",b2Initialized=false,b2Playing=false,b2MockState=null;
 
 function b2Init(){
   if(b2Initialized)return;
   b2Initialized=true;
-  b2RenderPlan();b2RenderSpeaking();b2RenderListening();b2RenderVocab();b2RenderTips();
+  b2RenderPlan();b2RenderTopic();b2RenderInteractive();b2RenderConversation();b2RenderListening();b2RenderGrammar();b2RenderVocab();b2RenderMock();b2RenderTips();
 }
 function b2Switch(n){
-  const names=['plan','speaking','listening','vocab','tips'];
+  const names=['plan','topic','interactive','conversation','listening','grammar','vocab','mock','tips'];
   document.querySelectorAll('.b2-subtab').forEach((t,i)=>t.classList.toggle('active',names[i]===n));
   document.querySelectorAll('.b2-subpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('b2sub-'+n).classList.add('active');
@@ -1774,88 +1956,279 @@ function b2TogglePlan(idx){
   arr.style.transform=open?'rotate(180deg)':'';
 }
 
-function b2RenderSpeaking(){
-  const t=B2_TOPICS[b2SpkIdx],total=B2_TOPICS.length;
-  document.getElementById('b2sub-speaking').innerHTML=`
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">10 個入籍考試核心話題 · 提示同參考答案 · 用 ARE 法答題</p>
-    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2SpkIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2SpkIdx+1}/${total}</span></div>
+// Phase 1 — Topic Builder
+function b2RenderTopic(){
+  const t=B2_PORTFOLIO[b2TopIdx],total=B2_PORTFOLIO.length;
+  document.getElementById('b2sub-topic').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🎤 <b>Phase 1 (5 分鐘)</b>：你提前準備呢個 topic，考官會 discuss + 追問。揀一個你最熟悉嘅好。</p>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2TopIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2TopIdx+1}/${total}</span></div>
     <div class="b2-tcard">
-      <div class="b2-tnum">話題 ${t.num} · ${t.topic} · <span style="color:var(--green)">${t.phase}</span></div>
-      <div class="b2-tq">❓ ${t.q}</div>
-      <div class="b2-tctx">💭 ${t.ctx}</div>
-      <div>${t.tags.map(g=>`<span class="b2-tag sp">${g}</span>`).join('')}<span class="b2-tag b2">B2</span></div>
+      <div class="b2-tnum">Portfolio Topic ${b2TopIdx+1}</div>
+      <div class="b2-tq">🎯 ${t.name}</div>
+      <div class="b2-tctx">💭 ${t.name_zh}</div>
+      <button class="btn bg2" style="margin-top:8px;font-size:.75rem;padding:6px 12px;" onclick="speakWord('${escJs(t.name)}')">🔊 聽 topic</button>
     </div>
-    <div class="b2-spk-btns">
-      <button class="btn bg2" onclick="speakWord(B2_TOPICS[${b2SpkIdx}].q)">🔊 聽問題</button>
-      <button class="btn bg2" onclick="b2ToggleTips()">💡 答題提示</button>
-      <button class="btn bg2" onclick="b2ToggleSample()">📝 參考答案</button>
+    <div style="margin-bottom:10px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">📋 建議結構</div>
+    <ol style="font-size:.85rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.7;">${t.structure.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+    <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">🔑 關鍵 B2 詞彙</div>
+    <div style="margin-bottom:14px;line-height:1.9;">${t.vocab.map(v=>`<span class="b2-tag b2" style="cursor:pointer;" onclick="speakWord('${escJs(v)}')">${esc(v)} 🔊</span>`).join(' ')}</div>
+    <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;">❓ 考官會問你 (${t.qs.length} 條練習題)</div>
+    <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.qs.map(q=>`<li>${esc(q)} <button onclick="speakWord('${escJs(q)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn bg2" onclick="b2PrevTop()" ${b2TopIdx===0?'disabled':''}>← 上一個</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextTop()" ${b2TopIdx===total-1?'disabled':''}>下一個 →</button>
+    </div>`;
+}
+function b2NextTop(){if(b2TopIdx<B2_PORTFOLIO.length-1){b2TopIdx++;b2RenderTopic();}}
+function b2PrevTop(){if(b2TopIdx>0){b2TopIdx--;b2RenderTopic();}}
+
+// Phase 2 — Interactive Task Simulator
+function b2RenderInteractive(){
+  const t=B2_INTERACTIVE[b2IntIdx],total=B2_INTERACTIVE.length;
+  document.getElementById('b2sub-interactive').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">💬 <b>Phase 2 (4 分鐘)</b>：考官畀 prompt，你**主動問問題 + 表達意見**。Trinity 特別測試你嘅 conversation control 能力。</p>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2IntIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2IntIdx+1}/${total}</span></div>
+    <div class="b2-tcard">
+      <div class="b2-tnum">Interactive Prompt ${b2IntIdx+1}</div>
+      <div class="b2-tq" style="font-style:italic;">考官說："${esc(t.prompt)}"</div>
+      <div class="b2-tctx">💭 ${t.zh}</div>
+      <button class="btn bg2" style="margin-top:8px;font-size:.75rem;padding:6px 12px;" onclick="speakWord('${escJs(t.prompt)}')">🔊 聽考官</button>
     </div>
-    <div id="b2-tips" class="b2-tips"><h4>答題提示</h4><ul>${t.tips.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-    <div id="b2-sample" class="b2-sample"><div class="b2-slbl">✅ B2 程度參考答案</div><p>${t.sample}</p>
-      <button class="btn bg2" style="margin-top:8px;font-size:.75rem;padding:7px 12px;" onclick="speakWord(B2_TOPICS[${b2SpkIdx}].sample.replace(/<[^>]+>/g,''))">🔊 聽範例</button>
+    <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;">❓ 你可以問嘅問題（必須主動發問！）</div>
+    <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.starters.map(q=>`<li>${esc(q)} <button onclick="speakWord('${escJs(q)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>
+    <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--green);text-transform:uppercase;letter-spacing:.08em;">💡 你可以畀嘅意見</div>
+    <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.comments.map(c=>`<li>${esc(c)} <button onclick="speakWord('${escJs(c)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>
+    <div class="b2-tips show" style="margin-bottom:10px;"><h4>💡 互動規則</h4><ul><li>必須**主動發問**（單純答嘢會失分）</li><li>聽考官回應後追問或補充</li><li>用 question starters：Have you...? / How about...? / Could you tell me...?</li><li>清晰、有重點，唔需要完美文法</li></ul></div>
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn bg2" onclick="b2PrevInt()" ${b2IntIdx===0?'disabled':''}>← 上一個</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextInt()" ${b2IntIdx===total-1?'disabled':''}>下一個 →</button>
+    </div>`;
+}
+function b2NextInt(){if(b2IntIdx<B2_INTERACTIVE.length-1){b2IntIdx++;b2RenderInteractive();}}
+function b2PrevInt(){if(b2IntIdx>0){b2IntIdx--;b2RenderInteractive();}}
+
+// Phase 3 — Conversation (6 Trinity subject areas)
+function b2RenderConversation(){
+  const a=B2_GRADE7[b2GtIdx];
+  const totalQ=a.qs.length;
+  if(b2GtQIdx>=totalQ)b2GtQIdx=0;
+  const q=a.qs[b2GtQIdx];
+  document.getElementById('b2sub-conversation').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🗣️ <b>Phase 3 (5 分鐘)</b>：考官由呢 <b>6 個</b> 官方 subject area 揀 <b>2 個</b> 同你討論。每個 area 都練習！</p>
+    <div class="b2-vff">${B2_GRADE7.map((g,i)=>`<button class="b2-vfb ${i===b2GtIdx?'active':''}" onclick="b2SetGt(${i})">${esc(g.name)}</button>`).join('')}</div>
+    <div class="b2-tcard">
+      <div class="b2-tnum">Subject Area · ${a.name_zh}</div>
+      <div class="b2-tq">${esc(a.name)}</div>
+      <div class="b2-tctx">📝 ${esc(a.intro)}</div>
+    </div>
+    <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">🔑 關鍵詞彙</div>
+    <div style="margin-bottom:14px;line-height:1.9;">${a.vocab.map(v=>`<span class="b2-tag b2" style="cursor:pointer;" onclick="speakWord('${escJs(v)}')">${esc(v)} 🔊</span>`).join(' ')}</div>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2GtQIdx+1)/totalQ*100}%"></div></div><span class="b2-prog-txt">問題 ${b2GtQIdx+1}/${totalQ}</span></div>
+    <div class="b2-tcard">
+      <div class="b2-tnum">考官問題 ${b2GtQIdx+1}</div>
+      <div class="b2-tq">❓ ${esc(q.q)}</div>
+      <button class="btn bg2" style="margin-top:6px;font-size:.75rem;padding:6px 12px;" onclick="speakWord('${escJs(q.q)}')">🔊 聽問題</button>
+    </div>
+    <div class="b2-sample show"><div class="b2-slbl">✅ B2 範例答案</div><p>${esc(q.sample)}</p>
+      <button class="btn bg2" style="margin-top:8px;font-size:.75rem;padding:7px 12px;" onclick="speakWord('${escJs(q.sample)}')">🔊 聽範例</button>
     </div>
     <div class="btn-row" style="margin-top:14px;">
-      <button class="btn bg2" onclick="b2PrevSpk()" ${b2SpkIdx===0?'disabled':''}>← 上題</button>
-      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextSpk()" ${b2SpkIdx===total-1?'disabled':''}>下題 →</button>
+      <button class="btn bg2" onclick="b2PrevGtQ()" ${b2GtQIdx===0?'disabled':''}>← 上題</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextGtQ()">${b2GtQIdx===totalQ-1?'返回第 1 題':'下題 →'}</button>
     </div>`;
 }
-function b2ToggleTips(){document.getElementById('b2-tips').classList.toggle('show');}
-function b2ToggleSample(){document.getElementById('b2-sample').classList.toggle('show');}
-function b2NextSpk(){if(b2SpkIdx<B2_TOPICS.length-1){b2SpkIdx++;b2RenderSpeaking();}}
-function b2PrevSpk(){if(b2SpkIdx>0){b2SpkIdx--;b2RenderSpeaking();}}
+function b2SetGt(i){b2GtIdx=i;b2GtQIdx=0;b2RenderConversation();}
+function b2NextGtQ(){b2GtQIdx=(b2GtQIdx+1)%B2_GRADE7[b2GtIdx].qs.length;b2RenderConversation();}
+function b2PrevGtQ(){if(b2GtQIdx>0){b2GtQIdx--;b2RenderConversation();}}
 
+// Phase 4 — Listening (Trinity ending format)
 function b2RenderListening(){
-  const s=B2_LISTEN[b2LisIdx],ans=b2LisAns[b2LisIdx]||{},total=B2_LISTEN.length;
+  const e=B2_ENDINGS[b2LeIdx],total=B2_ENDINGS.length;
   document.getElementById('b2sub-listening').innerHTML=`
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">8 段日常英式對話 · 聽完答選擇題 · 針對 IELTS Life Skills 題型</p>
-    <div style="display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:4px 12px;font-size:.76rem;font-weight:700;color:var(--gold);margin-bottom:12px;">✅ 答對：${b2LisScore} 題</div>
-    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2LisIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2LisIdx+1}/${total}</span></div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🎧 <b>Phase 4 (3 分鐘)</b>：考官讀 3 段短嘢，你 suggest 合理結尾。<b>呢度有 ${total} 題</b>讓你熟悉題型。</p>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2LeIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2LeIdx+1}/${total}</span></div>
     <div class="b2-listen">
-      <div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🎧 ${s.tag} · ${s.title}</div>
+      <div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🎙 考官讀</div>
       <div class="b2-audio">
-        <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">撳▶聆聽對話（英式口音）</p>
-        <button class="b2-playbtn" id="b2-pbtn" onclick="b2PlayListen()">▶</button>
-        <button class="b2-playbtn" style="background:var(--surface);color:var(--ink);font-size:.8rem;" onclick="b2ToggleScript()">📄 文字稿</button>
+        <p style="font-size:.85rem;color:var(--ink);font-style:italic;margin-bottom:12px;line-height:1.6;">"${esc(e.discourse)}"</p>
+        <button class="b2-playbtn" id="b2-pbtn" onclick="b2PlayEnding()">▶</button>
       </div>
-      <div id="b2-script" class="b2-script">${s.script.replace(/\n/g,'<br>')}</div>
     </div>
-    <div style="font-family:'Fira Code',monospace;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">❓ 聆聽後回答問題</div>
-    ${s.qs.map((q,qi)=>`<div class="b2-qcard"><div class="b2-qtext">${qi+1}. ${q.q}</div>${q.opts.map((o,oi)=>{let cls='b2-opt';if(ans[qi]!==undefined){cls+=' disabled';if(oi===q.ans)cls+=' correct';else if(oi===ans[qi])cls+=' wrong';}return `<button class="${cls}" onclick="b2AnswerQ(${qi},${oi},${q.ans})">${String.fromCharCode(65+oi)}. ${o}</button>`;}).join('')}</div>`).join('')}
-    <div class="btn-row" style="margin-top:10px;">
-      <button class="btn bg2" onclick="b2PrevLis()" ${b2LisIdx===0?'disabled':''}>← 上段</button>
-      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextLis()" ${b2LisIdx===total-1?'disabled':''}>下段 →</button>
+    <div style="font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">揀最合理嘅結尾：</div>
+    ${e.opts.map((o,i)=>{let cls='b2-opt';const ans=b2GrAns['le_'+b2LeIdx];if(ans!==undefined){cls+=' disabled';if(i===e.best)cls+=' correct';else if(i===ans)cls+=' wrong';}return `<button class="${cls}" onclick="b2AnsEnding(${i},${e.best})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`;}).join('')}
+    ${b2GrAns['le_'+b2LeIdx]!==undefined?`<div class="b2-tips show" style="margin-top:12px;"><h4>💡 為何揀呢個</h4><p style="font-size:.82rem;color:var(--ink2);line-height:1.6;">${esc(e.zh)}</p></div>`:''}
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn bg2" onclick="b2PrevLe()" ${b2LeIdx===0?'disabled':''}>← 上題</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextLe()" ${b2LeIdx===total-1?'disabled':''}>下題 →</button>
     </div>`;
 }
-function b2PlayListen(){
+function b2PlayEnding(){
+  const e=B2_ENDINGS[b2LeIdx];
   const btn=document.getElementById('b2-pbtn');
-  const s=B2_LISTEN[b2LisIdx];
   if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;btn.textContent='▶';btn.classList.remove('playing');return;}
   unlockSpeech&&unlockSpeech();
   window.speechSynthesis.cancel();
-  const lines=s.script.split('\n').filter(l=>l.trim());
-  let i=0;
-  function next(){
-    if(i>=lines.length){b2Playing=false;btn.textContent='▶';btn.classList.remove('playing');return;}
-    const u=new SpeechSynthesisUtterance(lines[i]);
-    u.lang='en-GB';u.rate=0.88;u.pitch=1.1;
-    const v=getCurrentVoice();if(v){u.voice=v;u.lang=v.lang;}
-    u.onend=()=>{i++;setTimeout(next,300);};
-    window.speechSynthesis.speak(u);
-    i++;
-  }
-  next();
+  const u=new SpeechSynthesisUtterance(e.discourse);
+  u.lang='en-GB';u.rate=0.88;u.pitch=1.1;
+  const v=getCurrentVoice();if(v){u.voice=v;u.lang=v.lang;}
+  u.onend=()=>{b2Playing=false;btn.textContent='▶';btn.classList.remove('playing');};
+  window.speechSynthesis.speak(u);
   b2Playing=true;btn.textContent='⏸';btn.classList.add('playing');
 }
-function b2ToggleScript(){document.getElementById('b2-script').classList.toggle('show');}
-function b2AnswerQ(qi,chosen,correct){
-  if(!b2LisAns[b2LisIdx])b2LisAns[b2LisIdx]={};
-  if(b2LisAns[b2LisIdx][qi]!==undefined)return;
-  b2LisAns[b2LisIdx][qi]=chosen;
-  if(chosen===correct)b2LisScore++;
+function b2AnsEnding(picked,correct){
+  if(b2GrAns['le_'+b2LeIdx]!==undefined)return;
+  b2GrAns['le_'+b2LeIdx]=picked;
   b2RenderListening();
 }
-function b2NextLis(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LisIdx<B2_LISTEN.length-1){b2LisIdx++;b2RenderListening();}}
-function b2PrevLis(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LisIdx>0){b2LisIdx--;b2RenderListening();}}
+function b2NextLe(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LeIdx<B2_ENDINGS.length-1){b2LeIdx++;b2RenderListening();}}
+function b2PrevLe(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LeIdx>0){b2LeIdx--;b2RenderListening();}}
+
+// Grammar — 7 areas Trinity tests
+function b2RenderGrammar(){
+  const a=B2_GRAMMAR[b2GrAreaIdx];
+  const totalD=a.drills.length;
+  if(b2GrQIdx>=totalD)b2GrQIdx=0;
+  const d=a.drills[b2GrQIdx];
+  const ansKey='gr_'+b2GrAreaIdx+'_'+b2GrQIdx;
+  const userAns=b2GrAns[ansKey];
+  document.getElementById('b2sub-grammar').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">📝 Trinity Grade 7 specifically tests these 7 grammar areas. 練熟咗考試自然用啱。</p>
+    <div class="b2-vff">${B2_GRAMMAR.map((g,i)=>`<button class="b2-vfb ${i===b2GrAreaIdx?'active':''}" onclick="b2SetGr(${i})">${esc(g.area)}</button>`).join('')}</div>
+    <div class="b2-tcard">
+      <div class="b2-tnum">${esc(a.area)} · ${esc(a.zh)}</div>
+      <div style="font-size:.8rem;color:var(--ink2);line-height:1.6;">📖 ${esc(a.rule)}</div>
+    </div>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2GrQIdx+1)/totalD*100}%"></div></div><span class="b2-prog-txt">${b2GrQIdx+1}/${totalD}</span></div>
+    <div class="b2-qcard">
+      <div class="b2-qtext">${esc(d.s)}</div>
+      ${userAns===undefined?`<input class="fill-input2" id="gr-input" placeholder="填答案…" autocomplete="off" autocapitalize="off" autocorrect="off" onkeydown="if(event.key==='Enter')b2CheckGr()">
+        <div class="btn-row" style="margin-top:8px;">
+          <button class="btn bg2" onclick="b2CheckGr()">確認</button>
+          <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextGr()">⏭ 跳過 / 下題</button>
+        </div>`:
+        `<div class="fill-input2 ${userAns.ok?'correct':'wrong'}" style="text-align:left;">你答: ${esc(userAns.v)}</div>
+        <div class="b2-tips show" style="margin-top:10px;"><h4>${userAns.ok?'✅ 答啱':'❌ 答錯'}</h4><p>正確答案: <b>${esc(d.ans)}</b></p></div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn bg2" onclick="b2PrevGr()" ${b2GrQIdx===0?'disabled':''}>← 上題</button>
+          <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextGr()">下題 →</button>
+        </div>`
+      }
+    </div>`;
+  if(userAns===undefined)setTimeout(()=>{const i=document.getElementById('gr-input');if(i)i.focus();},80);
+}
+function b2SetGr(i){b2GrAreaIdx=i;b2GrQIdx=0;b2RenderGrammar();}
+function b2CheckGr(){
+  const inp=document.getElementById('gr-input');if(!inp)return;
+  const v=inp.value.trim();if(!v)return;
+  const d=B2_GRAMMAR[b2GrAreaIdx].drills[b2GrQIdx];
+  const ok=v.toLowerCase()===d.ans.toLowerCase();
+  b2GrAns['gr_'+b2GrAreaIdx+'_'+b2GrQIdx]={v,ok};
+  b2RenderGrammar();
+}
+function b2NextGr(){
+  const tot=B2_GRAMMAR[b2GrAreaIdx].drills.length;
+  if(b2GrQIdx<tot-1){b2GrQIdx++;}else{b2GrQIdx=0;}
+  b2RenderGrammar();
+}
+function b2PrevGr(){if(b2GrQIdx>0){b2GrQIdx--;b2RenderGrammar();}}
+
+// Mock Exam — 4-phase Trinity simulation
+function b2RenderMock(){
+  const wrap=document.getElementById('b2sub-mock');
+  if(!b2MockState){
+    wrap.innerHTML=`
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">🎯 <b>Mock Exam</b>：完全跟 Trinity GESE Grade 7 嘅 4 phase 順序，總共 17 分鐘。隨機抽 portfolio topic、interactive prompt、2 個 conversation subject area + 3 段 listening endings。</p>
+      <div class="b2-hero">
+        <div class="lbl">⏱ Mock Exam 結構</div>
+        <p style="font-size:.82rem;line-height:1.7;">
+          <b>Phase 1 (5 分鐘)</b> · Topic discussion — 你隨機抽到一個 portfolio topic<br>
+          <b>Phase 2 (4 分鐘)</b> · Interactive task — 你隨機抽到 prompt<br>
+          <b>Phase 3 (5 分鐘)</b> · Conversation — 隨機抽 2 個 subject area<br>
+          <b>Phase 4 (3 分鐘)</b> · Listening — 3 段 endings 練習
+        </p>
+      </div>
+      <button class="btn bp" style="background:#1e4d8c;width:100%;margin-top:14px;font-size:1rem;padding:14px;" onclick="b2MockStart()">▶️ 開始 Mock Exam (17 分鐘)</button>
+      <p style="text-align:center;margin-top:12px;font-size:.74rem;color:var(--muted);">建議揾一個安靜地方，準備好 → 撳開始 → 唔好 pause</p>`;
+    return;
+  }
+  const s=b2MockState;
+  const phaseNames=["Phase 1 · Topic","Phase 2 · Interactive","Phase 3 · Conversation","Phase 4 · Listening"];
+  const phaseTimes=[300,240,300,180]; // seconds
+  const remaining=Math.max(0,phaseTimes[s.phase]-Math.floor((Date.now()-s.start)/1000));
+  const mm=String(Math.floor(remaining/60)).padStart(2,'0'),ss=String(remaining%60).padStart(2,'0');
+  let content='';
+  if(s.phase===0){
+    const t=s.topic;
+    content=`
+      <div class="b2-tcard"><div class="b2-tnum">Phase 1 · 5 min · 你抽到嘅 topic</div><div class="b2-tq">🎤 ${esc(t.name)}</div><div class="b2-tctx">${esc(t.name_zh)} · 由你 lead，討論 ~5 分鐘</div></div>
+      <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;">📋 結構（提示）</div>
+      <ol style="font-size:.82rem;color:var(--ink2);padding-left:20px;line-height:1.7;margin-bottom:14px;">${t.structure.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+      <div style="font-size:.78rem;color:var(--ink2);background:var(--surface);padding:10px 14px;border-radius:8px;margin-bottom:10px;">💡 講畀自己（或者畀錄音 app）聽。時間到撳「Phase 2」繼續。</div>`;
+  } else if(s.phase===1){
+    const t=s.interactive;
+    content=`
+      <div class="b2-tcard"><div class="b2-tnum">Phase 2 · 4 min · Interactive Task</div><div class="b2-tq" style="font-style:italic;">考官："${esc(t.prompt)}"</div></div>
+      <button class="btn bg2" style="margin-bottom:12px;" onclick="speakWord('${escJs(t.prompt)}')">🔊 聽考官</button>
+      <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;">❓ 你問問題嘅 hints</div>
+      <ul style="font-size:.82rem;color:var(--ink2);padding-left:20px;line-height:1.7;margin-bottom:14px;">${t.starters.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  } else if(s.phase===2){
+    const a1=s.conv[0],a2=s.conv[1];
+    const qi=s.convQ;
+    const currentArea=qi<5?a1:a2;
+    const localQ=currentArea.qs[qi%5];
+    content=`
+      <div class="b2-tcard"><div class="b2-tnum">Phase 3 · 5 min · Subject ${qi<5?1:2}: ${esc(currentArea.name)} (${esc(currentArea.name_zh)})</div><div class="b2-tq">❓ ${esc(localQ.q)}</div></div>
+      <button class="btn bg2" style="margin-bottom:12px;" onclick="speakWord('${escJs(localQ.q)}')">🔊 聽問題</button>
+      <button class="btn bp" style="background:#1e4d8c;width:100%;margin-bottom:10px;" onclick="b2MockNextConvQ()">下個問題 →</button>
+      <p style="font-size:.74rem;color:var(--muted);text-align:center;">問題 ${qi+1}/10 · 5 分鐘要應對 ${a1.name} 同 ${a2.name} 兩個 areas</p>`;
+  } else {
+    const e=s.endings[s.endIdx];
+    content=`
+      <div class="b2-tcard"><div class="b2-tnum">Phase 4 · 3 min · 第 ${s.endIdx+1}/3 段</div><div class="b2-tq" style="font-style:italic;">"${esc(e.discourse)}"</div></div>
+      <button class="btn bg2" style="margin-bottom:12px;" onclick="speakWord('${escJs(e.discourse)}')">🔊 重播</button>
+      ${e.opts.map((o,i)=>`<button class="b2-opt" onclick="b2MockEndingPick(${i})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join('')}`;
+  }
+  wrap.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:9px;margin-bottom:14px;font-family:'Fira Code',monospace;">
+      <span>🎯 ${phaseNames[s.phase]}</span>
+      <span style="color:${remaining<30?'var(--red)':'var(--gold)'};font-weight:700;font-size:1rem;">⏱ ${mm}:${ss}</span>
+    </div>
+    ${content}
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn bg2" style="color:var(--red);border-color:var(--red);" onclick="b2MockEnd()">🛑 結束</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2MockNextPhase()">${s.phase<3?'➜ 下一 Phase':'✅ 完成'}</button>
+    </div>`;
+  if(!s.timer){
+    s.timer=setInterval(()=>{
+      if(!b2MockState||document.getElementById('b2sub-mock').children.length===0)return;
+      if(document.querySelector('#panel-b2').classList.contains('active')&&document.querySelector('#b2sub-mock').classList.contains('active')){
+        b2RenderMock();
+      }
+    },1000);
+  }
+}
+function b2MockStart(){
+  const t=B2_PORTFOLIO[Math.floor(Math.random()*B2_PORTFOLIO.length)];
+  const i=B2_INTERACTIVE[Math.floor(Math.random()*B2_INTERACTIVE.length)];
+  const conv=shufl(B2_GRADE7).slice(0,2);
+  const endings=shufl(B2_ENDINGS).slice(0,3);
+  b2MockState={phase:0,start:Date.now(),topic:t,interactive:i,conv,endings,endIdx:0,convQ:0,timer:null};
+  b2RenderMock();
+}
+function b2MockNextPhase(){
+  if(!b2MockState)return;
+  if(b2MockState.phase<3){
+    b2MockState.phase++;
+    b2MockState.start=Date.now();
+    b2RenderMock();
+  }else{
+    b2MockEnd();
+    alert('🎉 Mock Exam 完成！\n\n而家可以聽返你嘅錄音、複習唔識嘅 conversation questions、做返 grammar drills。');
+  }
+}
+function b2MockNextConvQ(){if(!b2MockState)return;b2MockState.convQ++;if(b2MockState.convQ>=10){b2MockNextPhase();return;}b2RenderMock();}
+function b2MockEndingPick(i){if(!b2MockState)return;b2MockState.endIdx++;if(b2MockState.endIdx>=3){b2MockNextPhase();return;}b2RenderMock();}
+function b2MockEnd(){if(b2MockState&&b2MockState.timer)clearInterval(b2MockState.timer);b2MockState=null;b2RenderMock();}
 
 function b2GetFiltered(){return b2VcCat==='全部'?B2_VOCAB:B2_VOCAB.filter(w=>w.cat===b2VcCat);}
 function b2RenderVocab(){
@@ -1908,20 +2281,28 @@ function b2AddAllToWordbook(){
 
 function b2RenderTips(){
   document.getElementById('b2sub-tips').innerHTML=`
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">IELTS Life Skills B2 / Trinity B2 實用技巧</p>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">Trinity GESE Grade 7 (B2.1) 實用技巧</p>
     <div class="b2-hero">
-      <div class="lbl">📋 考試格式比較</div>
-      <table class="b2-exam"><tr><th>考試</th><th>時間</th><th>費用</th><th>形式</th></tr>
-      <tr><td>IELTS Life Skills B2</td><td>~30 分鐘</td><td>~£185</td><td>2 人 + 考官</td></tr>
-      <tr><td>Trinity ISE II B2</td><td>~20 分鐘</td><td>~£135</td><td>1 對 1 考官</td></tr></table>
-      <div style="font-size:.72rem;color:var(--muted);margin-top:10px;">✅ 兩個都只考聽同講 · Pass/Fail 制 · 唔計分</div>
+      <div class="lbl">📋 Trinity GESE Grade 7 一覽</div>
+      <table class="b2-exam"><tr><th>項目</th><th>細節</th></tr>
+      <tr><td>CEFR 級別</td><td>B2.1（B2 入門）</td></tr>
+      <tr><td>總時長</td><td>~15 分鐘</td></tr>
+      <tr><td>格式</td><td>1 對 1 考官（video 或 SELT centre）</td></tr>
+      <tr><td>內容</td><td>只考 Speaking + Listening（無 R+W）</td></tr>
+      <tr><td>結果</td><td>Pass/Fail · 唔計分</td></tr>
+      <tr><td>費用</td><td>約 £170（2026 年）</td></tr>
+      <tr><td>適合</td><td>2027 年 3 月後申請 ILR / Citizenship</td></tr></table>
     </div>
-    <div class="b2-tip"><div class="b2-tip-icon">🎯</div><div><div class="b2-tip-title">ARE 答題法（最重要！）</div><div class="b2-tip-desc"><b>A</b>nswer（答）→ <b>R</b>eason（原因）→ <b>E</b>xample（例子）<br>例："I enjoy the UK <b>because</b> the community is welcoming. <b>For instance</b>, my neighbours help when needed."</div></div></div>
-    <div class="b2-tip"><div class="b2-tip-icon">⏰</div><div><div class="b2-tip-title">爭取時間短語</div><div class="b2-tip-desc">"That's an interesting question..." · "Let me think about that for a moment..." · "Well, to be honest..." · "That's something I feel quite strongly about..."</div></div></div>
-    <div class="b2-tip"><div class="b2-tip-icon">🔗</div><div><div class="b2-tip-title">B2 連接詞（必學！）</div><div class="b2-tip-desc">Furthermore · In addition · However · On the other hand · As a result · For instance · Although · Despite this · In contrast · Consequently · Nevertheless · Therefore</div></div></div>
-    <div class="b2-tip"><div class="b2-tip-icon">👂</div><div><div class="b2-tip-title">聆聽技巧</div><div class="b2-tip-desc">留意關鍵字：數字、地點、時間、人名。聽唔明禮貌要求重複："Could you repeat that, please?" / "I'm sorry, I didn't quite catch that."</div></div></div>
-    <div class="b2-tip"><div class="b2-tip-icon">🗣️</div><div><div class="b2-tip-title">講嘢技巧</div><div class="b2-tip-desc">唔需要英國口音，但要清晰。講錯咗自然糾正："Sorry, I mean..." 每句講完停一停。考官要見溝通能力，唔係完美文法！</div></div></div>
-    <div class="b2-tip"><div class="b2-tip-icon">📺</div><div><div class="b2-tip-title">免費練習資源</div><div class="b2-tip-desc">BBC Learning English (6 Minute English) · BBC Radio 4 · British Council LearnEnglish · IELTS.org Sample Tests · YouTube 搜「IELTS Life Skills B1 sample test」</div></div></div>`;
+    <div class="b2-tip"><div class="b2-tip-icon">🎤</div><div><div class="b2-tip-title">Phase 1 (Topic) · 5 分鐘</div><div class="b2-tip-desc">提前準備**一個**你熟悉嘅 topic。考試時候**由你 lead**，唔好等考官問。可以帶 notes / mind map 上場。記得：3-4 個 main points + 簡單 conclusion。</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">💬</div><div><div class="b2-tip-title">Phase 2 (Interactive) · 4 分鐘</div><div class="b2-tip-desc"><b>必須主動問考官問題</b>！呢個 phase 失分主因就係淨係答唔識問。Question starters：<i>Have you...?  How about...?  Could you tell me...?  What do you think about...?</i></div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🗣️</div><div><div class="b2-tip-title">Phase 3 (Conversation) · 5 分鐘</div><div class="b2-tip-desc">考官由 6 個 subject area 揀 2 個。確保每個 area 都有 5+ 條 sample 答案準備。用 ARE 法：<b>A</b>nswer → <b>R</b>eason → <b>E</b>xample。</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🎧</div><div><div class="b2-tip-title">Phase 4 (Listening) · 3 分鐘</div><div class="b2-tip-desc">考官讀 3 段短嘢，你要 suggest 合理結尾（唔係多選題！）。可以講「I think... it would have/might... because...」要 logic + complete sentence。</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">📝</div><div><div class="b2-tip-title">Grade 7 必用文法</div><div class="b2-tip-desc">考官評估你自然用啱：<b>simple past, second conditional, passive, used to, relative clauses, advice/suggestions, agreeing/disagreeing</b>。喺答題嗰陣自然 demonstrate 出嚟。</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">⏰</div><div><div class="b2-tip-title">爭取時間短語</div><div class="b2-tip-desc">"That's an interesting question..." · "Let me think for a moment..." · "Well, to be honest..." · "I'd say it depends on..." · "That's something I feel quite strongly about..."</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🔗</div><div><div class="b2-tip-title">B2 連接詞（必學！）</div><div class="b2-tip-desc">Furthermore · In addition · However · On the other hand · As a result · For instance · Although · Despite this · In contrast · Consequently · Nevertheless · Therefore · Whereas</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🆘</div><div><div class="b2-tip-title">聽唔明點算？</div><div class="b2-tip-desc">禮貌要求重複：<i>"Could you repeat that, please?"</i> · <i>"I'm sorry, I didn't quite catch that."</i> · <i>"Could you put that another way?"</i> · 唔扣分</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🗣️</div><div><div class="b2-tip-title">講嘢心態</div><div class="b2-tip-desc">唔需要英國口音，但要清晰。講錯咗自然糾正："Sorry, I mean..." 每句講完停一停。考官評估溝通能力，唔係完美。**Pass/Fail 制，流暢清晰過於完美。**</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">📺</div><div><div class="b2-tip-title">免費練習資源</div><div class="b2-tip-desc">BBC Learning English (6 Minute English) · BBC Radio 4 · Trinity College London (官方 sample videos) · YouTube 搜「Trinity GESE Grade 7 sample」</div></div></div>`;
 }
 
 init();
