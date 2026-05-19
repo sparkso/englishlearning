@@ -1936,8 +1936,126 @@ function b2Switch(n){
   if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}
 }
 
+// ─── B2 Daily Progress Tracker ───────────────────
+function b2LoadTracker(){
+  try{const raw=localStorage.getItem('b2_tracker');if(raw)return JSON.parse(raw);}catch(e){}
+  return{goalMin:60,logs:{},startDate:new Date().toISOString().slice(0,10)};
+}
+function b2SaveTracker(t){try{localStorage.setItem('b2_tracker',JSON.stringify(t));}catch(e){}}
+function b2TodayStr(){return new Date().toISOString().slice(0,10);}
+function b2LogTime(min){
+  const t=b2LoadTracker();
+  const k=b2TodayStr();
+  t.logs[k]=(t.logs[k]||0)+min;
+  b2SaveTracker(t);
+  b2RenderPlan();
+}
+function b2SetTodayMin(min){
+  const t=b2LoadTracker();
+  t.logs[b2TodayStr()]=min;
+  b2SaveTracker(t);
+  b2RenderPlan();
+}
+function b2SetGoal(min){
+  const t=b2LoadTracker();t.goalMin=min;b2SaveTracker(t);b2RenderPlan();
+}
+function b2ResetTracker(){
+  if(!confirm('確定重置 tracker？所有記錄都會冇！'))return;
+  try{localStorage.removeItem('b2_tracker');}catch(e){}
+  b2RenderPlan();
+}
+function b2CalcStreak(logs){
+  let s=0,best=0,cur=0;
+  const today=new Date();
+  for(let i=0;i<365;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const k=d.toISOString().slice(0,10);
+    if(logs[k]&&logs[k]>0){
+      cur++;
+      if(i===0||(i===s))s=cur;
+      if(cur>best)best=cur;
+    }else{
+      if(i===0||i===s){/* allow today not done yet */}
+      cur=0;
+    }
+  }
+  return{current:s,best:best};
+}
+function b2CalcStats(t){
+  const totalMin=Object.values(t.logs).reduce((a,b)=>a+b,0);
+  const totalDays=Object.keys(t.logs).filter(k=>t.logs[k]>0).length;
+  const streak=b2CalcStreak(t.logs);
+  return{totalMin,totalHr:(totalMin/60).toFixed(1),totalDays,...streak};
+}
+function b2Last30Days(t){
+  const today=new Date();
+  const arr=[];
+  for(let i=29;i>=0;i--){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const k=d.toISOString().slice(0,10);
+    arr.push({date:k,min:t.logs[k]||0,day:d.getDate(),isToday:i===0});
+  }
+  return arr;
+}
+function b2TrackerHTML(){
+  const t=b2LoadTracker();
+  const s=b2CalcStats(t);
+  const today=t.logs[b2TodayStr()]||0;
+  const pct=Math.min(100,Math.round(today/t.goalMin*100));
+  const days=b2Last30Days(t);
+  const heatmap=days.map(d=>{
+    const intensity=d.min===0?0:d.min<20?1:d.min<40?2:d.min<60?3:4;
+    const colors=['var(--surface)','rgba(212,144,10,.2)','rgba(212,144,10,.4)','rgba(42,122,75,.5)','rgba(42,122,75,.85)'];
+    return `<div style="aspect-ratio:1;background:${colors[intensity]};border:1.5px solid ${d.isToday?'var(--ink)':'var(--border)'};border-radius:3px;font-size:.55rem;color:${intensity>=2?'#fff':'var(--muted)'};display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;" title="${d.date}: ${d.min} min">${d.day}</div>`;
+  }).join('');
+  return `
+    <div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div>
+          <div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">📊 今日進度</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--ink);">${today} / ${t.goalMin} 分鐘</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:1.3rem;font-weight:700;color:${s.current>0?'var(--red)':'var(--muted)'};">🔥 ${s.current}</div>
+          <div style="font-size:.65rem;color:var(--muted);font-family:'Fira Code',monospace;">連續日數</div>
+        </div>
+      </div>
+      <div class="b2-prog-wrap" style="height:8px;margin-bottom:10px;"><div class="b2-prog-fill" style="width:${pct}%;background:${pct>=100?'var(--green)':'linear-gradient(90deg,var(--blue),var(--gold))'};"></div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;">
+        <button class="btn bg2" style="font-size:.74rem;padding:7px 4px;" onclick="b2LogTime(15)">+15 分</button>
+        <button class="btn bg2" style="font-size:.74rem;padding:7px 4px;" onclick="b2LogTime(20)">+20 分</button>
+        <button class="btn bg2" style="font-size:.74rem;padding:7px 4px;" onclick="b2LogTime(25)">+25 分</button>
+        <button class="btn bg2" style="font-size:.74rem;padding:7px 4px;" onclick="b2LogTime(30)">+30 分</button>
+      </div>
+      <details style="background:var(--surface);border-radius:8px;padding:8px 12px;margin-bottom:10px;">
+        <summary style="font-size:.74rem;cursor:pointer;color:var(--muted);">⚙️ 設定 / 自訂時間</summary>
+        <div style="margin-top:10px;">
+          <div style="font-size:.74rem;margin-bottom:6px;color:var(--ink2);">每日目標：</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px;">
+            ${[40,60,90,120].map(m=>`<button class="b2-vfb ${t.goalMin===m?'active':''}" onclick="b2SetGoal(${m})">${m} 分</button>`).join('')}
+          </div>
+          <div style="font-size:.74rem;margin-bottom:6px;color:var(--ink2);">手動設定今日：</div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="b2-custom-min" placeholder="例如 45" min="0" max="999" style="flex:1;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-family:'Nunito',sans-serif;font-size:.84rem;background:var(--surface);">
+            <button class="btn bp" style="background:#1e4d8c;font-size:.78rem;padding:8px 14px;" onclick="b2SetTodayMin(parseInt(document.getElementById('b2-custom-min').value)||0)">設定</button>
+          </div>
+          <button class="btn bg2" style="width:100%;margin-top:10px;color:var(--red);border-color:var(--red);font-size:.74rem;padding:7px;" onclick="b2ResetTracker()">🗑 重置全部記錄</button>
+        </div>
+      </details>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;text-align:center;">
+        <div style="background:var(--surface);border-radius:8px;padding:8px;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);">${s.totalHr}</div><div style="font-size:.6rem;color:var(--muted);">總小時</div></div>
+        <div style="background:var(--surface);border-radius:8px;padding:8px;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);">${s.totalDays}</div><div style="font-size:.6rem;color:var(--muted);">總日數</div></div>
+        <div style="background:var(--surface);border-radius:8px;padding:8px;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--green);">${s.best}</div><div style="font-size:.6rem;color:var(--muted);">最長 streak</div></div>
+      </div>
+      <div style="font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;">過去 30 日 · 顏色越深代表練得越多</div>
+      <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px;">${heatmap}</div>
+      <div style="font-size:.66rem;color:var(--muted);margin-top:6px;text-align:right;font-family:'Fira Code',monospace;">＝ 0min · 1-19 · 20-39 · 40-59 · 60+ ▮</div>
+    </div>`;
+}
+
 function b2RenderPlan(){
-  let html='<p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">10 個月升 B1 → B2 · 每日 1 小時 · 3 階段 · 撳每個月睇詳情</p>';
+  let html=b2TrackerHTML();
+  html+='<p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">10 個月升 B1 → B2 · 每日 1 小時 · 3 階段 · 撳每個月睇詳情</p>';
   html+='<div class="b2-hero"><div class="lbl">🎯 總目標</div><p style="font-size:.82rem;line-height:1.7;"><b>考試：</b>IELTS Life Skills B2 (~£185) 或 Trinity B2 (~£135)<br><b>期限：</b>2027 年 3 月 26 日前完成 ILR 申請<br><b>每日：</b>1 小時練習（聽 20 / 講 25 / 詞彙 15）<br><b>制度：</b>Pass/Fail · 流暢清晰就夠，唔需要完美</p></div>';
   const phases=[{n:1,t:"📘 第一階段：打好基礎（1-3 月）",color:"var(--blue)"},{n:2,t:"📙 第二階段：鞏固提升（4-7 月）",color:"var(--gold)"},{n:3,t:"📗 第三階段：衝刺備考（8-10 月）",color:"var(--green)"}];
   phases.forEach(ph=>{
