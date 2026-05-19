@@ -1709,31 +1709,31 @@ const B2_GRADE7=[
 
 // Phase 4 (Listening) — Trinity format: examiner reads short discourse, you suggest a logical ending
 const B2_ENDINGS=[
-  {discourse:"I went to the shops yesterday hoping to buy a coat, but when I got there...",opts:["...they were closed for refurbishment.","...I won the lottery.","...the sun was bright."],best:0,zh:"shops closed = 合理結尾"},
-  {discourse:"Despite the heavy rain, the football match...",opts:["...was sunny.","...continued as planned.","...was forgotten."],best:1,zh:"Despite the rain → match continued"},
-  {discourse:"She told me she'd be at the meeting by nine, but when ten o'clock came around...",opts:["...we agreed it was fine.","...she still hadn't arrived.","...the room was warm."],best:1,zh:"by 9 but 10 came → still not arrived"},
-  {discourse:"I had been studying English for two years before I finally...",opts:["...felt confident enough to have a conversation.","...started learning the alphabet.","...took a holiday last week."],best:0,zh:"2 years → finally felt confident"},
-  {discourse:"Although the weather forecast was terrible, we...",opts:["...stayed indoors all day.","...decided to go for our walk anyway.","...bought a new umbrella the day before."],best:1,zh:"Although bad → still went"},
-  {discourse:"I thought I had lost my keys until...",opts:["...I checked my coat pocket.","...the door wouldn't open.","...the morning was cold."],best:0,zh:"thought lost → until found in pocket"},
-  {discourse:"We were going to have a picnic in the park, but when we arrived...",opts:["...we played football.","...the grass had just been freshly mowed and was wet.","...the sun came out brightly."],best:1,zh:"going to picnic, but → grass wet"},
-  {discourse:"My friend said the film was boring, however when I watched it...",opts:["...I fell asleep too.","...I really enjoyed it.","...the cinema was full."],best:1,zh:"friend said boring, however → enjoyed"},
-  {discourse:"I'd never tried sushi before, so when my colleague offered me some at lunch...",opts:["...I refused immediately.","...I was a bit nervous to try it.","...I went home for the day."],best:1,zh:"never tried → nervous to try"},
-  {discourse:"The train was supposed to leave at seven sharp, but...",opts:["...the doors closed early.","...it didn't pull away until quarter past.","...the conductor was friendly."],best:1,zh:"supposed to 7, but → late"},
-  {discourse:"I'd been saving up for months to buy a new laptop, and finally last weekend...",opts:["...I bought a coffee.","...I went to the store and picked one out.","...I forgot about it."],best:1,zh:"saving → finally bought"},
-  {discourse:"My grandmother used to bake bread every Sunday morning, and the smell would...",opts:["...wake the whole family up.","...stay outside the house.","...mean she was angry."],best:0,zh:"baking smell → woke family"},
-  {discourse:"If I'd known the restaurant was so expensive, I...",opts:["...would have ordered more.","...wouldn't have chosen it for the family dinner.","...will visit again."],best:1,zh:"third conditional → wouldn't have chosen"},
-  {discourse:"After working long hours all week, the only thing I wanted to do on Saturday was...",opts:["...go to work.","...stay home and rest.","...attend a busy meeting."],best:1,zh:"long hours → wanted to rest"},
-  {discourse:"The traffic was so bad on the M25 that we...",opts:["...arrived two hours late to the wedding.","...were the first to arrive.","...drove straight home."],best:0,zh:"bad traffic → late"},
-  {discourse:"I'd booked a table for two at the new Italian place, but when we arrived...",opts:["...the menu was huge.","...they had no record of our booking.","...the staff smiled warmly."],best:1,zh:"booked but → no record"},
-  {discourse:"My son's been asking for a puppy for months now, but my wife...",opts:["...is still worried about the responsibility.","...bought one yesterday.","...prefers cats anyway."],best:0,zh:"asking, but wife → worried"},
-  {discourse:"The presentation went really well, so my manager decided to...",opts:["...let me lead the next big project.","...fire me on the spot.","...take a holiday."],best:0,zh:"went well → got bigger project"},
-  {discourse:"I love walking in the park, especially in autumn when...",opts:["...everything is covered in snow.","...the leaves turn gold and red.","...all the flowers are blooming."],best:1,zh:"autumn → leaves gold/red"},
-  {discourse:"I'd never been to a wedding in the UK before, so when my colleague invited me...",opts:["...I refused without thinking.","...I was curious to see how different it would be.","...I knew exactly what to expect."],best:1,zh:"never → curious"},
-  {discourse:"The shop assistant was so helpful that I decided to...",opts:["...buy nothing in the end.","...write a positive review online.","...complain about the service."],best:1,zh:"helpful → positive review"},
-  {discourse:"Although we've been neighbours for five years, we...",opts:["...have only spoken a handful of times.","...spend every weekend together.","...lived in different cities."],best:0,zh:"neighbours 5 years, although → barely spoken"},
-  {discourse:"I'd rather take the train than fly because...",opts:["...flights are always on time.","...trains are far more relaxing and you see the countryside.","...trains are always cancelled."],best:1,zh:"prefer train because → relaxing"},
-  {discourse:"My doctor said if I want to feel healthier, I should...",opts:["...sleep less and eat more sugar.","...exercise regularly and cut down on processed food.","...stop drinking water."],best:1,zh:"feel healthier → exercise + good food"},
-  {discourse:"When I told my parents I was moving to the UK, they were...",opts:["...delighted and not surprised at all.","...initially worried but proud of my decision.","...angry and refused to speak to me."],best:1,zh:"moving abroad → parents worried but proud"}
+  {discourse:"I went to the shops yesterday hoping to buy a coat, but when I got there...",samples:["...they were closed for refurbishment.","...the one I wanted was completely sold out.","...I realised I'd left my wallet at home."],hint:"用 past simple 講一個 unexpected obstacle。「but」開頭已經提示後面係相反或意外。"},
+  {discourse:"Despite the heavy rain, the football match...",samples:["...continued as planned and we got soaked.","...went ahead and ended in a draw.","...was actually one of the most exciting we've seen."],hint:"Despite + 名詞 → 後面講相反結果。Match 進行咗（唔係取消）。"},
+  {discourse:"She told me she'd be at the meeting by nine, but when ten o'clock came around...",samples:["...she still hadn't arrived.","...there was still no sign of her.","...I had to start without her."],hint:"用 past perfect 或 past simple 表達遲到。提示已給但時間過咗。"},
+  {discourse:"I had been studying English for two years before I finally...",samples:["...felt confident enough to have a real conversation.","...managed to watch a film without subtitles.","...took the IELTS test."],hint:"Past perfect continuous + before → 終於達到某成就。"},
+  {discourse:"Although the weather forecast was terrible, we...",samples:["...decided to go for our walk anyway.","...still went ahead with the picnic.","...had a brilliant day in the end."],hint:"Although + 壞天氣 → 我哋仍然做某事（concession 結構）。"},
+  {discourse:"I thought I had lost my keys until...",samples:["...I found them in my coat pocket.","...my daughter spotted them on the kitchen counter.","...I heard them jingle in my bag."],hint:"thought + past perfect → until + past simple 發現實情。"},
+  {discourse:"We were going to have a picnic in the park, but when we arrived...",samples:["...it had just started raining.","...the grass was completely waterlogged.","...the park was unexpectedly closed for an event."],hint:"Past continuous（計劃中）+ but → 講出阻礙嘅情況。"},
+  {discourse:"My friend said the film was boring, however when I watched it...",samples:["...I actually really enjoyed it.","...I couldn't put it down — I watched the whole thing in one sitting.","...I thought it was surprisingly funny."],hint:"However → 結尾要同朋友嘅 opinion 相反。"},
+  {discourse:"I'd never tried sushi before, so when my colleague offered me some at lunch...",samples:["...I was a bit nervous but agreed to try it.","...I decided to be adventurous for once.","...I asked her to recommend the best one to start with."],hint:"Past perfect (never) → so + decision / reaction。"},
+  {discourse:"The train was supposed to leave at seven sharp, but...",samples:["...it didn't pull away until quarter past.","...there was a delay due to signal problems.","...it was cancelled altogether."],hint:"Supposed to + but → 意料之外嘅延誤或取消。"},
+  {discourse:"I'd been saving up for months to buy a new laptop, and finally last weekend...",samples:["...I went to the store and bought one.","...I made the purchase online during the sale.","...I treated myself to the model I'd been eyeing."],hint:"Past perfect continuous → finally + past simple action。"},
+  {discourse:"My grandmother used to bake bread every Sunday morning, and the smell would...",samples:["...wake the whole family up.","...fill the entire house with warmth.","...make my mouth water before I'd even opened my eyes."],hint:"Used to + would（過去 habit）→ 後面要 imperfect / habitual past。"},
+  {discourse:"If I'd known the restaurant was so expensive, I...",samples:["...wouldn't have chosen it for the family dinner.","...would have suggested somewhere else.","...would have ordered a starter only."],hint:"Third conditional：If I had known → I would have + past participle。"},
+  {discourse:"After working long hours all week, the only thing I wanted to do on Saturday was...",samples:["...stay home and rest.","...sleep in until lunchtime.","...curl up on the sofa with a good book."],hint:"After + Ving → wanted + infinitive，講放鬆活動。"},
+  {discourse:"The traffic was so bad on the M25 that we...",samples:["...arrived two hours late to the wedding.","...missed the start of the ceremony.","...had to call ahead and apologise."],hint:"So + adj + that → result clause（結果子句）。"},
+  {discourse:"I'd booked a table for two at the new Italian place, but when we arrived...",samples:["...they had no record of our booking.","...there was a long queue at the door.","...the kitchen had just closed for the evening."],hint:"Past perfect (booked) + but → unexpected obstacle。"},
+  {discourse:"My son's been asking for a puppy for months now, but my wife...",samples:["...is still worried about the responsibility.","...isn't keen on the mess.","...wants to wait until our youngest is older."],hint:"Present perfect continuous（asking）+ but → 講 wife 嘅 hesitation。"},
+  {discourse:"The presentation went really well, so my manager decided to...",samples:["...let me lead the next big project.","...recommend me for a promotion.","...share my work with the wider team."],hint:"Past simple + so + decision → 用 infinitive 跟 decided to。"},
+  {discourse:"I love walking in the park, especially in autumn when...",samples:["...the leaves turn gold and red.","...there's a crisp chill in the air.","...the whole place looks like a painting."],hint:"When + 描述景象，用 present simple。"},
+  {discourse:"I'd never been to a wedding in the UK before, so when my colleague invited me...",samples:["...I was curious to see how different it would be.","...I gladly accepted.","...I was excited to experience a British tradition."],hint:"Past perfect (never) + so → reaction 或 decision。"},
+  {discourse:"The shop assistant was so helpful that I decided to...",samples:["...write a positive review online.","...buy more than I'd originally planned.","...recommend the shop to my friends."],hint:"So + adj + that → result clause。"},
+  {discourse:"Although we've been neighbours for five years, we...",samples:["...have only spoken a handful of times.","...still don't really know each other.","...barely exchange more than a wave."],hint:"Although + present perfect → 預期相反嘅情況。"},
+  {discourse:"I'd rather take the train than fly because...",samples:["...trains are far more relaxing and you see the countryside.","...there's no airport hassle and you arrive in the city centre.","...I find the whole experience much less stressful."],hint:"'d rather + because → 講原因 / preference。"},
+  {discourse:"My doctor said if I want to feel healthier, I should...",samples:["...exercise regularly and cut down on processed food.","...try to get at least seven hours of sleep a night.","...drink more water and reduce my caffeine intake."],hint:"Reported speech + should + advice。"},
+  {discourse:"When I told my parents I was moving to the UK, they were...",samples:["...initially worried but proud of my decision.","...both supportive and concerned at the same time.","...a little emotional but ultimately encouraging."],hint:"Past simple → were + adjective(s) 描述 emotion / reaction。"}
 ];
 
 // Grammar Drill — 7 areas Trinity GESE Grade 7 specifically tests
@@ -2159,27 +2159,48 @@ function b2SetGt(i){b2GtIdx=i;b2GtQIdx=0;b2RenderConversation();}
 function b2NextGtQ(){b2GtQIdx=(b2GtQIdx+1)%B2_GRADE7[b2GtIdx].qs.length;b2RenderConversation();}
 function b2PrevGtQ(){if(b2GtQIdx>0){b2GtQIdx--;b2RenderConversation();}}
 
-// Phase 4 — Listening (Trinity ending format)
+// Phase 4 — Listening (Trinity ending format: open-ended, you suggest your own)
 function b2RenderListening(){
   const e=B2_ENDINGS[b2LeIdx],total=B2_ENDINGS.length;
+  const revealed=b2GrAns['le_'+b2LeIdx]===true;
   document.getElementById('b2sub-listening').innerHTML=`
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🎧 <b>Phase 4 (3 分鐘)</b>：考官讀 3 段短嘢，你 suggest 合理結尾。<b>呢度有 ${total} 題</b>讓你熟悉題型。</p>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🎧 <b>Phase 4 (3 分鐘)</b>：真考試係 <b>open-ended</b> — 考官讀完，你<b>自己諗一個合理結尾講出嚟</b>。冇選項。</p>
     <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2LeIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2LeIdx+1}/${total}</span></div>
     <div class="b2-listen">
-      <div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🎙 考官讀</div>
+      <div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🎙 考官讀（撳 ▶ 聽）</div>
       <div class="b2-audio">
-        <p style="font-size:.85rem;color:var(--ink);font-style:italic;margin-bottom:12px;line-height:1.6;">"${esc(e.discourse)}"</p>
+        <p style="font-size:.95rem;color:var(--ink);font-style:italic;margin-bottom:12px;line-height:1.6;">"${esc(e.discourse)}"</p>
         <button class="b2-playbtn" id="b2-pbtn" onclick="b2PlayEnding()">▶</button>
       </div>
     </div>
-    <div style="font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">揀最合理嘅結尾：</div>
-    ${e.opts.map((o,i)=>{let cls='b2-opt';const ans=b2GrAns['le_'+b2LeIdx];if(ans!==undefined){cls+=' disabled';if(i===e.best)cls+=' correct';else if(i===ans)cls+=' wrong';}return `<button class="${cls}" onclick="b2AnsEnding(${i},${e.best})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`;}).join('')}
-    ${b2GrAns['le_'+b2LeIdx]!==undefined?`<div class="b2-tips show" style="margin-top:12px;"><h4>💡 為何揀呢個</h4><p style="font-size:.82rem;color:var(--ink2);line-height:1.6;">${esc(e.zh)}</p></div>`:''}
-    <div class="btn-row" style="margin-top:14px;">
+    <div class="b2-tips show" style="margin-bottom:12px;">
+      <h4>👇 點答</h4>
+      <ul>
+        <li>聽完 → 喺心入面（或者出聲）<b>諗一個合理嘅 ending</b></li>
+        <li>用完整句，配合上文嘅文法（用啱 tense / conditional / connector）</li>
+        <li>諗到先撳「📝 睇樣本答案」對比</li>
+      </ul>
+    </div>
+    <textarea id="b2-my-ending" placeholder="（選填）打你諗到嘅 ending..." style="width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.85rem;background:var(--surface);color:var(--ink);outline:none;min-height:60px;resize:vertical;margin-bottom:10px;"></textarea>
+    ${!revealed?`<button class="btn bp" style="background:#1e4d8c;width:100%;margin-bottom:10px;" onclick="b2RevealEndings()">📝 睇樣本答案</button>`:`
+      <div class="b2-sample show" style="margin-bottom:12px;">
+        <div class="b2-slbl">✅ 樣本合理結尾（任一個都係 acceptable）</div>
+        ${e.samples.map((s,i)=>`<div style="margin:8px 0;padding:8px 10px;background:var(--card);border-radius:6px;display:flex;align-items:flex-start;gap:6px;">
+          <span style="font-family:'Fira Code',monospace;color:var(--green);font-weight:700;">${String.fromCharCode(65+i)}.</span>
+          <span style="flex:1;font-size:.84rem;color:var(--ink);line-height:1.6;">${esc(s)}</span>
+          <button onclick="speakWord('${escJs(e.discourse+' '+s)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;flex-shrink:0;">🔊</button>
+        </div>`).join('')}
+      </div>
+      <div class="b2-tips show" style="margin-bottom:12px;">
+        <h4>📖 文法 / 邏輯提示</h4>
+        <p style="font-size:.82rem;color:var(--ink2);line-height:1.6;">${esc(e.hint)}</p>
+      </div>`}
+    <div class="btn-row">
       <button class="btn bg2" onclick="b2PrevLe()" ${b2LeIdx===0?'disabled':''}>← 上題</button>
       <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextLe()" ${b2LeIdx===total-1?'disabled':''}>下題 →</button>
     </div>`;
 }
+function b2RevealEndings(){b2GrAns['le_'+b2LeIdx]=true;b2RenderListening();}
 function b2PlayEnding(){
   const e=B2_ENDINGS[b2LeIdx];
   const btn=document.getElementById('b2-pbtn');
@@ -2192,11 +2213,6 @@ function b2PlayEnding(){
   u.onend=()=>{b2Playing=false;btn.textContent='▶';btn.classList.remove('playing');};
   window.speechSynthesis.speak(u);
   b2Playing=true;btn.textContent='⏸';btn.classList.add('playing');
-}
-function b2AnsEnding(picked,correct){
-  if(b2GrAns['le_'+b2LeIdx]!==undefined)return;
-  b2GrAns['le_'+b2LeIdx]=picked;
-  b2RenderListening();
 }
 function b2NextLe(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LeIdx<B2_ENDINGS.length-1){b2LeIdx++;b2RenderListening();}}
 function b2PrevLe(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LeIdx>0){b2LeIdx--;b2RenderListening();}}
@@ -2304,7 +2320,8 @@ function b2RenderMock(){
     content=`
       <div class="b2-tcard"><div class="b2-tnum">Phase 4 · 3 min · 第 ${s.endIdx+1}/3 段</div><div class="b2-tq" style="font-style:italic;">"${esc(e.discourse)}"</div></div>
       <button class="btn bg2" style="margin-bottom:12px;" onclick="speakWord('${escJs(e.discourse)}')">🔊 重播</button>
-      ${e.opts.map((o,i)=>`<button class="b2-opt" onclick="b2MockEndingPick(${i})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join('')}`;
+      <div class="b2-tips show" style="margin-top:10px;"><h4>諗一個合理結尾講出嚟</h4><ul><li>聽完先諗一句然後撳「畀我下一段」</li><li>樣本答案：<i>${e.samples.map(s=>'"'+s+'"').join(' / ')}</i></li></ul></div>
+      <button class="btn bp" style="background:#1e4d8c;width:100%;margin-top:10px;" onclick="b2MockEndingPick(0)">畀我下一段 →</button>`;
   }
   wrap.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:9px;margin-bottom:14px;font-family:'Fira Code',monospace;">
