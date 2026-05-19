@@ -74,6 +74,88 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
 .test-result.show{display:block;animation:fadeIn .2s;}
 .test-result.ok{background:rgba(42,122,75,.08);border:1.5px solid rgba(42,122,75,.25);color:#1a5c35;}
 .test-result.bad{background:rgba(200,75,47,.07);border:1.5px solid rgba(200,75,47,.2);color:#a0290f;}
+/* B2 UK Citizenship module */
+.b2-subtabs{display:flex;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none;}
+.b2-subtabs::-webkit-scrollbar{display:none;}
+.b2-subtab{flex:1 0 auto;min-width:72px;padding:9px 8px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);transition:all .2s;}
+.b2-subtab:last-child{border-right:none;}
+.b2-subtab.active{background:#1e4d8c;color:#fff;}
+.b2-subpanel{display:none;animation:fadeIn .25s ease;}
+.b2-subpanel.active{display:block;}
+.b2-hero{background:linear-gradient(135deg,rgba(30,77,140,.08),rgba(212,144,10,.05));border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.b2-hero .lbl{font-family:'Fira Code',monospace;font-size:.68rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.b2-hero h2{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:6px;color:var(--ink);}
+.b2-hero p{font-size:.78rem;line-height:1.7;color:var(--ink2);}
+.b2-month{background:var(--card);border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden;}
+.b2-mhead{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;}
+.b2-phase{font-family:'Fira Code',monospace;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:100px;}
+.b2-phase.ph1{background:rgba(30,77,140,.12);color:var(--blue);}
+.b2-phase.ph2{background:rgba(212,144,10,.15);color:var(--gold);}
+.b2-phase.ph3{background:rgba(42,122,75,.12);color:var(--green);}
+.b2-mname{font-weight:700;font-size:.88rem;flex:1;color:var(--ink);}
+.b2-arrow{color:var(--muted);font-size:.75rem;transition:transform .2s;}
+.b2-mbody{display:none;padding:0 14px 14px;border-top:1px dashed var(--border);}
+.b2-mbody.open{display:block;}
+.b2-mgoal{font-size:.82rem;color:var(--red);font-weight:700;margin:10px 0 6px;}
+.b2-mitem{display:flex;gap:8px;font-size:.8rem;color:var(--ink2);line-height:1.6;margin-bottom:4px;}
+.b2-mitem::before{content:'▸';color:var(--blue);flex-shrink:0;}
+.b2-daily{background:var(--bg);border-radius:8px;padding:9px 12px;margin-top:10px;font-size:.76rem;color:var(--ink2);line-height:1.6;}
+.b2-mile{display:inline-block;background:rgba(42,122,75,.1);border:1px solid rgba(42,122,75,.3);color:var(--green);border-radius:6px;padding:3px 9px;font-size:.7rem;font-weight:700;margin-top:8px;}
+.b2-phead{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:14px 0 8px;}
+.b2-tcard{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
+.b2-tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--gold));}
+.b2-tnum{font-family:'Fira Code',monospace;font-size:.66rem;color:var(--muted);margin-bottom:5px;}
+.b2-tq{font-size:.96rem;font-weight:700;line-height:1.5;margin-bottom:8px;color:var(--ink);}
+.b2-tctx{font-size:.78rem;color:var(--ink2);line-height:1.6;background:var(--bg);border-radius:8px;padding:9px 12px;margin-bottom:10px;}
+.b2-tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:.66rem;font-weight:600;color:var(--ink2);margin-right:3px;font-family:'Fira Code',monospace;}
+.b2-tag.sp{color:var(--green);border-color:rgba(42,122,75,.3);}
+.b2-tag.b2{color:var(--gold);border-color:rgba(212,144,10,.3);}
+.b2-tips{background:var(--surface);border:1.5px solid var(--border);border-left:3px solid var(--blue);border-radius:8px;padding:11px 14px;margin-top:10px;display:none;}
+.b2-tips.show{display:block;}
+.b2-tips h4{font-size:.68rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'Fira Code',monospace;}
+.b2-tips li{font-size:.78rem;color:var(--ink2);line-height:1.6;margin-left:16px;margin-bottom:4px;}
+.b2-sample{background:rgba(42,122,75,.05);border:1.5px solid rgba(42,122,75,.25);border-radius:8px;padding:12px;margin-top:10px;display:none;}
+.b2-sample.show{display:block;}
+.b2-slbl{font-family:'Fira Code',monospace;font-size:.65rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
+.b2-sample p{font-size:.82rem;line-height:1.75;color:var(--ink);}
+.b2-sample .hw{background:rgba(212,144,10,.15);color:var(--gold);padding:1px 4px;border-radius:3px;font-weight:700;}
+.b2-listen{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.b2-audio{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin:10px 0;text-align:center;}
+.b2-playbtn{background:var(--blue);color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:1.1rem;cursor:pointer;margin:4px;transition:transform .15s;}
+.b2-playbtn:hover{transform:scale(1.1);}
+.b2-playbtn.playing{background:var(--red);}
+.b2-script{background:var(--bg);border-radius:8px;padding:11px 13px;font-size:.78rem;line-height:1.85;color:var(--ink2);display:none;margin-top:10px;font-style:italic;}
+.b2-script.show{display:block;}
+.b2-qcard{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:8px;}
+.b2-qtext{font-size:.86rem;font-weight:600;margin-bottom:8px;color:var(--ink);line-height:1.5;}
+.b2-opt{background:var(--card);border:1.5px solid var(--border);border-radius:7px;padding:10px 12px;font-size:.82rem;cursor:pointer;width:100%;text-align:left;color:var(--ink2);margin-bottom:5px;transition:all .15s;}
+.b2-opt:hover:not(.disabled){border-color:var(--ink);}
+.b2-opt.correct{background:rgba(42,122,75,.1);border-color:var(--green);color:var(--green);}
+.b2-opt.wrong{background:rgba(200,75,47,.08);border-color:var(--red);color:var(--red);}
+.b2-opt.disabled{cursor:default;pointer-events:none;}
+.b2-flash{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;margin-bottom:10px;}
+.b2-flash::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:14px 14px 0 0;}
+.b2-fw{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.b2-fph{font-family:'Fira Code',monospace;font-size:.78rem;color:var(--muted);margin-bottom:8px;}
+.b2-flv{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:2px 10px;font-size:.66rem;font-weight:700;color:var(--gold);}
+.b2-fdef{font-size:.9rem;color:var(--ink);line-height:1.6;font-weight:500;margin-bottom:5px;}
+.b2-fex{font-size:.78rem;color:var(--ink2);font-style:italic;background:var(--bg);border-radius:8px;padding:8px 11px;line-height:1.6;margin-bottom:5px;}
+.b2-fb1{font-size:.76rem;color:var(--green);background:rgba(42,122,75,.08);border-radius:6px;padding:5px 9px;}
+.b2-vff{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.b2-vfb{padding:5px 11px;border-radius:100px;font-size:.7rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink2);}
+.b2-vfb.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+.b2-tip{display:flex;gap:11px;padding:13px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;}
+.b2-tip-icon{font-size:1.3rem;flex-shrink:0;}
+.b2-tip-title{font-size:.86rem;font-weight:700;margin-bottom:3px;color:var(--ink);}
+.b2-tip-desc{font-size:.78rem;color:var(--ink2);line-height:1.6;}
+.b2-exam{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:8px;}
+.b2-exam th{background:var(--bg);color:var(--blue);padding:7px 10px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;font-family:'Fira Code',monospace;}
+.b2-exam td{padding:7px 10px;border-top:1px solid var(--border);color:var(--ink2);}
+.b2-spk-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.b2-prog-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.b2-prog-wrap{flex:1;height:4px;background:var(--surface);border-radius:100px;overflow:hidden;}
+.b2-prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width .4s;}
+.b2-prog-txt{font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);}
 .panel{display:none;animation:fadeIn .3s ease;}
 .panel.active{display:block;}
 .card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;}
@@ -176,6 +258,7 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <button class="tab" onclick="switchTab('test')"><span class="ti">📝</span>Test</button>
     <button class="tab" onclick="switchTab('match')"><span class="ti">🎯</span>Match</button>
     <button class="tab" onclick="switchTab('gravity')"><span class="ti">💧</span>Gravity</button>
+    <button class="tab" onclick="switchTab('b2')"><span class="ti">🇬🇧</span>B2 入籍</button>
     <button class="tab" onclick="switchTab('apps')"><span class="ti">⭐</span>推介</button>
   </div>
 
@@ -316,6 +399,27 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
       <div class="note-box">中文意思從上面跌落嚟，打返個英文字救佢！跌到底就會失血。3 條命用晒就 Game Over。需要至少 3 個生字。</div>
       <div id="gravity-wrap"></div>
     </div>
+  </div>
+
+  <!-- B2 UK CITIZENSHIP -->
+  <div id="panel-b2" class="panel">
+    <div class="b2-hero">
+      <div class="lbl">🇬🇧 UK Citizenship Prep · B2</div>
+      <h2>入籍英語訓練</h2>
+      <p>10 個月計劃 · 10 個口說話題 · 8 段聆聽 · 80 個 B2 詞彙<br>考試：IELTS Life Skills B2 或 Trinity B2（只考聽同講，Pass/Fail）</p>
+    </div>
+    <div class="b2-subtabs">
+      <button class="b2-subtab active" onclick="b2Switch('plan')">📅 計劃</button>
+      <button class="b2-subtab" onclick="b2Switch('speaking')">🗣️ 口說</button>
+      <button class="b2-subtab" onclick="b2Switch('listening')">🎧 聆聽</button>
+      <button class="b2-subtab" onclick="b2Switch('vocab')">📚 B2 詞彙</button>
+      <button class="b2-subtab" onclick="b2Switch('tips')">💡 貼士</button>
+    </div>
+    <div id="b2sub-plan" class="b2-subpanel active"></div>
+    <div id="b2sub-speaking" class="b2-subpanel"></div>
+    <div id="b2sub-listening" class="b2-subpanel"></div>
+    <div id="b2sub-vocab" class="b2-subpanel"></div>
+    <div id="b2sub-tips" class="b2-subpanel"></div>
   </div>
 
   <!-- APPS -->
@@ -650,7 +754,7 @@ function init(){
 }
 
 function switchTab(n){
-  const tabs=['vocab','reading','grammar','listening','wordbook','flashcard','test','match','gravity','apps'];
+  const tabs=['vocab','reading','grammar','listening','wordbook','flashcard','test','match','gravity','b2','apps'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+n).classList.add('active');
@@ -660,6 +764,7 @@ function switchTab(n){
   if(n==='test')renderTest();
   if(n==='match')renderMatch();
   if(n==='gravity')renderGravityIdle();
+  if(n==='b2')b2Init();
 }
 
 // ── WORDBOOK ──────────────────────────────
@@ -1482,6 +1587,341 @@ function stopGravity(){
   if(gState.frameTimer)cancelAnimationFrame(gState.frameTimer);
   gState.falling.forEach(f=>f.el.remove());
   gState=null;
+}
+
+// ─── B2 UK CITIZENSHIP MODULE ─────────────────────
+const B2_PLAN=[
+  {phase:1,name:"5月 · 評估 + 建立習慣",goal:"了解自己程度，建立每日學習習慣",items:["做 B1/B2 程度測試，找出弱點（British Council 網站有免費測試）","練習話題 1：自我介紹——住邊、家庭、喺英國幾耐","每日聽 BBC Learning English「6 Minute English」","學 App 詞彙庫「生活」分類，第 1-10 個生字"],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘"},
+  {phase:1,name:"6月 · 日常生活話題",goal:"可以流暢講 2 個話題，每個超過 1 分鐘",items:["練習話題 2：日常生活——典型一日、興趣、習慣","學習 B2 連接詞：however / furthermore / as a result / for instance","學 App 詞彙庫「工作」分類，第 11-20 個生字","練習「買時間」短語：That's a good question... / Let me think..."],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘"},
+  {phase:1,name:"7月 · 工作同英國生活",goal:"用 ARE 法答題，有答案有原因有例子",items:["練習話題 3-4：工作/學習、適應英國生活","ARE 法：Answer → Reason → Example，每題用呢個結構","學 App 詞彙庫「社區」分類，第 21-30 個生字","錄低自己講嘢，聽返自己發音同流暢度"],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘",milestone:"✅ 階段一完成：4 個話題，詞彙 30 個"},
+  {phase:2,name:"8月 · 社區同健康",goal:"講嘢有層次，可以表達個人意見",items:["練習話題 5-6：社區融入、健康生活同 NHS","開始做 App 聆聽練習，每週做 2 段","學 App 詞彙庫「健康」分類，第 31-40 個生字","練習同人對話——問問題、回應對方意見"],daily:"聽力 20 分鐘 · 口說 30 分鐘 · 詞彙 10 分鐘"},
+  {phase:2,name:"9月 · 交通同環境",goal:"可以討論正反兩面，用複雜句式",items:["練習話題 7：交通環境，討論環保同可持續發展","睇英國新聞（BBC News），練習聽真實語速","學 App 詞彙庫「交通」分類，第 41-50 個生字","嘗試 HelloTalk / Tandem App，同英語母語者練習"],daily:"聽力 20 分鐘 · 口說 30 分鐘 · 詞彙 10 分鐘"},
+  {phase:2,name:"10月 · 教育同未來計劃",goal:"10 個話題全部練習過，詞彙 60 個",items:["練習話題 8-9：教育家庭、未來計劃同目標","完成 App 所有 8 段聆聽練習，分析答錯原因","學 App 詞彙庫「教育」分類，第 51-60 個生字","複習所有連接詞，喺對話中自然使用"],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘"},
+  {phase:2,name:"11月 · 英國文化 + 模擬考試",goal:"模擬真實考試，找出弱點",items:["練習話題 10：英國文化、傳統、價值觀","學 App 詞彙庫「文化」+「通用」分類，第 61-80 個生字","每週做一次完整模擬考試（30 分鐘計時）","錄低自己模擬答題，評估流暢程度"],daily:"聽力 20 分鐘 · 口說 25 分鐘 · 詞彙 15 分鐘",milestone:"✅ 階段二完成：10 個話題，80 個詞彙，8 段聆聽"},
+  {phase:3,name:"12月 · 報名 + 全速衝刺",goal:"正式報名考試，針對弱點加強",items:["報名 IELTS Life Skills B2（約 £185）或 Trinity B2（約 £135）","每週模擬考試 2 次，每次 30 分鐘計時","練習考試禮貌語：Could you repeat that? / I'm not sure I follow...","複習最重要 50 個詞彙，確保可以自然使用"],daily:"模擬練習 35 分鐘 · 聽力 15 分鐘 · 詞彙 10 分鐘"},
+  {phase:3,name:"1月 · 最後衝刺",goal:"信心十足，準備好考試",items:["每日練習一個話題，計時 1.5 分鐘，唔可以停頓太耐","練習對話互動：回應對方意見、問對方問題","每日聽英式英語最少 20 分鐘（BBC Radio 4 / 英劇）","放鬆心情，唔好死背，練習自然對話"],daily:"模擬對話 40 分鐘 · 聽力 20 分鐘"},
+  {phase:3,name:"2月 · 考試前準備",goal:"保持狀態，考試合格！",items:["每日輕鬆練習 30-45 分鐘，唔好過度緊張","考試前一晚：早睡，唔好死背","考試當日：早點到，深呼吸，自然對話","記住：Pass/Fail 制，流暢清晰就夠，唔係要求完美！"],daily:"考試貼士：講錯唔緊要，自然糾正返就得。考官評估溝通能力，唔係完美文法！",milestone:"🏆 目標：B2 合格，申請 ILR 永居！"}
+];
+
+const B2_TOPICS=[
+  {num:1,topic:"自我介紹",phase:"第1月",q:"Can you tell me about yourself and your life in the UK?",ctx:"Talk about where you live, how long you've been here, your family situation, and what you do day to day.",tags:["自我介紹","家庭"],
+   tips:["Start with your name, where you're originally from, and how long you've been in the UK.","Use the ARE method: Answer the question, give a Reason, add an Example.","Mention 2–3 specific details (job, family, daily life) to add depth.","If unsure, say 'That's a good question, let me think for a moment...'"],
+   sample:`My name is [your name] and I'm originally from Hong Kong. I've been living in the UK for around five years now, and I've <span class="hw">settled</span> in Manchester with my family. I work as a healthcare assistant, which I find very rewarding. <span class="hw">Adjusting</span> to British life was challenging at first — the weather, the food, the customs — but I've grown to genuinely <span class="hw">appreciate</span> it. My typical day involves an early morning <span class="hw">commute</span> to the hospital, and in the evenings I enjoy cooking with my children. We've fitted into our <span class="hw">neighbourhood</span> very well — our neighbours are friendly and welcoming. Overall, I feel grateful for the opportunities the UK has given my family.`},
+  {num:2,topic:"日常生活",phase:"第2月",q:"Can you describe a typical day in your life here in the UK?",ctx:"Talk about your morning routine, how you spend your day, what you do in the evenings, and what you enjoy about daily life.",tags:["日常","生活習慣"],
+   tips:["Describe morning, work, and evening separately for structure.","Use sequencers: first / then / after that / finally.","Mention one or two specific examples to make it personal.","Include something you genuinely enjoy — it lets your personality come through."],
+   sample:`A <span class="hw">typical</span> day for me starts around six in the morning. I make a coffee, check the news on my phone, then get the children ready for school. After dropping them off, I <span class="hw">commute</span> to work by bus, which is <span class="hw">convenient</span> and <span class="hw">reliable</span>. My job runs from nine to five, and I usually have lunch at a small café nearby. In the evening, I cook dinner with the family — we try to eat together when possible. Afterwards, I might go for a short walk or read a book to unwind. On weekends, we visit the park or do the food shop together. I find a regular <span class="hw">routine</span> really helps me stay <span class="hw">balanced</span> and feel settled.`},
+  {num:3,topic:"工作學習",phase:"第3月",q:"Can you tell me about your work or studies? What keeps you busy on a typical weekday?",ctx:"Talk about your job, working hours, or daily activities. If not working, describe what you do to keep yourself occupied.",tags:["工作","職業"],
+   tips:["Name your role clearly with one sentence describing what it involves.","Mention 2–3 typical tasks or responsibilities.","Add what you enjoy or find challenging — shows reflection.","If not working, talk about volunteering, family, or learning new skills."],
+   sample:`I currently work as a teaching assistant at a local primary school. My main <span class="hw">responsibility</span> is supporting children with extra learning needs, particularly in reading and writing. A typical day involves preparing materials, working one-to-one with pupils, and helping the class teacher during lessons. What I enjoy most is seeing students gain confidence — when a child finally understands something, it's incredibly rewarding. The hours suit me well, so I can pick up my own children afterwards. My <span class="hw">colleagues</span> are very supportive, and we have regular training <span class="hw">opportunities</span>. I'm hoping to do a teaching <span class="hw">qualification</span> next year, which would open up more <span class="hw">career</span> options for me. Overall, the work fits my life well.`},
+  {num:4,topic:"英國生活",phase:"第3月",q:"How have you found life in the UK? What have you had to get used to since arriving here?",ctx:"Talk about adjusting to British life — things you like, things that surprised you, the weather, culture, food, or people.",tags:["英國","適應"],
+   tips:["Pick 2–3 specific things (weather, food, customs, language).","Show both pleasant surprises and challenges.","Use 'I had to get used to...' for adapting experiences.","Avoid clichés — share a personal experience instead."],
+   sample:`Life in the UK has been an interesting journey. The first thing I had to <span class="hw">adjust</span> to was the weather — the constant grey skies and unexpected rain. I now always carry an umbrella, which I never did back home. The British way of queuing surprised me at first; people are so patient and orderly. I've genuinely come to <span class="hw">appreciate</span> the politeness — phrases like 'thank you', 'please' and 'sorry' are used constantly. The food was a bigger adjustment, but I now love a proper Sunday roast. What I value most, however, is the <span class="hw">diversity</span>. Walking through any town, you hear so many languages and see so many cultures coexisting. British society makes a real effort to be <span class="hw">welcoming</span> to newcomers, and that has helped me settle.`},
+  {num:5,topic:"社區融入",phase:"第4月",q:"How do you get involved in your local community? Do you have a good relationship with your neighbours?",ctx:"Talk about community events, local shops, talking to neighbours, volunteering, or how you feel about your local area.",tags:["社區","鄰居"],
+   tips:["Describe your relationship with neighbours specifically.","Mention 1 community event you've attended.","Share volunteering or local involvement if any.","Use phrases: 'get to know', 'feel part of', 'look out for each other'."],
+   sample:`I'd say I have a really good <span class="hw">relationship</span> with my neighbours. When we first moved in, our next-door neighbour brought over a cake to welcome us, which was such a lovely gesture. We now look out for each other — collecting parcels when one of us is away, that sort of thing. There's a small <span class="hw">community</span> centre nearby that runs events like coffee mornings and a Christmas fair. I went to one last December and met several local families. I also <span class="hw">volunteer</span> once a month at the local food bank, which has been a wonderful way to <span class="hw">contribute</span> and meet people from different backgrounds. I genuinely feel part of the neighbourhood now — small interactions really do add up.`},
+  {num:6,topic:"健康生活",phase:"第4月",q:"How do you try to stay healthy in your everyday life? Have you had experience using the NHS?",ctx:"Talk about exercise, diet, going to the GP, mental wellbeing, or any NHS services you've found useful.",tags:["健康","NHS"],
+   tips:["Mention diet, exercise, and mental wellbeing together for balance.","Share a positive (or balanced) NHS experience briefly.","Be specific: walking, swimming, cooking from scratch.","Use words: prevention, lifestyle, balance, wellbeing."],
+   sample:`I try to look after my health in a few simple ways. I aim to walk at least thirty minutes every day, usually during my lunch break. I also cook most meals from scratch using fresh ingredients — it's healthier and more economical. Mental <span class="hw">wellbeing</span> is just as important, so I try to switch off from work in the evenings and spend quality time with my family. As for the NHS, my experience has been mostly positive. I had to see my GP last year for some back pain, and the <span class="hw">appointment</span> system was straightforward. The doctor referred me to a physiotherapist within a few weeks, and the <span class="hw">treatment</span> really helped. I think prevention is key — eating well, staying active, and getting enough sleep makes a real difference.`},
+  {num:7,topic:"交通環境",phase:"第5月",q:"How do you usually travel around in the UK? Do you think about the environment in your daily choices?",ctx:"Talk about public transport, driving, cycling, or walking. Share your thoughts on environmental issues and sustainability.",tags:["交通","環境"],
+   tips:["Compare modes: bus, train, walking, cycling, car.","Mention reliability, cost, and environmental impact.","Share one sustainable choice you make personally.","Use B2 vocab: sustainable, carbon footprint, public transport."],
+   sample:`I mostly rely on <span class="hw">public transport</span> to get around. Where I live, the bus service is fairly <span class="hw">reliable</span>, and there's a train station within walking distance, which makes commuting straightforward. I do own a car, but I use it less these days — partly because of fuel costs and partly because I'm more aware of my <span class="hw">carbon footprint</span>. For short journeys, I try to walk or cycle whenever possible. I'm genuinely concerned about climate change, so making <span class="hw">sustainable</span> choices feels important. Our family also recycles carefully and tries to <span class="hw">reduce</span> single-use plastic. It's not about being perfect, but every small change helps. I'd love to see more investment in cycling infrastructure here.`},
+  {num:8,topic:"教育家庭",phase:"第6月",q:"Have you or any family members used education services in the UK? What has your experience been like?",ctx:"Talk about schools, colleges, adult learning courses, or training. Share thoughts on education in the UK.",tags:["教育","家庭"],
+   tips:["Name school type (primary / secondary / college / adult learning).","Mention specific positive experiences.","Touch on adult learning if relevant.","Balance any criticism with positives."],
+   sample:`Both of my children attend the local primary school, and our experience has been very positive. The teachers are dedicated, and the school <span class="hw">encourages</span> a real love of learning. They focus not only on academic subjects but also on creativity, sport, and social skills. The class sizes are reasonable, which means each child gets attention. I particularly appreciate the parent-teacher meetings where we discuss <span class="hw">progress</span> regularly. I've also benefited from <span class="hw">education</span> myself — I attended an evening English course at the local community college last year, which improved my confidence considerably. Education here gives you so many <span class="hw">opportunities</span>, regardless of your age. My eldest is now considering different career paths, and the school provides excellent guidance.`},
+  {num:9,topic:"未來計劃",phase:"第6月",q:"What are your plans or hopes for the future now that you are building a life in the UK?",ctx:"Talk about career goals, family plans, where you'd like to live, or how you hope to contribute to British society.",tags:["未來","計劃"],
+   tips:["Talk about career, family, citizenship, and study together.","Use 'I'm hoping to...' / 'My ambition is...' / 'I plan to...'","Be realistic but show motivation.","Mention how you want to contribute back."],
+   sample:`My plans for the future are centred on settling <span class="hw">permanently</span> here in the UK. My most immediate goal is to obtain my Indefinite Leave to Remain, which would give my family the stability we've been working towards. Career-wise, I'm hoping to qualify as a registered nurse — I've already started a part-time course at the local college, and I aim to complete it within two years. My <span class="hw">ambition</span> is to work in the NHS and give back to the community. For my children, I want them to thrive in school and feel proud of both their heritage and their British identity. I also hope to <span class="hw">contribute</span> back to British society — perhaps through volunteering. I feel genuinely grateful for the life we're building.`},
+  {num:10,topic:"英國文化",phase:"第7月",q:"What aspects of British culture have you come to appreciate or find interesting since living here?",ctx:"Talk about British customs, traditions, humour, food, national holidays, values, or things that feel distinctly British.",tags:["文化","英國"],
+   tips:["Pick 2–3 specific cultural aspects you genuinely value.","Examples: democracy, NHS, freedom of speech, queuing, tea culture.","Mention how you've adopted some habits.","Show respect without sounding rehearsed."],
+   sample:`There are several aspects of British culture I've come to genuinely <span class="hw">appreciate</span>. First, the strong sense of fair play and <span class="hw">respect</span> for the rule of law — whether it's queuing at the bus stop or following neighbourly customs, there's an unspoken commitment to fairness. I also admire the dry sense of humour, although it took me a while to understand it. Another thing I love is the strong sense of community — village fêtes, charity shops, and street parties for the King's birthday all bring people together. The NHS is something I deeply respect — the idea that everyone can access healthcare regardless of background is genuinely remarkable. I've even started enjoying a proper cup of tea in the afternoon. These small things add up to a culture I'm proud to be part of.`}
+];
+
+const B2_LISTEN=[
+  {title:"GP 手術預約",tag:"健康",script:"Receptionist: Good morning, Riverside Medical Centre, how can I help you?\nPatient: Hello, I'd like to make an appointment to see a doctor, please.\nReceptionist: Of course. Is this urgent or a routine matter?\nPatient: It's routine. I've been getting headaches for about two weeks and thought I should get it checked.\nReceptionist: Right. Our next available routine appointment is Thursday the fourteenth at half past ten in the morning. Would that suit you?\nPatient: Thursday the fourteenth at ten thirty — yes, that's perfect, thank you.\nReceptionist: Lovely. Could I take your name and date of birth?\nPatient: Sarah Chen, third of March nineteen eighty-five.\nReceptionist: Thank you Sarah. We'll send you a reminder text the day before. Please give us at least twenty-four hours' notice if you need to cancel.",
+   qs:[{q:"Why is the patient calling?",opts:["To cancel an appointment","To make a new appointment","To ask about test results","To speak to a doctor directly"],ans:1},{q:"When is the appointment?",opts:["Tuesday 14th at 10am","Thursday 14th at 10:30am","Friday 14th at 10:30am","Thursday 4th at 11am"],ans:1},{q:"What must the patient do if cancelling?",opts:["Call on the same day","Give 24 hours' notice","Send an email","Visit in person"],ans:1}]},
+  {title:"社區活動討論",tag:"社區",script:"Mark: Have you heard about the community fair they're organising in the park next month?\nLisa: Yes, I saw the flyers posted around. It's on the twentieth, isn't it?\nMark: That's right, the twentieth of June. There'll be stalls, live music, food from different cultures, and activities for children.\nLisa: That sounds wonderful. I was thinking of setting up a small stall to sell homemade food. Is there still space available?\nMark: I believe so. You need to register online by the first of June. The fee is fifteen pounds for a standard table.\nLisa: Fifteen pounds — quite reasonable. I'll do that tonight. Will you be going along?\nMark: Definitely. I'm also going to volunteer to help with setting up from eight o'clock in the morning.\nLisa: Maybe I'll volunteer too. It'd be a great way to meet more people in the neighbourhood.",
+   qs:[{q:"When is the community fair?",opts:["June 1st","June 15th","June 20th","June 30th"],ans:2},{q:"How much does a stall cost?",opts:["£10","£12","£15","£20"],ans:2},{q:"What time do volunteers start?",opts:["7am","8am","9am","10am"],ans:1}]},
+  {title:"英國天氣對話",tag:"日常生活",script:"Interviewer: You've been living in the UK for about three years now. How have you found the weather?\nResident: Well, it was quite a shock at first, to be honest. Where I'm from we have very distinct seasons. Here it feels like it can rain at any time of year.\nInterviewer: That's very true. Have you got used to it?\nResident: More or less. I always carry an umbrella now, which I never did before. The grey skies can feel a bit gloomy in winter, but I genuinely appreciate the mild summers. It doesn't get unbearably hot, which I actually prefer now.\nInterviewer: Does the weather affect your daily life much?\nResident: It influences what I wear and what activities I plan. But I think the British attitude towards weather is quite admirable — people just get on with things regardless.",
+   qs:[{q:"How long has the resident lived in the UK?",opts:["One year","Two years","Three years","Five years"],ans:2},{q:"What does the resident always carry now?",opts:["A coat","An umbrella","Sunglasses","A hat"],ans:1},{q:"What does the resident appreciate about UK summers?",opts:["They are long","They are sunny","They are not too hot","They are very warm"],ans:2}]},
+  {title:"公共交通對話",tag:"交通",script:"Tom: How do you usually get to work? Do you drive?\nAisha: No, I don't drive. I take the bus and sometimes the train. It works out quite well — I don't have to worry about parking or traffic jams.\nTom: That makes sense. Do you find public transport reliable here?\nAisha: Most of the time, yes. The buses run fairly regularly. Occasionally there are delays, but there's usually a notice on the app or at the stop.\nTom: I've been thinking of leaving my car at home more often. It's better for the environment as well.\nAisha: Absolutely. Walking or cycling for short distances makes a real difference too. And it keeps you fit at the same time!\nTom: True. Maybe I'll try the cycle-to-work scheme. My company actually offers it.",
+   qs:[{q:"How does Aisha get to work?",opts:["She drives","She cycles","She takes the bus and train","She walks"],ans:2},{q:"What does Aisha say about bus delays?",opts:["They are very frequent","There is usually a notice","The buses are always on time","She often misses the bus"],ans:1},{q:"What does Tom's company offer?",opts:["Free parking","A bus pass","A cycle-to-work scheme","A taxi service"],ans:2}]},
+  {title:"鄰居對話",tag:"社區",script:"Neighbour 1: Morning! I haven't seen you around for a while. Have you been away?\nNeighbour 2: Yes, we went back to visit family overseas for a few weeks. It was lovely but it's good to be home.\nNeighbour 1: How nice! Did you have good weather over there?\nNeighbour 2: Much hotter than here, actually. We're not used to the heat anymore, which is funny.\nNeighbour 1: Hey, did you get the note about the street clean-up this Saturday?\nNeighbour 2: I did. Ten o'clock at the park entrance, isn't it? We're planning to come along.\nNeighbour 1: Wonderful. The more the merrier. They're providing gloves and bags — just bring yourself.\nNeighbour 2: Perfect. We'll see you there then!",
+   qs:[{q:"Where had Neighbour 2 been?",opts:["On holiday","Visiting family overseas","In hospital","Working abroad"],ans:1},{q:"What is happening on Saturday?",opts:["A street party","A community fair","A street clean-up","A neighbourhood meeting"],ans:2},{q:"What time does the Saturday event start?",opts:["9am","10am","11am","12pm"],ans:1}]},
+  {title:"學校電話",tag:"教育",script:"Secretary: Good afternoon, Oakfield Primary School, how may I help?\nParent: Hello, this is Mrs Wong. My son Daniel is in Year Four. I'm calling because he has a dentist appointment tomorrow morning and won't be in until half past eleven.\nSecretary: Of course, Mrs Wong. So Daniel will be absent for morning registration and arrive at approximately eleven thirty?\nParent: That's right. His teacher is Miss Clarke. I just wanted to make sure she knows.\nSecretary: Absolutely. I'll pass the message to Miss Clarke and mark Daniel as a late arrival for tomorrow.",
+   qs:[{q:"Why is Daniel missing the morning?",opts:["He is unwell","He has a dentist appointment","He has a hospital check-up","He has a sports event"],ans:1},{q:"What time will Daniel arrive at school?",opts:["10:30am","11:00am","11:30am","12:00pm"],ans:2},{q:"Who is Daniel's teacher?",opts:["Mrs Wong","Miss Clarke","Miss Chen","Mrs Park"],ans:1}]},
+  {title:"工作面試準備",tag:"工作",script:"Friend 1: So your job interview is tomorrow — are you feeling ready?\nFriend 2: Mostly yes. I've done a lot of research about the company. I just get nervous in interviews.\nFriend 1: That's completely normal. Just remember to breathe and take your time before answering.\nFriend 2: They mentioned it'll be a panel interview with three people. That's what worries me most.\nFriend 1: Don't focus on the number of people. Just talk to whoever asked the question. And use examples from your experience — that always helps.\nFriend 2: Good tip. I've prepared a few examples of problems I've solved at work.\nFriend 1: Perfect. And make sure you ask them a question at the end — it shows you're genuinely interested.",
+   qs:[{q:"When is the interview?",opts:["Today","Tomorrow","Next week","This afternoon"],ans:1},{q:"What kind of interview is it?",opts:["A phone interview","A one-to-one","A panel interview with 3 people","An online interview"],ans:2},{q:"What does Friend 1 advise doing at the end?",opts:["Leave quickly","Ask the interviewer a question","Bring extra copies of your CV","Speak as much as possible"],ans:1}]},
+  {title:"環保討論",tag:"環境",script:"Anna: I've been trying to reduce my plastic waste recently. It's harder than I thought.\nBen: I know what you mean. I started taking reusable bags everywhere, but I still end up with plastic sometimes.\nAnna: Me too. I've switched to a reusable water bottle and coffee cup though — that's helped a lot.\nBen: Good idea. I've also started buying loose vegetables instead of the pre-packaged ones at the supermarket.\nAnna: Brilliant. I heard our council is improving the recycling facilities soon — more bins for different materials.\nBen: About time! I always get confused about what can and can't go in the recycling. Hopefully it'll be clearer.",
+   qs:[{q:"What has Anna switched to using?",opts:["Paper bags","A reusable bottle and coffee cup","A bicycle","Organic food"],ans:1},{q:"What does Ben buy instead of pre-packaged vegetables?",opts:["Frozen vegetables","Loose vegetables","Tinned vegetables","Organic vegetables"],ans:1},{q:"What is the council improving?",opts:["Public transport","Parks and gardens","Recycling facilities","Street lighting"],ans:2}]}
+];
+
+const B2_VOCAB=[
+  {w:"routine",ph:"/ruːˈtiːn/",def:"A regular set of activities done at the same time",ex:"My morning routine includes a short walk.",b1:"habit / regular pattern",cat:"生活"},
+  {w:"commute",ph:"/kəˈmjuːt/",def:"To travel regularly between home and work",ex:"I commute to work by bus every day.",b1:"travel to work",cat:"生活"},
+  {w:"neighbourhood",ph:"/ˈneɪbəhʊd/",def:"The area around where you live",ex:"We have a very friendly neighbourhood.",b1:"local area",cat:"生活"},
+  {w:"convenient",ph:"/kənˈviːniənt/",def:"Easy to use or well-suited to your needs",ex:"The local shops are very convenient.",b1:"easy / handy",cat:"生活"},
+  {w:"leisure",ph:"/ˈleʒə/",def:"Free time for enjoyment and relaxation",ex:"I spend my leisure time reading and gardening.",b1:"free time",cat:"生活"},
+  {w:"appreciate",ph:"/əˈpriːʃieɪt/",def:"To recognise and value the good qualities of something",ex:"I really appreciate the sense of community here.",b1:"enjoy / value",cat:"生活"},
+  {w:"adjust",ph:"/əˈdʒʌst/",def:"To change slightly to suit a new situation",ex:"It took time to adjust to the British weather.",b1:"get used to / adapt",cat:"生活"},
+  {w:"typical",ph:"/ˈtɪpɪkəl/",def:"Normal or usual for a particular person or situation",ex:"A typical British Sunday involves a roast dinner.",b1:"normal / usual",cat:"生活"},
+  {w:"balance",ph:"/ˈbæləns/",def:"A situation where different things are in equal proportion",ex:"I try to maintain a good work-life balance.",b1:"equal amount",cat:"生活"},
+  {w:"settle",ph:"/ˈsetəl/",def:"To make a place your permanent home",ex:"We have settled in the UK and feel at home.",b1:"make a home",cat:"生活"},
+  {w:"employment",ph:"/ɪmˈplɔɪmənt/",def:"The state of having a paid job",ex:"Employment opportunities here are excellent.",b1:"work / having a job",cat:"工作"},
+  {w:"profession",ph:"/prəˈfeʃən/",def:"A job requiring special training or education",ex:"She works in the healthcare profession.",b1:"job / career",cat:"工作"},
+  {w:"colleague",ph:"/ˈkɒliːɡ/",def:"A person you work with",ex:"My colleagues are very supportive.",b1:"workmate",cat:"工作"},
+  {w:"responsibility",ph:"/rɪˌspɒnsəˈbɪləti/",def:"A duty or task you are expected to carry out",ex:"My main responsibility is managing the accounts.",b1:"duty / task",cat:"工作"},
+  {w:"opportunity",ph:"/ˌɒpəˈtjuːnəti/",def:"A chance to do or achieve something",ex:"The UK has given me great career opportunities.",b1:"chance",cat:"工作"},
+  {w:"permanent",ph:"/ˈpɜːmənənt/",def:"Lasting for a long time or forever",ex:"I am hoping to find permanent work here.",b1:"long-term",cat:"工作"},
+  {w:"flexible",ph:"/ˈfleksɪbəl/",def:"Able to be changed or adapted easily",ex:"My working hours are quite flexible.",b1:"easy to change",cat:"工作"},
+  {w:"skilled",ph:"/skɪld/",def:"Having the ability and training to do something well",ex:"She is a skilled nurse with years of experience.",b1:"good at / trained",cat:"工作"},
+  {w:"income",ph:"/ˈɪŋkʌm/",def:"Money received regularly from work or other sources",ex:"My income allows me to live comfortably.",b1:"pay / earnings",cat:"工作"},
+  {w:"volunteer",ph:"/ˌvɒlənˈtɪə/",def:"To offer to do something without being paid",ex:"I volunteer at a local food bank on Saturdays.",b1:"help for free",cat:"工作"},
+  {w:"community",ph:"/kəˈmjuːnɪti/",def:"A group of people living in the same area or sharing interests",ex:"I feel very much part of the local community.",b1:"local area / group",cat:"社區"},
+  {w:"integrate",ph:"/ˈɪntɪɡreɪt/",def:"To become accepted as part of a community",ex:"It has taken time to integrate into British life.",b1:"fit in / join",cat:"社區"},
+  {w:"participate",ph:"/pɑːˈtɪsɪpeɪt/",def:"To take part in an activity or event",ex:"I try to participate in community events regularly.",b1:"take part",cat:"社區"},
+  {w:"contribute",ph:"/kənˈtrɪbjuːt/",def:"To give or add something to a shared effort",ex:"I want to contribute positively to my neighbourhood.",b1:"give / help",cat:"社區"},
+  {w:"diverse",ph:"/daɪˈvɜːs/",def:"Including many different types of people or things",ex:"Our community is culturally diverse.",b1:"mixed / varied",cat:"社區"},
+  {w:"welcoming",ph:"/ˈwelkəmɪŋ/",def:"Friendly and making people feel at home",ex:"People here are very welcoming to newcomers.",b1:"friendly / warm",cat:"社區"},
+  {w:"support",ph:"/səˈpɔːt/",def:"To help or encourage someone",ex:"The council offers good support for new residents.",b1:"help / assist",cat:"社區"},
+  {w:"involve",ph:"/ɪnˈvɒlv/",def:"To include or take part in something",ex:"I like to involve myself in local activities.",b1:"take part / include",cat:"社區"},
+  {w:"relationship",ph:"/rɪˈleɪʃənʃɪp/",def:"The way people connect or interact",ex:"I have a good relationship with my neighbours.",b1:"connection / bond",cat:"社區"},
+  {w:"neighbourhood watch",ph:"/ˈneɪbəhʊd wɒtʃ/",def:"A community scheme where people look out for each other",ex:"Our street has an active neighbourhood watch scheme.",b1:"local safety group",cat:"社區"},
+  {w:"appointment",ph:"/əˈpɔɪntmənt/",def:"An arranged time to meet someone, especially a doctor",ex:"I have a GP appointment next Thursday.",b1:"meeting / booking",cat:"健康"},
+  {w:"prescription",ph:"/prɪˈskrɪpʃən/",def:"A written order from a doctor for medicine",ex:"The doctor gave me a prescription for antibiotics.",b1:"medicine note from doctor",cat:"健康"},
+  {w:"symptom",ph:"/ˈsɪmptəm/",def:"A physical sign that shows something may be wrong",ex:"Tiredness can be a symptom of stress.",b1:"sign / warning sign",cat:"健康"},
+  {w:"maintain",ph:"/meɪnˈteɪn/",def:"To keep something in good condition or continue it",ex:"It's important to maintain a balanced diet.",b1:"keep up / continue",cat:"健康"},
+  {w:"recover",ph:"/rɪˈkʌvə/",def:"To get better after an illness or difficulty",ex:"It took two weeks to recover from the flu.",b1:"get better / heal",cat:"健康"},
+  {w:"wellbeing",ph:"/ˈwelbiːɪŋ/",def:"The state of being comfortable, healthy, and happy",ex:"My overall wellbeing has improved since moving here.",b1:"health / happiness",cat:"健康"},
+  {w:"diet",ph:"/ˈdaɪət/",def:"The food and drink you regularly consume",ex:"I try to follow a healthy and balanced diet.",b1:"eating habits",cat:"健康"},
+  {w:"physical",ph:"/ˈfɪzɪkəl/",def:"Relating to the body rather than the mind",ex:"Regular physical activity is important for health.",b1:"bodily / to do with the body",cat:"健康"},
+  {w:"mental health",ph:"/ˈmentəl helθ/",def:"A person's emotional and psychological wellbeing",ex:"Looking after your mental health is just as important.",b1:"emotional health",cat:"健康"},
+  {w:"treatment",ph:"/ˈtriːtmənt/",def:"Medical care given to a patient",ex:"The NHS provides free treatment to all residents.",b1:"medical care",cat:"健康"},
+  {w:"transport",ph:"/ˈtrænspɔːt/",def:"A system for carrying people or goods from place to place",ex:"Public transport in this city is very good.",b1:"travel / getting around",cat:"交通"},
+  {w:"sustainable",ph:"/səˈsteɪnəbəl/",def:"Causing little or no damage to the environment",ex:"Cycling is a more sustainable way to travel.",b1:"eco-friendly / green",cat:"交通"},
+  {w:"reliable",ph:"/rɪˈlaɪəbəl/",def:"Consistently good and can be trusted",ex:"The bus service here is mostly reliable.",b1:"dependable / on time",cat:"交通"},
+  {w:"environment",ph:"/ɪnˈvaɪrənmənt/",def:"The natural world — air, land, and water around us",ex:"We all have a responsibility to protect the environment.",b1:"nature / natural world",cat:"交通"},
+  {w:"pollution",ph:"/pəˈluːʃən/",def:"Harmful substances released into the environment",ex:"Air pollution is a serious problem in many cities.",b1:"damage to environment",cat:"交通"},
+  {w:"reduce",ph:"/rɪˈdjuːs/",def:"To make something smaller or less in amount",ex:"I try to reduce the amount of plastic I use.",b1:"cut down / use less",cat:"交通"},
+  {w:"renewable",ph:"/rɪˈnjuːəbəl/",def:"Energy from natural sources that can be naturally replaced",ex:"The UK is investing heavily in renewable energy.",b1:"green energy",cat:"交通"},
+  {w:"efficient",ph:"/ɪˈfɪʃənt/",def:"Working well without wasting time or energy",ex:"Electric cars are more energy-efficient than petrol cars.",b1:"effective",cat:"交通"},
+  {w:"carbon footprint",ph:"/ˈkɑːbən ˈfʊtprɪnt/",def:"The amount of carbon dioxide released by a person's activities",ex:"Taking the bus reduces your carbon footprint.",b1:"environmental impact",cat:"交通"},
+  {w:"infrastructure",ph:"/ˈɪnfrəstrʌktʃə/",def:"The basic systems a country needs, like roads and transport",ex:"The UK has a well-developed transport infrastructure.",b1:"roads and systems",cat:"交通"},
+  {w:"education",ph:"/ˌedʒʊˈkeɪʃən/",def:"The process of teaching and learning",ex:"Education is highly valued in British society.",b1:"schooling / learning",cat:"教育"},
+  {w:"qualification",ph:"/ˌkwɒlɪfɪˈkeɪʃən/",def:"A certificate showing you've completed a course successfully",ex:"I obtained a teaching qualification last year.",b1:"certificate / degree",cat:"教育"},
+  {w:"achievement",ph:"/əˈtʃiːvmənt/",def:"Something successfully done, especially through effort",ex:"Passing my English test was a real achievement.",b1:"success / good result",cat:"教育"},
+  {w:"ambition",ph:"/æmˈbɪʃən/",def:"A strong desire to achieve something",ex:"My ambition is to become a nurse in the UK.",b1:"goal / dream",cat:"教育"},
+  {w:"career",ph:"/kəˈrɪə/",def:"A long-term job or series of jobs in one field",ex:"I'm building a career in healthcare.",b1:"job / profession",cat:"教育"},
+  {w:"progress",ph:"/ˈprəʊɡres/",def:"Development or improvement over time",ex:"I'm making good progress with my English.",b1:"improvement",cat:"教育"},
+  {w:"aspire",ph:"/əˈspaɪə/",def:"To have a strong wish to achieve something",ex:"I aspire to become a British citizen.",b1:"hope / want",cat:"教育"},
+  {w:"curriculum",ph:"/kəˈrɪkjʊləm/",def:"The subjects taught in a school or college",ex:"The UK curriculum is broad and well-structured.",b1:"school subjects",cat:"教育"},
+  {w:"chance",ph:"/tʃɑːns/",def:"A favourable chance to do or achieve something",ex:"The UK has given my children great chances.",b1:"opportunity / possibility",cat:"教育"},
+  {w:"encourage",ph:"/ɪnˈkʌrɪdʒ/",def:"To give someone confidence or hope to do something",ex:"My teacher encouraged me to keep practising.",b1:"support / motivate",cat:"教育"},
+  {w:"tradition",ph:"/trəˈdɪʃən/",def:"A custom or belief passed down through generations",ex:"Celebrating Christmas is an important British tradition.",b1:"custom",cat:"文化"},
+  {w:"diversity",ph:"/daɪˈvɜːsɪti/",def:"The variety of different people and cultures in a place",ex:"I love the diversity of British cities.",b1:"variety / mix",cat:"文化"},
+  {w:"respect",ph:"/rɪˈspekt/",def:"Admiration or consideration for someone or something",ex:"There is great respect for the rule of law in the UK.",b1:"admire / treat well",cat:"文化"},
+  {w:"tolerance",ph:"/ˈtɒlərəns/",def:"Willingness to accept different opinions or ways of living",ex:"British society values tolerance and fairness.",b1:"acceptance",cat:"文化"},
+  {w:"democracy",ph:"/dɪˈmɒkrəsi/",def:"A system where people vote to choose their government",ex:"The UK is a parliamentary democracy.",b1:"voting system",cat:"文化"},
+  {w:"rights",ph:"/raɪts/",def:"Things you are legally or morally allowed to do or have",ex:"Everyone has the right to free healthcare in the UK.",b1:"freedoms",cat:"文化"},
+  {w:"heritage",ph:"/ˈherɪtɪdʒ/",def:"The history, traditions, and values passed down in a culture",ex:"The UK has a rich and varied cultural heritage.",b1:"history / background",cat:"文化"},
+  {w:"citizenship",ph:"/ˈsɪtɪzənʃɪp/",def:"The state of being an official member of a country",ex:"Applying for British citizenship is a significant step.",b1:"being a citizen",cat:"文化"},
+  {w:"blend in",ph:"/blend ɪn/",def:"To combine and become part of a larger group",ex:"I have gradually blended in to British culture.",b1:"fit in / join",cat:"文化"},
+  {w:"multicultural",ph:"/ˌmʌltiˈkʌltʃərəl/",def:"Relating to or including many different cultures",ex:"Britain is a multicultural society.",b1:"mixed culture",cat:"文化"},
+  {w:"demonstrate",ph:"/ˈdemənstreɪt/",def:"To clearly show or prove something",ex:"You must demonstrate your English ability in the test.",b1:"show / prove",cat:"通用"},
+  {w:"sufficient",ph:"/səˈfɪʃənt/",def:"Enough for a particular purpose",ex:"You need sufficient evidence for your application.",b1:"enough / adequate",cat:"通用"},
+  {w:"acknowledge",ph:"/əkˈnɒlɪdʒ/",def:"To accept or recognise that something is true",ex:"I acknowledge that learning a language takes time.",b1:"admit / accept",cat:"通用"},
+  {w:"approximately",ph:"/əˈprɒksɪmətli/",def:"About; not exactly but close",ex:"The test takes approximately thirty minutes.",b1:"about / around",cat:"通用"},
+  {w:"significant",ph:"/sɪɡˈnɪfɪkənt/",def:"Important or large enough to have an effect",ex:"Moving to the UK was a significant change in my life.",b1:"important / big",cat:"通用"},
+  {w:"perspective",ph:"/pəˈspektɪv/",def:"A particular way of thinking about something",ex:"Living here has changed my perspective on many things.",b1:"view / opinion",cat:"通用"},
+  {w:"consider",ph:"/kənˈsɪdə/",def:"To think carefully about something before deciding",ex:"I've carefully considered my options.",b1:"think about",cat:"通用"},
+  {w:"establish",ph:"/ɪˈstæblɪʃ/",def:"To set up or create something, often officially",ex:"I have established a stable life here in the UK.",b1:"set up / start",cat:"通用"},
+  {w:"adapt",ph:"/əˈdæpt/",def:"To change your behaviour to suit a new situation",ex:"It's important to adapt to your new environment.",b1:"adjust / change",cat:"通用"},
+  {w:"consequently",ph:"/ˈkɒnsɪkwəntli/",def:"As a result; therefore",ex:"I studied hard; consequently, my English improved.",b1:"so / as a result",cat:"通用"}
+];
+
+const B2_CATS=["全部","生活","工作","社區","健康","交通","教育","文化","通用"];
+let b2SpkIdx=0,b2LisIdx=0,b2VcIdx=0,b2LisScore=0,b2LisAns={},b2VcCat="全部",b2Initialized=false,b2Playing=false;
+
+function b2Init(){
+  if(b2Initialized)return;
+  b2Initialized=true;
+  b2RenderPlan();b2RenderSpeaking();b2RenderListening();b2RenderVocab();b2RenderTips();
+}
+function b2Switch(n){
+  const names=['plan','speaking','listening','vocab','tips'];
+  document.querySelectorAll('.b2-subtab').forEach((t,i)=>t.classList.toggle('active',names[i]===n));
+  document.querySelectorAll('.b2-subpanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('b2sub-'+n).classList.add('active');
+  if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}
+}
+
+function b2RenderPlan(){
+  let html='<p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">10 個月升 B1 → B2 · 每日 1 小時 · 3 階段 · 撳每個月睇詳情</p>';
+  html+='<div class="b2-hero"><div class="lbl">🎯 總目標</div><p style="font-size:.82rem;line-height:1.7;"><b>考試：</b>IELTS Life Skills B2 (~£185) 或 Trinity B2 (~£135)<br><b>期限：</b>2027 年 3 月 26 日前完成 ILR 申請<br><b>每日：</b>1 小時練習（聽 20 / 講 25 / 詞彙 15）<br><b>制度：</b>Pass/Fail · 流暢清晰就夠，唔需要完美</p></div>';
+  const phases=[{n:1,t:"📘 第一階段：打好基礎（1-3 月）",color:"var(--blue)"},{n:2,t:"📙 第二階段：鞏固提升（4-7 月）",color:"var(--gold)"},{n:3,t:"📗 第三階段：衝刺備考（8-10 月）",color:"var(--green)"}];
+  phases.forEach(ph=>{
+    html+=`<div class="b2-phead" style="color:${ph.color}">${ph.t}</div>`;
+    B2_PLAN.filter(m=>m.phase===ph.n).forEach((m,i)=>{
+      const idx=B2_PLAN.indexOf(m);
+      html+=`<div class="b2-month"><div class="b2-mhead" onclick="b2TogglePlan(${idx})"><span class="b2-phase ph${m.phase}">第${idx+1}月</span><span class="b2-mname">${m.name}</span><span class="b2-arrow" id="b2-arr-${idx}">▼</span></div><div class="b2-mbody" id="b2-body-${idx}"><div class="b2-mgoal">🎯 目標：${m.goal}</div>${m.items.map(it=>`<div class="b2-mitem">${it}</div>`).join('')}<div class="b2-daily"><b>每日 1 小時：</b>${m.daily}</div>${m.milestone?`<span class="b2-mile">${m.milestone}</span>`:''}</div></div>`;
+    });
+  });
+  document.getElementById('b2sub-plan').innerHTML=html;
+}
+function b2TogglePlan(idx){
+  const body=document.getElementById('b2-body-'+idx);
+  const arr=document.getElementById('b2-arr-'+idx);
+  const open=body.classList.toggle('open');
+  arr.style.transform=open?'rotate(180deg)':'';
+}
+
+function b2RenderSpeaking(){
+  const t=B2_TOPICS[b2SpkIdx],total=B2_TOPICS.length;
+  document.getElementById('b2sub-speaking').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">10 個入籍考試核心話題 · 提示同參考答案 · 用 ARE 法答題</p>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2SpkIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2SpkIdx+1}/${total}</span></div>
+    <div class="b2-tcard">
+      <div class="b2-tnum">話題 ${t.num} · ${t.topic} · <span style="color:var(--green)">${t.phase}</span></div>
+      <div class="b2-tq">❓ ${t.q}</div>
+      <div class="b2-tctx">💭 ${t.ctx}</div>
+      <div>${t.tags.map(g=>`<span class="b2-tag sp">${g}</span>`).join('')}<span class="b2-tag b2">B2</span></div>
+    </div>
+    <div class="b2-spk-btns">
+      <button class="btn bg2" onclick="speakWord(B2_TOPICS[${b2SpkIdx}].q)">🔊 聽問題</button>
+      <button class="btn bg2" onclick="b2ToggleTips()">💡 答題提示</button>
+      <button class="btn bg2" onclick="b2ToggleSample()">📝 參考答案</button>
+    </div>
+    <div id="b2-tips" class="b2-tips"><h4>答題提示</h4><ul>${t.tips.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div id="b2-sample" class="b2-sample"><div class="b2-slbl">✅ B2 程度參考答案</div><p>${t.sample}</p>
+      <button class="btn bg2" style="margin-top:8px;font-size:.75rem;padding:7px 12px;" onclick="speakWord(B2_TOPICS[${b2SpkIdx}].sample.replace(/<[^>]+>/g,''))">🔊 聽範例</button>
+    </div>
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn bg2" onclick="b2PrevSpk()" ${b2SpkIdx===0?'disabled':''}>← 上題</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextSpk()" ${b2SpkIdx===total-1?'disabled':''}>下題 →</button>
+    </div>`;
+}
+function b2ToggleTips(){document.getElementById('b2-tips').classList.toggle('show');}
+function b2ToggleSample(){document.getElementById('b2-sample').classList.toggle('show');}
+function b2NextSpk(){if(b2SpkIdx<B2_TOPICS.length-1){b2SpkIdx++;b2RenderSpeaking();}}
+function b2PrevSpk(){if(b2SpkIdx>0){b2SpkIdx--;b2RenderSpeaking();}}
+
+function b2RenderListening(){
+  const s=B2_LISTEN[b2LisIdx],ans=b2LisAns[b2LisIdx]||{},total=B2_LISTEN.length;
+  document.getElementById('b2sub-listening').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">8 段日常英式對話 · 聽完答選擇題 · 針對 IELTS Life Skills 題型</p>
+    <div style="display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:4px 12px;font-size:.76rem;font-weight:700;color:var(--gold);margin-bottom:12px;">✅ 答對：${b2LisScore} 題</div>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2LisIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2LisIdx+1}/${total}</span></div>
+    <div class="b2-listen">
+      <div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🎧 ${s.tag} · ${s.title}</div>
+      <div class="b2-audio">
+        <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">撳▶聆聽對話（英式口音）</p>
+        <button class="b2-playbtn" id="b2-pbtn" onclick="b2PlayListen()">▶</button>
+        <button class="b2-playbtn" style="background:var(--surface);color:var(--ink);font-size:.8rem;" onclick="b2ToggleScript()">📄 文字稿</button>
+      </div>
+      <div id="b2-script" class="b2-script">${s.script.replace(/\n/g,'<br>')}</div>
+    </div>
+    <div style="font-family:'Fira Code',monospace;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">❓ 聆聽後回答問題</div>
+    ${s.qs.map((q,qi)=>`<div class="b2-qcard"><div class="b2-qtext">${qi+1}. ${q.q}</div>${q.opts.map((o,oi)=>{let cls='b2-opt';if(ans[qi]!==undefined){cls+=' disabled';if(oi===q.ans)cls+=' correct';else if(oi===ans[qi])cls+=' wrong';}return `<button class="${cls}" onclick="b2AnswerQ(${qi},${oi},${q.ans})">${String.fromCharCode(65+oi)}. ${o}</button>`;}).join('')}</div>`).join('')}
+    <div class="btn-row" style="margin-top:10px;">
+      <button class="btn bg2" onclick="b2PrevLis()" ${b2LisIdx===0?'disabled':''}>← 上段</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextLis()" ${b2LisIdx===total-1?'disabled':''}>下段 →</button>
+    </div>`;
+}
+function b2PlayListen(){
+  const btn=document.getElementById('b2-pbtn');
+  const s=B2_LISTEN[b2LisIdx];
+  if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;btn.textContent='▶';btn.classList.remove('playing');return;}
+  unlockSpeech&&unlockSpeech();
+  window.speechSynthesis.cancel();
+  const lines=s.script.split('\n').filter(l=>l.trim());
+  let i=0;
+  function next(){
+    if(i>=lines.length){b2Playing=false;btn.textContent='▶';btn.classList.remove('playing');return;}
+    const u=new SpeechSynthesisUtterance(lines[i]);
+    u.lang='en-GB';u.rate=0.88;u.pitch=1.1;
+    const v=getCurrentVoice();if(v){u.voice=v;u.lang=v.lang;}
+    u.onend=()=>{i++;setTimeout(next,300);};
+    window.speechSynthesis.speak(u);
+    i++;
+  }
+  next();
+  b2Playing=true;btn.textContent='⏸';btn.classList.add('playing');
+}
+function b2ToggleScript(){document.getElementById('b2-script').classList.toggle('show');}
+function b2AnswerQ(qi,chosen,correct){
+  if(!b2LisAns[b2LisIdx])b2LisAns[b2LisIdx]={};
+  if(b2LisAns[b2LisIdx][qi]!==undefined)return;
+  b2LisAns[b2LisIdx][qi]=chosen;
+  if(chosen===correct)b2LisScore++;
+  b2RenderListening();
+}
+function b2NextLis(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LisIdx<B2_LISTEN.length-1){b2LisIdx++;b2RenderListening();}}
+function b2PrevLis(){if(b2Playing){window.speechSynthesis.cancel();b2Playing=false;}if(b2LisIdx>0){b2LisIdx--;b2RenderListening();}}
+
+function b2GetFiltered(){return b2VcCat==='全部'?B2_VOCAB:B2_VOCAB.filter(w=>w.cat===b2VcCat);}
+function b2RenderVocab(){
+  const words=b2GetFiltered();
+  if(b2VcIdx>=words.length)b2VcIdx=0;
+  const w=words[b2VcIdx];
+  document.getElementById('b2sub-vocab').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">80 個入籍考試常用 B2 生字 · 每個附 B1 簡易同義詞 · 按話題分類</p>
+    <button class="btn bp" style="background:#1e4d8c;width:100%;margin-bottom:12px;" onclick="b2AddAllToWordbook()">📥 將全部 80 個生字加入 EnglishMind 詞彙本（FlashCard/Test/Match 可以用到）</button>
+    <div class="b2-vff">${B2_CATS.map(c=>`<button class="b2-vfb ${c===b2VcCat?'active':''}" onclick="b2SetCat('${c}')">${c}</button>`).join('')}</div>
+    <div class="b2-flash" onclick="b2FlipCard()">
+      <div id="b2-fc-front">
+        <div class="b2-fw">${w.w}</div>
+        <div class="b2-fph">${w.ph}</div>
+        <div class="b2-flv">B2 · ${w.cat}</div>
+        <div style="margin-top:10px;font-size:.7rem;color:var(--muted);font-family:'Fira Code',monospace;">👆 撳卡片睇解釋</div>
+      </div>
+      <div id="b2-fc-back" style="display:none;width:100%;">
+        <div class="b2-fdef">📖 ${w.def}</div>
+        <div class="b2-fex">💬 "${w.ex}"</div>
+        <div class="b2-fb1">🔄 B1 同義詞: <b>${w.b1}</b></div>
+      </div>
+    </div>
+    <button class="btn bg2" style="width:100%;margin-bottom:10px;" onclick="speakWord('${w.w.replace(/'/g,"\\'")}')">🔊 聽發音</button>
+    <div class="btn-row">
+      <button class="btn bg2" onclick="b2PrevVc()" ${b2VcIdx===0?'disabled':''}>← 上一個</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextVc()" ${b2VcIdx===words.length-1?'disabled':''}>下一個 →</button>
+    </div>
+    <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--muted);font-family:'Fira Code',monospace;">${b2VcIdx+1} / ${words.length}${b2VcCat!=='全部'?` (${b2VcCat})`:''} · 總共 ${B2_VOCAB.length} 個</div>`;
+}
+function b2SetCat(c){b2VcCat=c;b2VcIdx=0;b2RenderVocab();}
+function b2FlipCard(){
+  const f=document.getElementById('b2-fc-front'),b=document.getElementById('b2-fc-back');
+  if(b.style.display==='none'||!b.style.display){f.style.display='none';b.style.display='block';}
+  else{b.style.display='none';f.style.display='block';}
+}
+function b2NextVc(){const w=b2GetFiltered();if(b2VcIdx<w.length-1){b2VcIdx++;b2RenderVocab();}}
+function b2PrevVc(){if(b2VcIdx>0){b2VcIdx--;b2RenderVocab();}}
+function b2AddAllToWordbook(){
+  let added=0,skipped=0;
+  const today=new Date().toLocaleDateString('zh-HK');
+  B2_VOCAB.forEach(v=>{
+    if(wordbook.find(x=>(x.word||'').toLowerCase()===v.w.toLowerCase())){skipped++;return;}
+    wordbook.push({word:v.w,zh:v.b1,eg:v.ex,ph:v.ph,pos:'',def:v.def,b1:v.b1,synonyms:SYNONYMS[v.w.toLowerCase()]||'',date:today});
+    added++;
+  });
+  save();renderWordbook();updateScoreDisplay();
+  alert('✅ 完成！\n\n新加 '+added+' 個生字落詞彙本\n已存在跳過 '+skipped+' 個\n\n而家可以喺 🎴 FlashCard / 📝 Test / 🎯 Match / 💧 Gravity 用到呢啲生字 ✨');
+}
+
+function b2RenderTips(){
+  document.getElementById('b2sub-tips').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">IELTS Life Skills B2 / Trinity B2 實用技巧</p>
+    <div class="b2-hero">
+      <div class="lbl">📋 考試格式比較</div>
+      <table class="b2-exam"><tr><th>考試</th><th>時間</th><th>費用</th><th>形式</th></tr>
+      <tr><td>IELTS Life Skills B2</td><td>~30 分鐘</td><td>~£185</td><td>2 人 + 考官</td></tr>
+      <tr><td>Trinity ISE II B2</td><td>~20 分鐘</td><td>~£135</td><td>1 對 1 考官</td></tr></table>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:10px;">✅ 兩個都只考聽同講 · Pass/Fail 制 · 唔計分</div>
+    </div>
+    <div class="b2-tip"><div class="b2-tip-icon">🎯</div><div><div class="b2-tip-title">ARE 答題法（最重要！）</div><div class="b2-tip-desc"><b>A</b>nswer（答）→ <b>R</b>eason（原因）→ <b>E</b>xample（例子）<br>例："I enjoy the UK <b>because</b> the community is welcoming. <b>For instance</b>, my neighbours help when needed."</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">⏰</div><div><div class="b2-tip-title">爭取時間短語</div><div class="b2-tip-desc">"That's an interesting question..." · "Let me think about that for a moment..." · "Well, to be honest..." · "That's something I feel quite strongly about..."</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🔗</div><div><div class="b2-tip-title">B2 連接詞（必學！）</div><div class="b2-tip-desc">Furthermore · In addition · However · On the other hand · As a result · For instance · Although · Despite this · In contrast · Consequently · Nevertheless · Therefore</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">👂</div><div><div class="b2-tip-title">聆聽技巧</div><div class="b2-tip-desc">留意關鍵字：數字、地點、時間、人名。聽唔明禮貌要求重複："Could you repeat that, please?" / "I'm sorry, I didn't quite catch that."</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">🗣️</div><div><div class="b2-tip-title">講嘢技巧</div><div class="b2-tip-desc">唔需要英國口音，但要清晰。講錯咗自然糾正："Sorry, I mean..." 每句講完停一停。考官要見溝通能力，唔係完美文法！</div></div></div>
+    <div class="b2-tip"><div class="b2-tip-icon">📺</div><div><div class="b2-tip-title">免費練習資源</div><div class="b2-tip-desc">BBC Learning English (6 Minute English) · BBC Radio 4 · British Council LearnEnglish · IELTS.org Sample Tests · YouTube 搜「IELTS Life Skills B1 sample test」</div></div></div>`;
 }
 
 init();
