@@ -110,6 +110,13 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
 .b2-tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:.66rem;font-weight:600;color:var(--ink2);margin-right:3px;font-family:'Fira Code',monospace;}
 .b2-tag.sp{color:var(--green);border-color:rgba(42,122,75,.3);}
 .b2-tag.b2{color:var(--gold);border-color:rgba(212,144,10,.3);}
+.b2-hw{background:rgba(212,144,10,.18);color:var(--gold);padding:1px 5px;border-radius:4px;font-weight:700;cursor:pointer;border-bottom:1.5px dotted var(--gold);}
+.b2-hw:hover{background:rgba(212,144,10,.3);}
+.b2-script-box{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;font-size:.9rem;line-height:2;color:var(--ink);margin-bottom:14px;}
+.b2-gloss-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:4px;}
+.b2-gloss-w{font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);min-width:90px;}
+.b2-gloss-ph{font-family:'Fira Code',monospace;font-size:.72rem;color:var(--muted);flex:1;}
+.b2-gloss-zh{font-size:.78rem;color:var(--ink2);}
 .b2-tips{background:var(--surface);border:1.5px solid var(--border);border-left:3px solid var(--blue);border-radius:8px;padding:11px 14px;margin-top:10px;display:none;}
 .b2-tips.show{display:block;}
 .b2-tips h4{font-size:.68rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'Fira Code',monospace;}
@@ -1598,18 +1605,94 @@ function stopGravity(){
 }
 
 // ─── B2 UK CITIZENSHIP MODULE (Trinity GESE Grade 7) ─────────────────────
-// Phase 1 (Topic) — 10 portfolio topics each with structure + key vocab + follow-up Qs
+// Phase 1 (Topic) — single chosen portfolio topic for the candidate to prepare deeply
 const B2_PORTFOLIO=[
-  {name:"My career journey to the UK",name_zh:"我來英國嘅職涯故事",structure:["Background: where you worked before","Why you decided to move to the UK","Challenges adjusting to working here","Where you are now and future hopes"],vocab:["relocate","opportunity","adapt","colleague","qualification","challenging","fulfilling","prospects"],qs:["When did you first come to the UK?","Why did you choose to work in the UK?","What was your first job here?","How did you find work?","What surprised you most about working in the UK?","What was the hardest part of adapting?","Have you changed careers since arriving?","What skills have you gained?","Do you prefer working here or back home?","What are your career goals for the next few years?"]},
-  {name:"A meaningful tradition from my home country",name_zh:"我家鄉嘅一個重要傳統",structure:["Name and brief description of the tradition","When and how it is celebrated","Why it is meaningful to your family","How you keep it alive in the UK"],vocab:["custom","celebrate","heritage","generations","gathering","symbolic","preserve","unique"],qs:["Can you describe this tradition in detail?","How long has it existed?","Who participates in it?","What food or activities are involved?","Why is it important to you personally?","Do British people have anything similar?","Have you taught it to anyone here?","Has the tradition changed over time?","Is it still practised by young people?","Do you think it will continue in the future?"]},
-  {name:"Why I want British citizenship",name_zh:"我為何想成為英國公民",structure:["How long you've lived in the UK","Personal reasons for applying","Values you share with British society","How citizenship will affect your life"],vocab:["belong","stability","commitment","values","democracy","tolerance","contribute","rights"],qs:["When did you decide to apply for citizenship?","What does being British mean to you?","Which British values do you value most?","How do you contribute to UK society?","Do you feel British already?","Will you give up your other nationality?","How does your family feel about it?","What will change after you get it?","What are you most excited about?","Do you have any worries about the process?"]},
-  {name:"A skill I learned recently",name_zh:"我最近學識嘅一個技能",structure:["What the skill is","Why you chose to learn it","How you went about learning","How it has changed your life"],vocab:["acquire","master","challenging","rewarding","practice","determination","improve","useful"],qs:["What made you want to learn this?","How long did it take?","Did you take a course or self-teach?","What was the hardest part?","Did you ever want to give up?","Who supported you?","How do you use it now?","Has it changed how you see yourself?","Would you teach others?","What skill would you like to learn next?"]},
-  {name:"A book or film that influenced me",name_zh:"一部影響我嘅書或電影",structure:["Title, author/director and genre","Brief plot or main theme","Why it had such an impact on you","How your thinking changed afterwards"],vocab:["compelling","thought-provoking","relate","perspective","inspire","memorable","resonate","unforgettable"],qs:["When did you first encounter it?","Why did you choose it?","What is the main message?","Which character or moment stood out?","How did it make you feel?","Has it changed your behaviour in any way?","Would you recommend it?","Have you read/watched it more than once?","Is it well known in your country?","What other books/films do you love?"]},
-  {name:"Technology in my daily life",name_zh:"科技喺我日常生活嘅角色",structure:["Devices and apps you use most","One way technology has improved your life","One concern you have about technology","How you balance screen time"],vocab:["device","app","convenient","dependent","distracting","essential","privacy","balance"],qs:["What technology do you use every day?","Could you live without your smartphone?","How has technology changed your work?","Are you worried about online privacy?","Do you think kids spend too much time online?","How do you balance screen time?","Has AI affected your life?","What's the best app you've discovered?","Are older people excluded by technology?","Where do you see technology going in 10 years?"]},
-  {name:"A challenge I overcame",name_zh:"我克服嘅一個挑戰",structure:["What the challenge was","Why it was difficult","What you did to overcome it","What you learned"],vocab:["overcome","struggle","determined","persistent","support","resilience","grateful","stronger"],qs:["When did this happen?","Why was it so hard?","Did you consider giving up?","Who helped you through it?","What strategies did you use?","How long did it take?","How did you feel afterwards?","What did you learn about yourself?","Would you handle it differently now?","How has it shaped who you are today?"]},
-  {name:"Volunteering or helping my community",name_zh:"喺社區做義工或幫忙",structure:["What you do and where","Why you chose this cause","Who you work with","What you've gained"],vocab:["volunteer","contribute","community","cause","rewarding","fulfilling","commitment","support"],qs:["How did you get involved?","How often do you volunteer?","What does a typical day look like?","Why did you pick this particular cause?","What's the most rewarding part?","Have you faced any difficulties?","Has it changed how you see the community?","Would you recommend volunteering to others?","Could you volunteer more if you had time?","Is volunteering common in your home country?"]},
-  {name:"My approach to healthy living",name_zh:"我嘅健康生活方式",structure:["Diet and eating habits","Physical activity routine","Mental wellbeing practices","Sleep and rest"],vocab:["nutritious","exercise","wellbeing","balance","routine","mindful","prevention","lifestyle"],qs:["What does a healthy day look like for you?","What's your favourite way to exercise?","Do you cook from scratch?","Are you a vegetarian or do you eat meat?","How do you manage stress?","Do you use the NHS for prevention?","Have your habits changed since coming to the UK?","Do you find British food healthy?","Do you sleep well?","What advice would you give to someone wanting to be healthier?"]},
-  {name:"A memorable place I've visited",name_zh:"一個令我難忘嘅地方",structure:["Where and when you went","Who you went with","What made it special","Would you go back"],vocab:["breathtaking","unforgettable","scenic","atmosphere","explore","welcoming","picturesque","tranquil"],qs:["Why did you choose to go there?","How did you get there?","What's the place most famous for?","What did you see and do?","Did anything unexpected happen?","Was the food memorable?","How were the local people?","What surprised you the most?","Would you recommend it to friends?","Where would you like to visit next?"]}
+  {name:"My favourite festival",name_zh:"我最鍾意嘅節日 — Chinese New Year",
+   structure:[
+     "Name & timing — which festival, when it's celebrated (lunar / solar date), and where",
+     "Origin & meaning — short history, what it commemorates, cultural significance",
+     "Traditions & activities — food, decorations, family rituals, public events",
+     "Personal significance — why it's your favourite, a specific memory, how you celebrate it in the UK"
+   ],
+   vocab:["festival","celebrate","tradition","custom","heritage","generations","gathering","lantern","feast","ritual","symbolic","ancestor","vibrant","anticipation","nostalgic","cherish","reunion","ceremony","commemorate","atmosphere"],
+   script:`Today I'd like to talk about my favourite festival — <b>Chinese New Year</b>, also known as the {Lunar} New Year. It's the most important festival celebrated by Chinese people across the world, and it's something I look forward to every single year.<br><br>
+The festival {dates back} over three thousand years and follows the {lunar} calendar, so the exact date changes each year, usually falling between late January and mid-February. According to {legend}, there {used to} be a {mythical} {beast} called Nian that came out to attack villages, and people {discovered} that the beast was afraid of loud noises and the colour red — that's why {firecrackers} and red decorations have become central to the celebration.<br><br>
+Preparation usually begins at least a week before the new year. <b>First</b>, families do a {thorough} spring cleaning to {sweep} away the bad luck from the previous year and welcome good {fortune}. My mother {used to} make us clean every corner of the house — she would even take down the curtains and wash them.<br><br>
+<b>Second</b>, homes are decorated with red {lanterns}, paper cuttings, and {tangerine} plants, which are believed to attract {prosperity}. People buy new clothes — {preferably} red — because red {symbolises} luck and happiness.<br><br>
+<b>Third</b>, food plays a huge role. Families prepare special dishes like nian gao (rice cake), {turnip} cakes, and {dumplings}. The {reunion} dinner on New Year's Eve is the most important meal of the year — every family member tries their best to make it back home for it.<br><br>
+Married couples prepare red envelopes called <i>'lai see'</i> filled with money, which they give to children and unmarried relatives to wish them luck. If I had to pick a memory, I'd say receiving my first big lai see at age twelve — it felt like such a {milestone}.<br><br>
+Although I now live in the UK and miss the {bustling} {atmosphere} back home, I make a point of keeping the tradition alive. I cook traditional dishes, decorate the house, and have even introduced some British friends to the festival — they were {fascinated} by the {symbolism} and the food. One {colleague} {suggested} we start a small Chinese New Year {gathering} at the office, which is something I'd love to {organise} this year.<br><br>
+Looking back, I think what makes Chinese New Year so special isn't just the food or the decorations — it's the time it gives us to {reconnect} with family, {honour} our {heritage}, and start the new year with hope and {gratitude}.`,
+   glossary:{
+     "Lunar":{ph:"/ˈluː.nə/",zh:"月亮嘅 / 農曆"},
+     "lunar":{ph:"/ˈluː.nə/",zh:"月亮嘅 / 農曆"},
+     "dates back":{ph:"/deɪts bæk/",zh:"追溯到"},
+     "legend":{ph:"/ˈledʒ.ənd/",zh:"傳說"},
+     "used to":{ph:"/juːst tə/",zh:"以前曾經（過去習慣）"},
+     "mythical":{ph:"/ˈmɪθ.ɪ.kəl/",zh:"神話嘅"},
+     "beast":{ph:"/biːst/",zh:"野獸"},
+     "discovered":{ph:"/dɪˈskʌv.əd/",zh:"發現"},
+     "firecrackers":{ph:"/ˈfaɪəˌkræk.əz/",zh:"鞭炮"},
+     "thorough":{ph:"/ˈθʌr.ə/",zh:"徹底嘅"},
+     "sweep":{ph:"/swiːp/",zh:"掃走"},
+     "fortune":{ph:"/ˈfɔː.tʃuːn/",zh:"運氣 / 財富"},
+     "lanterns":{ph:"/ˈlæn.tənz/",zh:"燈籠"},
+     "tangerine":{ph:"/ˌtæn.dʒəˈriːn/",zh:"桔（仔）"},
+     "prosperity":{ph:"/prɒsˈper.ɪ.ti/",zh:"繁榮 / 富裕"},
+     "preferably":{ph:"/ˈpref.ər.ə.bli/",zh:"最好（係）"},
+     "symbolises":{ph:"/ˈsɪm.bə.laɪ.zɪz/",zh:"象徵"},
+     "turnip":{ph:"/ˈtɜː.nɪp/",zh:"蘿蔔（蘿蔔糕）"},
+     "dumplings":{ph:"/ˈdʌm.plɪŋz/",zh:"餃子"},
+     "reunion":{ph:"/riːˈjuː.ni.ən/",zh:"團聚"},
+     "milestone":{ph:"/ˈmaɪl.stəʊn/",zh:"里程碑"},
+     "bustling":{ph:"/ˈbʌs.əl.ɪŋ/",zh:"熱鬧繁忙嘅"},
+     "atmosphere":{ph:"/ˈæt.mə.sfɪə/",zh:"氣氛"},
+     "fascinated":{ph:"/ˈfæs.ɪ.neɪ.tɪd/",zh:"著迷"},
+     "symbolism":{ph:"/ˈsɪm.bə.lɪ.zəm/",zh:"象徵意義"},
+     "colleague":{ph:"/ˈkɒl.iːɡ/",zh:"同事"},
+     "suggested":{ph:"/səˈdʒes.tɪd/",zh:"建議"},
+     "gathering":{ph:"/ˈɡæð.ər.ɪŋ/",zh:"聚會"},
+     "organise":{ph:"/ˈɔː.ɡə.naɪz/",zh:"組織 / 安排"},
+     "reconnect":{ph:"/ˌriː.kəˈnekt/",zh:"重新連繫"},
+     "honour":{ph:"/ˈɒn.ə/",zh:"尊敬 / 紀念"},
+     "heritage":{ph:"/ˈher.ɪ.tɪdʒ/",zh:"文化傳承"},
+     "gratitude":{ph:"/ˈɡræt.ɪ.tʃuːd/",zh:"感恩"}
+   },
+   qs:[
+     "Can you tell me about your favourite festival?",
+     "When is it celebrated each year?",
+     "Where does the festival originate from?",
+     "How long has this festival been celebrated?",
+     "What does the festival commemorate or symbolise?",
+     "How do you usually celebrate it with your family?",
+     "What traditional foods do you eat during this festival?",
+     "Are there any special decorations or clothes involved?",
+     "What activities do children and adults take part in?",
+     "What's your earliest memory of this festival?",
+     "Why is this festival particularly meaningful to you?",
+     "How is the festival celebrated differently in different regions?",
+     "Has the way you celebrate changed since moving to the UK?",
+     "Have any of your British friends or neighbours joined in?",
+     "Is there an equivalent festival in British culture?",
+     "Has the festival changed over the years?",
+     "Do you think young people today still appreciate it?",
+     "How would you describe the atmosphere during the festival?",
+     "Have you ever introduced the festival to someone who wasn't familiar with it?",
+     "Do you decorate your home for it? If so, how?",
+     "What's the most challenging part about celebrating it abroad?",
+     "Why do you think traditions like this are important?",
+     "Would you like your children to keep this tradition?",
+     "If you could spend this festival anywhere in the world, where would you go?",
+     "What advice would you give to someone wanting to experience this festival for the first time?"
+   ],
+   tips:[
+     "📝 提前準備可以帶上場嘅 notes / mind map（Trinity 允許）",
+     "🗣️ Phase 1 由你 lead，唔好等考官問先講",
+     "⏱ 練到你可以 talk 5 分鐘無大停頓",
+     "🎤 答 follow-up 時加 example 或 personal memory，唔好淨係 fact",
+     "💪 用埋 simple past + used to + relative clauses（Grade 7 grammar focus）"
+   ]
+  }
 ];
 
 // Phase 2 (Interactive) — 15 prompts: examiner gives scenario, you must ASK questions and offer opinions
@@ -2076,26 +2159,40 @@ function b2TogglePlan(idx){
 
 // Phase 1 — Topic Builder
 function b2RenderTopic(){
-  const t=B2_PORTFOLIO[b2TopIdx],total=B2_PORTFOLIO.length;
+  const t=B2_PORTFOLIO[b2TopIdx];
+  // build script with clickable highlighted words
+  let scriptHtml=t.script||'';
+  if(t.glossary){
+    scriptHtml=scriptHtml.replace(/\{([^}]+)\}/g,(m,w)=>{
+      const g=t.glossary[w];
+      if(!g)return w;
+      return `<span class="b2-hw" onclick="speakWord('${escJs(w)}')" title="${g.ph} · ${g.zh}">${esc(w)}</span>`;
+    });
+  }
+  const glossHtml=t.glossary?Object.entries(t.glossary).filter((entry,i,arr)=>arr.findIndex(e=>e[0].toLowerCase()===entry[0].toLowerCase())===i).map(([w,g])=>`<div class="b2-gloss-row"><span class="b2-gloss-w">${esc(w)}</span><span class="b2-gloss-ph">${esc(g.ph)}</span><span class="b2-gloss-zh">${esc(g.zh)}</span><button onclick="speakWord('${escJs(w)}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.72rem;flex-shrink:0;">🔊</button></div>`).join(''):'';
   document.getElementById('b2sub-topic').innerHTML=`
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🎤 <b>Phase 1 (5 分鐘)</b>：你提前準備呢個 topic，考官會 discuss + 追問。揀一個你最熟悉嘅好。</p>
-    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2TopIdx+1)/total*100}%"></div></div><span class="b2-prog-txt">${b2TopIdx+1}/${total}</span></div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">🎤 <b>Phase 1 (5 分鐘)</b>：你提前準備呢個 topic，考官會 discuss + 追問。每日練熟到流暢。</p>
     <div class="b2-tcard">
-      <div class="b2-tnum">Portfolio Topic ${b2TopIdx+1}</div>
-      <div class="b2-tq">🎯 ${t.name}</div>
-      <div class="b2-tctx">💭 ${t.name_zh}</div>
-      <button class="btn bg2" style="margin-top:8px;font-size:.75rem;padding:6px 12px;" onclick="speakWord('${escJs(t.name)}')">🔊 聽 topic</button>
+      <div class="b2-tnum">📌 你嘅 Topic</div>
+      <div class="b2-tq">🎯 ${esc(t.name)}</div>
+      <div class="b2-tctx">💭 ${esc(t.name_zh)}</div>
     </div>
-    <div style="margin-bottom:10px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">📋 建議結構</div>
+    <div style="margin-bottom:10px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">📋 建議結構（4 個 main points）</div>
     <ol style="font-size:.85rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.7;">${t.structure.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+    ${t.tips?`<div class="b2-tips show" style="margin-bottom:14px;"><h4>💡 答題貼士</h4><ul>${t.tips.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>`:''}
+    ${scriptHtml?`<details open style="background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+      <summary style="font-weight:700;font-size:.85rem;color:var(--ink);cursor:pointer;">📖 B2 範例 Script（撳金色字聽發音 / 睇音標）</summary>
+      <div class="b2-script-box" style="margin-top:10px;">${scriptHtml}</div>
+      <button class="btn bp" style="background:#1e4d8c;width:100%;" onclick="speakWord('${escJs((t.script||'').replace(/<[^>]+>/g,'').replace(/\{|\}/g,'').replace(/\s+/g,' '))}')">🔊 朗讀整個 script</button>
+    </details>`:''}
+    ${glossHtml?`<details style="background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+      <summary style="font-weight:700;font-size:.85rem;color:var(--ink);cursor:pointer;">📚 深字音標 + 中文（${Object.keys(t.glossary).filter((w,i,a)=>a.findIndex(x=>x.toLowerCase()===w.toLowerCase())===i).length} 個）</summary>
+      <div style="margin-top:10px;">${glossHtml}</div>
+    </details>`:''}
     <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">🔑 關鍵 B2 詞彙</div>
     <div style="margin-bottom:14px;line-height:1.9;">${t.vocab.map(v=>`<span class="b2-tag b2" style="cursor:pointer;" onclick="speakWord('${escJs(v)}')">${esc(v)} 🔊</span>`).join(' ')}</div>
     <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;">❓ 考官會問你 (${t.qs.length} 條練習題)</div>
-    <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.qs.map(q=>`<li>${esc(q)} <button onclick="speakWord('${escJs(q)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>
-    <div class="btn-row" style="margin-top:14px;">
-      <button class="btn bg2" onclick="b2PrevTop()" ${b2TopIdx===0?'disabled':''}>← 上一個</button>
-      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextTop()" ${b2TopIdx===total-1?'disabled':''}>下一個 →</button>
-    </div>`;
+    <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.qs.map(q=>`<li>${esc(q)} <button onclick="speakWord('${escJs(q)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>`;
 }
 function b2NextTop(){if(b2TopIdx<B2_PORTFOLIO.length-1){b2TopIdx++;b2RenderTopic();}}
 function b2PrevTop(){if(b2TopIdx>0){b2TopIdx--;b2RenderTopic();}}
