@@ -942,7 +942,12 @@ function loadV(){
   const d=vS[vi],tot=vS.length;
   document.getElementById('vbadge').textContent=`詞彙 · 題目 ${vi+1} / ${tot}`;
   document.getElementById('vprog').style.width=((vi+1)/tot*100)+'%';
-  document.getElementById('vq').innerHTML=d.s+'<br><br><span style="font-size:.85rem;color:var(--muted)">'+d.q+'</span>';
+  const wEsc=String(d.word||'').replace(/'/g,"\\'");
+  const sentEsc=String(d.s||'').replace(/<[^>]+>/g,'').replace(/'/g,"\\'");
+  document.getElementById('vq').innerHTML=d.s+
+    ` <button onclick="speakWord('${wEsc}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.78rem;margin-left:6px;vertical-align:middle;" title="聽生字發音">🔊</button>`+
+    ` <button onclick="speakWord('${sentEsc}')" style="background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:14px;padding:3px 9px;cursor:pointer;font-size:.7rem;margin-left:4px;vertical-align:middle;" title="聽成句">🔊 句子</button>`+
+    '<br><br><span style="font-size:.85rem;color:var(--muted)">'+d.q+'</span>';
   const sh=d.opts.map((t,i)=>({t,c:i===d.ans})).sort(()=>Math.random()-.5);
   d._sh=sh;
   const el=document.getElementById('vopts');el.innerHTML='';
@@ -969,7 +974,9 @@ function checkVocab(){
   updateScoreDisplay();
   const d=vS[vi];
   document.getElementById('vinfo').className='winfo show';
-  document.getElementById('vinfo').innerHTML=`<div class="wi-w">${d.word}</div><div class="wi-ph">${d.ph}</div><div class="wi-pos">${d.pos}</div><div class="wi-def">${d.def}</div><div class="wi-eg">${d.eg}</div>`;
+  const wEsc2=String(d.word||'').replace(/'/g,"\\'");
+  const egEsc=String(d.eg||'').replace(/'/g,"\\'");
+  document.getElementById('vinfo').innerHTML=`<div class="wi-w">${d.word} <button onclick="speakWord('${wEsc2}')" style="background:var(--ink);color:var(--bg);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.78rem;margin-left:4px;vertical-align:middle;">🔊</button></div><div class="wi-ph">${d.ph}</div><div class="wi-pos">${d.pos}</div><div class="wi-def">${d.def}</div><div class="wi-eg">"${d.eg}" <button onclick="speakWord('${egEsc}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></div>`;
   document.getElementById('vcheck').disabled=true;
 }
 function nextVocab(){vi=(vi+1)%vS.length;save();loadV();}
@@ -1614,7 +1621,28 @@ const B2_PORTFOLIO=[
      "Traditions & activities — food, decorations, family rituals, public events",
      "Personal significance — why it's your favourite, a specific memory, how you celebrate it in the UK"
    ],
-   vocab:["festival","celebrate","tradition","custom","heritage","generations","gathering","lantern","feast","ritual","symbolic","ancestor","vibrant","anticipation","nostalgic","cherish","reunion","ceremony","commemorate","atmosphere"],
+   vocab:[
+     {w:"festival",ph:"/ˈfes.tɪ.vəl/",zh:"節日"},
+     {w:"celebrate",ph:"/ˈsel.ɪ.breɪt/",zh:"慶祝"},
+     {w:"tradition",ph:"/trəˈdɪʃ.ən/",zh:"傳統"},
+     {w:"custom",ph:"/ˈkʌs.təm/",zh:"習俗"},
+     {w:"heritage",ph:"/ˈher.ɪ.tɪdʒ/",zh:"文化傳承"},
+     {w:"generations",ph:"/ˌdʒen.əˈreɪ.ʃənz/",zh:"世代"},
+     {w:"gathering",ph:"/ˈɡæð.ər.ɪŋ/",zh:"聚會"},
+     {w:"lantern",ph:"/ˈlæn.tən/",zh:"燈籠"},
+     {w:"feast",ph:"/fiːst/",zh:"盛宴"},
+     {w:"ritual",ph:"/ˈrɪtʃ.u.əl/",zh:"儀式"},
+     {w:"symbolic",ph:"/sɪmˈbɒl.ɪk/",zh:"象徵性"},
+     {w:"ancestor",ph:"/ˈæn.ses.tə/",zh:"祖先"},
+     {w:"vibrant",ph:"/ˈvaɪ.brənt/",zh:"充滿活力嘅"},
+     {w:"anticipation",ph:"/ænˌtɪs.ɪˈpeɪ.ʃən/",zh:"期待"},
+     {w:"nostalgic",ph:"/nɒsˈtæl.dʒɪk/",zh:"懷舊嘅"},
+     {w:"cherish",ph:"/ˈtʃer.ɪʃ/",zh:"珍惜"},
+     {w:"reunion",ph:"/riːˈjuː.ni.ən/",zh:"團聚"},
+     {w:"ceremony",ph:"/ˈser.ə.mə.ni/",zh:"典禮"},
+     {w:"commemorate",ph:"/kəˈmem.ə.reɪt/",zh:"紀念"},
+     {w:"atmosphere",ph:"/ˈæt.mə.sfɪə/",zh:"氣氛"}
+   ],
    script:`Today I'd like to talk about my favourite festival — <b>Chinese New Year</b>, also known as the {Lunar} New Year. It's the most important festival celebrated by Chinese people across the world, and it's something I look forward to every single year.<br><br>
 The festival {dates back} over three thousand years and follows the {lunar} calendar, so the exact date changes each year, usually falling between late January and mid-February. According to {legend}, there {used to} be a {mythical} {beast} called Nian that came out to attack villages, and people {discovered} that the beast was afraid of loud noises and the colour red — that's why {firecrackers} and red decorations have become central to the celebration.<br><br>
 Preparation usually begins at least a week before the new year. <b>First</b>, families do a {thorough} spring cleaning to {sweep} away the bad luck from the previous year and welcome good {fortune}. My mother {used to} make us clean every corner of the house — she would even take down the curtains and wash them.<br><br>
