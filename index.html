@@ -424,6 +424,7 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
       <button class="b2-subtab" onclick="b2Switch('grammar')">📝 文法</button>
       <button class="b2-subtab" onclick="b2Switch('vocab')">📚 詞彙</button>
       <button class="b2-subtab" onclick="b2Switch('mock')">🎯 Mock</button>
+      <button class="b2-subtab" onclick="b2Switch('phrase')">📌 短語</button>
       <button class="b2-subtab" onclick="b2Switch('tips')">💡 貼士</button>
     </div>
     <div id="b2sub-plan" class="b2-subpanel active"></div>
@@ -434,6 +435,7 @@ header{padding:24px 0 18px;display:flex;align-items:center;justify-content:space
     <div id="b2sub-grammar" class="b2-subpanel"></div>
     <div id="b2sub-vocab" class="b2-subpanel"></div>
     <div id="b2sub-mock" class="b2-subpanel"></div>
+    <div id="b2sub-phrase" class="b2-subpanel"></div>
     <div id="b2sub-tips" class="b2-subpanel"></div>
   </div>
 
@@ -2037,10 +2039,10 @@ let b2TopIdx=0,b2IntIdx=0,b2GtIdx=0,b2GtQIdx=0,b2LeIdx=0,b2GrAreaIdx=0,b2GrQIdx=
 function b2Init(){
   if(b2Initialized)return;
   b2Initialized=true;
-  b2RenderPlan();b2RenderTopic();b2RenderInteractive();b2RenderConversation();b2RenderListening();b2RenderGrammar();b2RenderVocab();b2RenderMock();b2RenderTips();
+  b2RenderPlan();b2RenderTopic();b2RenderInteractive();b2RenderConversation();b2RenderListening();b2RenderGrammar();b2RenderVocab();b2RenderMock();b2RenderPhrase();b2RenderTips();
 }
 function b2Switch(n){
-  const names=['plan','topic','interactive','conversation','listening','grammar','vocab','mock','tips'];
+  const names=['plan','topic','interactive','conversation','listening','grammar','vocab','mock','phrase','tips'];
   document.querySelectorAll('.b2-subtab').forEach((t,i)=>t.classList.toggle('active',names[i]===n));
   document.querySelectorAll('.b2-subpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('b2sub-'+n).classList.add('active');
@@ -2564,6 +2566,163 @@ function b2RenderTips(){
     <div class="b2-tip"><div class="b2-tip-icon">🗣️</div><div><div class="b2-tip-title">講嘢心態</div><div class="b2-tip-desc">唔需要英國口音，但要清晰。講錯咗自然糾正："Sorry, I mean..." 每句講完停一停。考官評估溝通能力，唔係完美。**Pass/Fail 制，流暢清晰過於完美。**</div></div></div>
     <div class="b2-tip"><div class="b2-tip-icon">📺</div><div><div class="b2-tip-title">免費練習資源</div><div class="b2-tip-desc">BBC Learning English (6 Minute English) · BBC Radio 4 · Trinity College London (官方 sample videos) · YouTube 搜「Trinity GESE Grade 7 sample」</div></div></div>`;
 }
+
+// ─── B2 Phrasal Verbs & Prepositions ──────────────
+const B2_PHRASAL=[
+  // Relationships & Social
+  {pv:"get on with",zh:"同某人相處融洽",cat:"關係",eg:"I get on really well with my colleagues."},
+  {pv:"hang out with",zh:"同某人消遣",cat:"關係",eg:"I love hanging out with my school friends."},
+  {pv:"fall out with",zh:"同某人鬧翻",cat:"關係",eg:"They fell out with each other over a silly argument."},
+  {pv:"keep in touch",zh:"保持聯絡",cat:"關係",eg:"We've kept in touch since I moved abroad."},
+  {pv:"look after",zh:"照顧",cat:"關係",eg:"Could you look after my dog this weekend?"},
+  {pv:"bring up",zh:"養大／提起（話題）",cat:"關係",eg:"My grandparents brought me up."},
+  // Opinion & Discussion
+  {pv:"point out",zh:"指出",cat:"討論",eg:"She pointed out that the deadline had changed."},
+  {pv:"agree with",zh:"同意",cat:"討論",eg:"I completely agree with what you've said."},
+  {pv:"come up with",zh:"諗到 (idea)",cat:"討論",eg:"He came up with a brilliant solution."},
+  {pv:"go on about",zh:"喋喋不休講某事",cat:"討論",eg:"My neighbour keeps going on about her new car."},
+  {pv:"talk over",zh:"討論清楚",cat:"討論",eg:"Let's talk it over before deciding."},
+  // Emotions & Feelings
+  {pv:"cheer up",zh:"開心啲",cat:"情緒",eg:"I bought her flowers to cheer her up."},
+  {pv:"calm down",zh:"冷靜",cat:"情緒",eg:"Just calm down and tell me what happened."},
+  {pv:"fed up with",zh:"厭倦",cat:"情緒",eg:"I'm fed up with the rainy weather."},
+  {pv:"look forward to",zh:"期待",cat:"情緒",eg:"I'm looking forward to the weekend."},
+  {pv:"put up with",zh:"忍受",cat:"情緒",eg:"I can't put up with this noise anymore."},
+  {pv:"freak out",zh:"嚇親 / 慌亂",cat:"情緒",eg:"She freaked out when she saw the spider."},
+  // Work & Study
+  {pv:"hand in",zh:"交（功課／報告）",cat:"工作學習",eg:"Please hand in your essays by Friday."},
+  {pv:"look up",zh:"查（字典）",cat:"工作學習",eg:"I had to look up that word in the dictionary."},
+  {pv:"work out",zh:"想到答案 / 運動",cat:"工作學習",eg:"I couldn't work out how to solve the problem."},
+  {pv:"set up",zh:"設立 / 開設",cat:"工作學習",eg:"They set up their own business last year."},
+  {pv:"give up",zh:"放棄",cat:"工作學習",eg:"Don't give up — you're almost there."},
+  {pv:"carry on",zh:"繼續",cat:"工作學習",eg:"Please carry on with what you were doing."},
+  {pv:"take over",zh:"接管",cat:"工作學習",eg:"She'll take over my role next month."},
+  // Travel & Movement
+  {pv:"check in",zh:"登記入住",cat:"旅行",eg:"We checked in at the hotel at 3pm."},
+  {pv:"set off",zh:"出發",cat:"旅行",eg:"We set off early to avoid the traffic."},
+  {pv:"get back",zh:"返嚟",cat:"旅行",eg:"What time did you get back last night?"},
+  {pv:"drop off",zh:"送（人／物）",cat:"旅行",eg:"Can you drop me off at the station?"},
+  {pv:"pick up",zh:"接（人）／拎起",cat:"旅行",eg:"I'll pick you up from the airport."},
+  {pv:"take off",zh:"起飛 / 脫掉",cat:"旅行",eg:"The plane took off on time."},
+  {pv:"break down",zh:"壞咗 / 崩潰",cat:"旅行",eg:"My car broke down on the motorway."},
+  // Daily Life
+  {pv:"get up",zh:"起身",cat:"日常",eg:"I usually get up at 7am."},
+  {pv:"run out of",zh:"用完",cat:"日常",eg:"We've run out of milk again."},
+  {pv:"throw away",zh:"掉",cat:"日常",eg:"Don't throw away those old photos."},
+  {pv:"turn down",zh:"調細聲 / 拒絕",cat:"日常",eg:"Could you turn down the music, please?"},
+  {pv:"turn up",zh:"調大聲 / 出現",cat:"日常",eg:"He turned up late as usual."},
+  {pv:"tidy up",zh:"執好",cat:"日常",eg:"Please tidy up your room."},
+  {pv:"eat out",zh:"出去食飯",cat:"日常",eg:"We eat out about once a week."},
+  // Problem-solving
+  {pv:"deal with",zh:"處理",cat:"處理問題",eg:"I'll deal with that problem tomorrow."},
+  {pv:"sort out",zh:"搞掂",cat:"處理問題",eg:"I need to sort out my finances."},
+  {pv:"figure out",zh:"諗通",cat:"處理問題",eg:"I can't figure out why she's upset."},
+  {pv:"find out",zh:"發現",cat:"處理問題",eg:"I found out the truth yesterday."},
+  {pv:"look into",zh:"調查",cat:"處理問題",eg:"The police are looking into the case."},
+  {pv:"sort through",zh:"逐樣睇",cat:"處理問題",eg:"I'm sorting through old documents."},
+  // Health & Lifestyle
+  {pv:"cut down on",zh:"減少",cat:"健康",eg:"I'm cutting down on sugar."},
+  {pv:"come down with",zh:"病咗",cat:"健康",eg:"I think I'm coming down with a cold."},
+  {pv:"get over",zh:"康復 / 克服",cat:"健康",eg:"It took me a week to get over the flu."},
+  {pv:"work out",zh:"做運動",cat:"健康",eg:"I work out three times a week."},
+  // Money & Shopping
+  {pv:"save up for",zh:"儲錢買",cat:"金錢",eg:"We're saving up for a house deposit."},
+  {pv:"try on",zh:"試穿",cat:"購物",eg:"Could I try this jacket on?"},
+  {pv:"pay back",zh:"還錢",cat:"金錢",eg:"I'll pay you back next week."},
+  // Plans & Cancellations
+  {pv:"put off",zh:"延期",cat:"計劃",eg:"We had to put off the meeting."},
+  {pv:"call off",zh:"取消",cat:"計劃",eg:"They called off the wedding."},
+  {pv:"turn out",zh:"結果係",cat:"結果",eg:"It turned out to be a great day."},
+  {pv:"end up",zh:"最終",cat:"結果",eg:"We ended up staying at home."},
+  {pv:"come across",zh:"偶然遇到",cat:"日常",eg:"I came across an old photo of us."},
+  {pv:"make up",zh:"和好 / 編造",cat:"關係",eg:"They had a fight but made up the next day."}
+];
+
+const B2_PREP=[
+  // Verb + Preposition
+  {phrase:"depend on",zh:"依靠",eg:"Success depends on hard work.",cat:"動詞+介詞"},
+  {phrase:"believe in",zh:"相信",eg:"I believe in being honest.",cat:"動詞+介詞"},
+  {phrase:"listen to",zh:"聆聽",eg:"I listen to BBC every morning.",cat:"動詞+介詞"},
+  {phrase:"look at",zh:"望（人或物）",eg:"Look at this beautiful picture!",cat:"動詞+介詞"},
+  {phrase:"look for",zh:"搵",eg:"I'm looking for my keys.",cat:"動詞+介詞"},
+  {phrase:"wait for",zh:"等",eg:"I'm waiting for the bus.",cat:"動詞+介詞"},
+  {phrase:"agree with someone",zh:"同某人意見一致",eg:"I agree with you completely.",cat:"動詞+介詞"},
+  {phrase:"agree on something",zh:"就某事達成共識",eg:"We agreed on a date for the trip.",cat:"動詞+介詞"},
+  {phrase:"apologise for",zh:"為...道歉",eg:"He apologised for being late.",cat:"動詞+介詞"},
+  {phrase:"talk about",zh:"討論",eg:"Let's talk about your plans.",cat:"動詞+介詞"},
+  // Adjective + Preposition
+  {phrase:"interested in",zh:"對...有興趣",eg:"I'm very interested in photography.",cat:"形容詞+介詞"},
+  {phrase:"good at",zh:"擅長",eg:"She's good at maths.",cat:"形容詞+介詞"},
+  {phrase:"bad at",zh:"唔擅長",eg:"I'm really bad at remembering names.",cat:"形容詞+介詞"},
+  {phrase:"afraid of",zh:"驚",eg:"He's afraid of spiders.",cat:"形容詞+介詞"},
+  {phrase:"keen on",zh:"鍾意",eg:"She's keen on cycling.",cat:"形容詞+介詞"},
+  {phrase:"fond of",zh:"喜愛",eg:"I'm fond of British comedies.",cat:"形容詞+介詞"},
+  {phrase:"similar to",zh:"相似於",eg:"Your jacket is similar to mine.",cat:"形容詞+介詞"},
+  {phrase:"different from",zh:"與...不同",eg:"The weather here is different from home.",cat:"形容詞+介詞"},
+  {phrase:"proud of",zh:"為...感到驕傲",eg:"I'm proud of my daughter.",cat:"形容詞+介詞"},
+  {phrase:"worried about",zh:"擔心",eg:"I'm worried about my exam.",cat:"形容詞+介詞"},
+  {phrase:"famous for",zh:"以...聞名",eg:"Italy is famous for its pasta.",cat:"形容詞+介詞"},
+  {phrase:"married to",zh:"與...結婚 (NOT 'with')",eg:"She's married to a doctor.",cat:"形容詞+介詞"},
+  // Time prepositions
+  {phrase:"at the weekend",zh:"週末 (英式)",eg:"We usually go shopping at the weekend.",cat:"時間"},
+  {phrase:"on Monday",zh:"星期一",eg:"I'll see you on Monday.",cat:"時間"},
+  {phrase:"in May",zh:"五月",eg:"My birthday is in May.",cat:"時間"},
+  {phrase:"at night",zh:"夜晚",eg:"I can't sleep well at night.",cat:"時間"},
+  {phrase:"in the morning",zh:"朝早",eg:"I jog in the morning.",cat:"時間"},
+  // Place prepositions
+  {phrase:"at home",zh:"喺屋企",eg:"I work at home twice a week.",cat:"地點"},
+  {phrase:"in London",zh:"喺倫敦",eg:"I've lived in London for 5 years.",cat:"地點"},
+  {phrase:"on the bus",zh:"喺巴士上",eg:"I read on the bus every morning.",cat:"地點"},
+  // Common errors / no preposition needed
+  {phrase:"discuss something",zh:"討論 (NO 'about')",eg:"We need to discuss the plan. ❌ discuss about",cat:"常見錯誤"},
+  {phrase:"enter the room",zh:"進入 (NO 'into')",eg:"She entered the room quietly. ❌ entered into",cat:"常見錯誤"},
+  {phrase:"answer the question",zh:"回答 (NO 'to')",eg:"Please answer the question. ❌ answer to",cat:"常見錯誤"},
+  {phrase:"phone someone",zh:"打電話 (NO 'to')",eg:"I'll phone you tonight. ❌ phone to you",cat:"常見錯誤"}
+];
+
+let b2PhraseMode='pv',b2PhraseCat='全部',b2PhraseIdx=0;
+function b2PhrasalCats(){return ['全部',...new Set(B2_PHRASAL.map(p=>p.cat))];}
+function b2PrepCats(){return ['全部',...new Set(B2_PREP.map(p=>p.cat))];}
+function b2GetPhrases(){
+  if(b2PhraseMode==='pv'){
+    return b2PhraseCat==='全部'?B2_PHRASAL:B2_PHRASAL.filter(p=>p.cat===b2PhraseCat);
+  }
+  return b2PhraseCat==='全部'?B2_PREP:B2_PREP.filter(p=>p.cat===b2PhraseCat);
+}
+function b2RenderPhrase(){
+  const arr=b2GetPhrases();
+  if(b2PhraseIdx>=arr.length)b2PhraseIdx=0;
+  const item=arr[b2PhraseIdx];
+  const word=item.pv||item.phrase;
+  const cats=b2PhraseMode==='pv'?b2PhrasalCats():b2PrepCats();
+  const totalAll=b2PhraseMode==='pv'?B2_PHRASAL.length:B2_PREP.length;
+  document.getElementById('b2sub-phrase').innerHTML=`
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">📌 <b>Phrasal Verbs + Prepositions</b>：B2 必識嘅 90+ 個短語，考試自然用啱即時加分。</p>
+    <div class="b2-subtabs" style="margin-bottom:10px;">
+      <button class="b2-subtab ${b2PhraseMode==='pv'?'active':''}" onclick="b2SetPhraseMode('pv')">🔗 Phrasal Verbs (${B2_PHRASAL.length})</button>
+      <button class="b2-subtab ${b2PhraseMode==='prep'?'active':''}" onclick="b2SetPhraseMode('prep')">🔤 Prepositions (${B2_PREP.length})</button>
+    </div>
+    <div class="b2-vff">${cats.map(c=>`<button class="b2-vfb ${c===b2PhraseCat?'active':''}" onclick="b2SetPhraseCat('${escJs(c)}')">${esc(c)}</button>`).join('')}</div>
+    <div class="b2-prog-row"><div class="b2-prog-wrap"><div class="b2-prog-fill" style="width:${(b2PhraseIdx+1)/arr.length*100}%"></div></div><span class="b2-prog-txt">${b2PhraseIdx+1}/${arr.length}${b2PhraseCat!=='全部'?' ('+b2PhraseCat+')':''}</span></div>
+    <div class="b2-flash">
+      <div class="b2-fw" style="font-size:1.5rem;">${esc(word)}</div>
+      <div class="b2-flv" style="margin-top:6px;">${esc(item.cat)}</div>
+      <div class="b2-fdef" style="margin-top:12px;">💡 ${esc(item.zh)}</div>
+      <div class="b2-fex" style="margin-top:8px;">💬 "${esc(item.eg)}"</div>
+    </div>
+    <div class="btn-row" style="margin-bottom:10px;">
+      <button class="btn bg2" onclick="speakWord('${escJs(word)}')">🔊 詞</button>
+      <button class="btn bg2" onclick="speakWord('${escJs(item.eg)}')">🔊 例句</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn bg2" onclick="b2PrevPhrase()" ${b2PhraseIdx===0?'disabled':''}>← 上一個</button>
+      <button class="btn bp" style="background:#1e4d8c;" onclick="b2NextPhrase()" ${b2PhraseIdx===arr.length-1?'disabled':''}>下一個 →</button>
+    </div>`;
+}
+function b2SetPhraseMode(m){b2PhraseMode=m;b2PhraseCat='全部';b2PhraseIdx=0;b2RenderPhrase();}
+function b2SetPhraseCat(c){b2PhraseCat=c;b2PhraseIdx=0;b2RenderPhrase();}
+function b2NextPhrase(){const arr=b2GetPhrases();if(b2PhraseIdx<arr.length-1){b2PhraseIdx++;b2RenderPhrase();}}
+function b2PrevPhrase(){if(b2PhraseIdx>0){b2PhraseIdx--;b2RenderPhrase();}}
 
 init();
 </script>
