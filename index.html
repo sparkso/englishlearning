@@ -1639,24 +1639,26 @@ const B2_PORTFOLIO=[
      "Traditions & activities — food, decorations, family rituals, public events",
      "Personal significance — why it's your favourite, a specific memory, how you celebrate it in the UK"
    ],
-   vocab:[
+   vocabScript:[
      {w:"festival",ph:"/ˈfes.tɪ.vəl/",zh:"節日"},
      {w:"celebrate",ph:"/ˈsel.ɪ.breɪt/",zh:"慶祝"},
      {w:"tradition",ph:"/trəˈdɪʃ.ən/",zh:"傳統"},
-     {w:"custom",ph:"/ˈkʌs.təm/",zh:"習俗"},
      {w:"heritage",ph:"/ˈher.ɪ.tɪdʒ/",zh:"文化傳承"},
-     {w:"generations",ph:"/ˌdʒen.əˈreɪ.ʃənz/",zh:"世代"},
      {w:"gathering",ph:"/ˈɡæð.ər.ɪŋ/",zh:"聚會"},
      {w:"lantern",ph:"/ˈlæn.tən/",zh:"燈籠"},
+     {w:"symbolises",ph:"/ˈsɪm.bə.laɪ.zɪz/",zh:"象徵"},
+     {w:"reunion",ph:"/riːˈjuː.ni.ən/",zh:"團聚"}
+   ],
+   vocabExtra:[
+     {w:"custom",ph:"/ˈkʌs.təm/",zh:"習俗"},
+     {w:"generations",ph:"/ˌdʒen.əˈreɪ.ʃənz/",zh:"世代"},
      {w:"feast",ph:"/fiːst/",zh:"盛宴"},
      {w:"ritual",ph:"/ˈrɪtʃ.u.əl/",zh:"儀式"},
-     {w:"symbolic",ph:"/sɪmˈbɒl.ɪk/",zh:"象徵性"},
      {w:"ancestor",ph:"/ˈæn.ses.tə/",zh:"祖先"},
      {w:"vibrant",ph:"/ˈvaɪ.brənt/",zh:"充滿活力嘅"},
      {w:"anticipation",ph:"/ænˌtɪs.ɪˈpeɪ.ʃən/",zh:"期待"},
      {w:"nostalgic",ph:"/nɒsˈtæl.dʒɪk/",zh:"懷舊嘅"},
      {w:"cherish",ph:"/ˈtʃer.ɪʃ/",zh:"珍惜"},
-     {w:"reunion",ph:"/riːˈjuː.ni.ən/",zh:"團聚"},
      {w:"ceremony",ph:"/ˈser.ə.mə.ni/",zh:"典禮"},
      {w:"commemorate",ph:"/kəˈmem.ə.reɪt/",zh:"紀念"},
      {w:"atmosphere",ph:"/ˈæt.mə.sfɪə/",zh:"氣氛"}
@@ -2232,8 +2234,21 @@ function b2RenderTopic(){
       <summary style="font-weight:700;font-size:.85rem;color:var(--ink);cursor:pointer;">📚 深字音標 + 中文（${Object.keys(t.glossary).filter((w,i,a)=>a.findIndex(x=>x.toLowerCase()===w.toLowerCase())===i).length} 個）</summary>
       <div style="margin-top:10px;">${glossHtml}</div>
     </details>`:''}
-    <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">🔑 關鍵 B2 詞彙</div>
-    <div style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">${t.vocab.map(v=>{const w=typeof v==='string'?v:v.w;const ph=typeof v==='object'?v.ph||'':'';const zh=typeof v==='object'?v.zh||'':'';return `<div onclick="speakWord('${escJs(w)}')" style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;"><div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);font-size:.92rem;">${esc(w)} 🔊</div>${ph?`<div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);">${esc(ph)}</div>`:''}${zh?`<div style="font-size:.74rem;color:var(--ink2);margin-top:2px;">${esc(zh)}</div>`:''}</div>`;}).join('')}</div>
+    ${(()=>{
+      const renderVocabCard=(v,borderColor)=>{const w=typeof v==='string'?v:v.w;const ph=typeof v==='object'?v.ph||'':'';const zh=typeof v==='object'?v.zh||'':'';return `<div onclick="speakWord('${escJs(w)}')" style="background:var(--surface);border:1.5px solid ${borderColor};border-radius:8px;padding:7px 10px;cursor:pointer;"><div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);font-size:.92rem;">${esc(w)} 🔊</div>${ph?`<div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);">${esc(ph)}</div>`:''}${zh?`<div style="font-size:.74rem;color:var(--ink2);margin-top:2px;">${esc(zh)}</div>`:''}</div>`;};
+      let html='';
+      const vs=t.vocabScript||(Array.isArray(t.vocab)?t.vocab:[]);
+      const ve=t.vocabExtra||[];
+      if(vs.length){
+        html+=`<div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--green);text-transform:uppercase;letter-spacing:.08em;">🔑 Script 入面嘅 B2 詞彙 (${vs.length}) — 必須講得出</div>`;
+        html+=`<div style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">${vs.map(v=>renderVocabCard(v,'rgba(42,122,75,.35)')).join('')}</div>`;
+      }
+      if(ve.length){
+        html+=`<div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">🔍 Topic 相關 Extra 詞彙 (${ve.length}) — 考官追問可能用到</div>`;
+        html+=`<div style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">${ve.map(v=>renderVocabCard(v,'rgba(30,77,140,.3)')).join('')}</div>`;
+      }
+      return html;
+    })()}
     <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;">❓ 考官會問你 (${t.qs.length} 條練習題)</div>
     <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.qs.map(q=>`<li>${esc(q)} <button onclick="speakWord('${escJs(q)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>`;
 }
