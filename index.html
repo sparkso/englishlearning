@@ -2233,7 +2233,7 @@ function b2RenderTopic(){
       <div style="margin-top:10px;">${glossHtml}</div>
     </details>`:''}
     <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;">🔑 關鍵 B2 詞彙</div>
-    <div style="margin-bottom:14px;line-height:1.9;">${t.vocab.map(v=>`<span class="b2-tag b2" style="cursor:pointer;" onclick="speakWord('${escJs(v)}')">${esc(v)} 🔊</span>`).join(' ')}</div>
+    <div style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">${t.vocab.map(v=>{const w=typeof v==='string'?v:v.w;const ph=typeof v==='object'?v.ph||'':'';const zh=typeof v==='object'?v.zh||'':'';return `<div onclick="speakWord('${escJs(w)}')" style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;"><div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);font-size:.92rem;">${esc(w)} 🔊</div>${ph?`<div style="font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);">${esc(ph)}</div>`:''}${zh?`<div style="font-size:.74rem;color:var(--ink2);margin-top:2px;">${esc(zh)}</div>`:''}</div>`;}).join('')}</div>
     <div style="margin-bottom:8px;font-family:'Fira Code',monospace;font-size:.7rem;color:var(--red);text-transform:uppercase;letter-spacing:.08em;">❓ 考官會問你 (${t.qs.length} 條練習題)</div>
     <ol style="font-size:.84rem;color:var(--ink2);padding-left:20px;margin-bottom:14px;line-height:1.8;">${t.qs.map(q=>`<li>${esc(q)} <button onclick="speakWord('${escJs(q)}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;">🔊</button></li>`).join('')}</ol>`;
 }
