@@ -826,16 +826,46 @@ function renderWordbook(){
         <span id="wb-arrow-${i}" style="color:var(--muted);font-size:.85rem;transition:transform .2s;">▼</span>
       </div>
       <div id="wb-detail-${i}" style="display:none;padding:0 14px 14px;border-top:1px dashed var(--border);position:relative;">
-        <button onclick="removeWord(${i})" style="position:absolute;top:10px;right:10px;border:none;background:none;color:var(--muted);cursor:pointer;font-size:.95rem;" title="刪除呢個字">✕</button>
-        <div class="wi-ph" style="margin-top:10px;">${w.ph}</div>
-        <div class="wi-pos">${w.pos}</div>
-        <div class="wi-def">${w.def}</div>
-        <div class="wi-eg">${w.eg}</div>
+        <div style="position:absolute;top:10px;right:10px;display:flex;gap:8px;">
+          <button onclick="editWord(${i})" style="border:none;background:none;color:var(--blue);cursor:pointer;font-size:.95rem;" title="編輯">✏️</button>
+          <button onclick="removeWord(${i})" style="border:none;background:none;color:var(--muted);cursor:pointer;font-size:.95rem;" title="刪除呢個字">✕</button>
+        </div>
+        ${w.ph?`<div class="wi-ph" style="margin-top:10px;">${w.ph}</div>`:'<div style="margin-top:10px;"></div>'}
+        ${w.pos?`<div class="wi-pos">${w.pos}</div>`:''}
+        ${w.def?`<div class="wi-def">${w.def}</div>`:''}
+        ${w.eg?`<div class="wi-eg">${w.eg}</div>`:'<div style="font-size:.78rem;color:var(--muted);font-style:italic;">（未有例句 — 撳 ✏️ 加）</div>'}
         ${w.b1?`<div style="margin-top:8px;font-size:.78rem;color:var(--green);font-family:'Fira Code',monospace;">B1 同義詞: ${w.b1}</div>`:''}
         ${w.synonyms?`<div style="margin-top:6px;font-size:.78rem;color:var(--blue);font-family:'Fira Code',monospace;line-height:1.5;">🔄 同義詞: ${w.synonyms}</div>`:''}
         <div style="font-size:.68rem;color:var(--muted);margin-top:6px;font-family:'Fira Code',monospace;">儲存於 ${w.date||''}</div>
       </div>
     </div>`).join('');
+}
+function editWord(i){
+  const w=wordbook[i];
+  const d=document.getElementById('wb-detail-'+i);
+  d.innerHTML=`
+    <div style="padding-top:12px;">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:4px;">中文意思：</div>
+      <input id="edit-zh-${i}" value="${(w.zh==='(未有中文)'?'':(w.zh||'')).replace(/"/g,'&quot;')}" placeholder="例：大規模地" style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;background:var(--card);color:var(--ink);margin-bottom:10px;outline:none;">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:4px;">例句（選填）：</div>
+      <input id="edit-eg-${i}" value="${(w.eg||'').replace(/"/g,'&quot;')}" placeholder="例：Prices rose massively." style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;background:var(--card);color:var(--ink);margin-bottom:10px;outline:none;">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:4px;">同義詞（選填）：</div>
+      <input id="edit-syn-${i}" value="${(w.synonyms||'').replace(/"/g,'&quot;')}" placeholder="例：hugely, enormously" style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;background:var(--card);color:var(--ink);margin-bottom:10px;outline:none;">
+      <div class="btn-row">
+        <button class="btn bg2" onclick="toggleWord(${i});renderWordbook()">取消</button>
+        <button class="btn bp" onclick="saveWordEdit(${i})">💾 儲存</button>
+      </div>
+    </div>`;
+  setTimeout(()=>{const inp=document.getElementById('edit-zh-'+i);if(inp)inp.focus();},80);
+}
+function saveWordEdit(i){
+  const zh=document.getElementById('edit-zh-'+i).value.trim();
+  const eg=document.getElementById('edit-eg-'+i).value.trim();
+  const syn=document.getElementById('edit-syn-'+i).value.trim();
+  wordbook[i].zh=zh||'(未有中文)';
+  wordbook[i].eg=eg;
+  if(syn)wordbook[i].synonyms=syn;
+  save();renderWordbook();
 }
 function toggleWord(i){
   const d=document.getElementById('wb-detail-'+i);
